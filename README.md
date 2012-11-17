@@ -9,8 +9,9 @@ Contact: Ray Donnelly <mingw.android@gmail.com>
 COPYRIGHTS AND LICENSES
 -----------------------
 
- Build Scripts:
- --------------
+ -------------
+ Build Scripts
+ -------------
 
  Copyright (C) 2012 The Android Open Source Project
  Copyright (C) 2012 Ray Donnelly
@@ -27,9 +28,9 @@ COPYRIGHTS AND LICENSES
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
- Patches:
- --------
+ -------
+ Patches
+ -------
 
  Copyright (C) 2010-2012 Roumen Petrov, Руслан Ижбулатов
  Copyright (C) 2012 Ray Donnelly, Алексей Павлов
@@ -76,10 +77,10 @@ these correctly.
 
 To build a nest of snakes given the right compilers on your PATH and
 a Darwin SDK, execute:
-./crucifixion-freedom.sh --python-version=2.7.3,3.3.0            \
-                                --systems=linux-x86,linux-x86_64 \
-                                      windows-x86,windows-x86_64 \
-                                        darwin-x86,darwin-x86_64 \
+./crucifixion-freedom.sh --python-version=2.7.3,3.3.0            \\
+                                --systems=linux-x86,linux-x86_64 \\
+                                      windows-x86,windows-x86_64 \\
+                                        darwin-x86,darwin-x86_64 \\
                              --darwin-sdk=PATH_TO_MacOSX10.7.sdk
 
 ...cross your fingers and wait a long time.
