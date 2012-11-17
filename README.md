@@ -63,7 +63,13 @@ Darwin                      Darwin
 
 To setup a Windows (MinGW-w64 with MSYS) build environment, execute:
 scripts/windows/BootstrapMinGW64.vbs
-..this will download a native MinGW-w64 GCC.
+
+It'll ask you:
+"Do you want Git with your MSYS?" Select Yes.
+"Install MSYS shell dev tools?" Select Yes.
+"Install MSYS developer tools?" Select No.
+"Choose GCC Architecture, Do you want the default GCC to be 64bit?" Select No.
+"Symlink" Select No.
 
 To get cross compilers:
 Windows: MinGW-w64 project (Ruben's personal toolchains)
