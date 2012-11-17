@@ -349,6 +349,9 @@ patch -p1 < $PATCHESDIR/0090-CROSS-avoid-ncursesw-include-path-hack.patch
 patch -p1 < $PATCHESDIR/0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch
 patch -p1 < $PATCHESDIR/0092-mingw-pdcurses_ISPAD.patch
 patch -p1 < $PATCHESDIR/0095-no-xxmodule-for-PYDEBUG.patch
+patch -p1 < $PATCHESDIR/0100-grammar-fixes.patch
+patch -p1 < $PATCHESDIR/0105-builddir-fixes.patch
+
 # I didn't apply the following patches (they're in 3.3.0.alex and 
 # would need renumbering and regenerating...):
 # patch -p1 < $PATCHESDIR/0013-CROSS-fix-typo-in-thread-AC_CACHE_VAL.patch

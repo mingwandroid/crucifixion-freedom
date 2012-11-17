@@ -351,27 +351,6 @@ diff -urN a-3.3.0/Modules/posixmodule.c b-3.3.0/Modules/posixmodule.c
              Py_DECREF(list);
              list = win32_error("FindNextFile", namebuf);
              goto exit;
-diff -urN a-3.3.0/Parser/metagrammar.c b-3.3.0/Parser/metagrammar.c
---- a-3.3.0/Parser/metagrammar.c	Sat Sep 29 09:00:48 2012
-+++ b-3.3.0/Parser/metagrammar.c	Sat Nov 17 00:16:19 2012
-@@ -139,7 +139,7 @@
-     {7, 0},
-     {8, 0},
- };
--static grammar _PyParser_Grammar = {
-+static grammar _PyParser_MetaGrammar = {
-     6,
-     dfas,
-     {19, labels},
-@@ -149,7 +149,7 @@
- grammar *
- meta_grammar(void)
- {
--    return &_PyParser_Grammar;
-+    return &_PyParser_MetaGrammar;
- }
- 
- grammar *
 diff -urN a-3.3.0/Python/fileutils.c b-3.3.0/Python/fileutils.c
 --- a-3.3.0/Python/fileutils.c	Sat Sep 29 09:00:49 2012
 +++ b-3.3.0/Python/fileutils.c	Sat Nov 17 00:16:19 2012
