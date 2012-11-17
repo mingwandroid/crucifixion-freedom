@@ -1,0 +1,145 @@
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2012-06-28 19:08:33.780249618 +0100
++++ b/configure.ac	2012-06-28 19:09:30.606668131 +0100
+@@ -5,7 +5,7 @@
+ # Set VERSION so we only need to edit in one place (i.e., here)
+ m4_define(PYTHON_VERSION, 3.3)
+ 
+-AC_PREREQ(2.65)
++AC_PREREQ(2.61)
+ 
+ AC_INIT(python, PYTHON_VERSION, http://bugs.python.org/)
+ 
+@@ -398,7 +398,8 @@
+ 	MACHDEP=win
+ 	;;
+ 	*-*-darwin*)
+-	ac_sys_system=ignore
++	ac_sys_system=Darwin
++	ac_sys_version=11
+ 	MACHDEP=darwin
+ 	;;
+ 	esac
+@@ -417,6 +418,9 @@
+ 	*-*-cygwin*)
+ 		ac_sys_system=Cygwin
+ 		;;
++	*-*-darwin*)
++		ac_sys_system=Darwin
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -1070,7 +1074,7 @@
+ AC_SUBST(DISABLE_ASDLGEN)
+ DISABLE_ASDLGEN=""
+ AC_CHECK_PROG(HAS_PYTHON, python, found, not-found)
+-if test $HAS_HG != found -o $HAS_PYTHON != found
++if test $HAS_HG != found -a $HAS_PYTHON != found
+ then
+     DISABLE_ASDLGEN="@echo hg: $HAS_HG, python: $HAS_PYTHON! cannot run \$(srcdir)/Parser/asdl_c.py #"
+ fi
+@@ -1350,8 +1354,8 @@
+ 	    # Calculate the right deployment target for this build.
+ 	    #
+ 	    cur_target=`sw_vers -productVersion | sed 's/\(10\.[[0-9]]*\).*/\1/'`
+-	    if test ${cur_target} '>' 10.2 && \
+-	       test ${cur_target} '<' 10.6
++	    if test ${cur_target} > 10.2 && \
++	       test ${cur_target} < 10.6
+ 	    then
+ 		    cur_target=10.3
+ 		    if test ${enable_universalsdk}; then
+@@ -1372,7 +1376,7 @@
+ 				    cur_target='10.5'
+ 			    fi
+ 		    else
+-			    if test `/usr/bin/arch` = "i386"; then
++			    if test "$($OSX_ARCH_PROG)" = "i386"; then
+ 				    # On Intel macs default to a deployment
+ 				    # target of 10.4, that's the first OSX
+ 				    # release with Intel support.
+@@ -1892,6 +1896,15 @@
+     ;;
+ esac
+ 
++if test "x$cross_compiling" = xyes; then
++    function arch
++    {
++        echo i386
++    }
++    OSX_ARCH_PROG=arch
++else
++    OSX_ARCH_PROG=/usr/bin/arch
++fi
+ 
+ ARCH_RUN_32BIT=""
+ AC_SUBST(LIBTOOL_CRUFT)
+@@ -1901,7 +1914,7 @@
+     if test "${enable_universalsdk}"; then
+ 	    :
+     else
+-        LIBTOOL_CRUFT="${LIBTOOL_CRUFT} -arch_only `/usr/bin/arch`"
++        LIBTOOL_CRUFT="${LIBTOOL_CRUFT} -arch_only $($OSX_ARCH_PROG)"
+     fi
+     LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -install_name $(PYTHONFRAMEWORKINSTALLDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK)'
+     LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -compatibility_version $(VERSION) -current_version $(VERSION)';;
+@@ -1926,7 +1939,7 @@
+     ]])],[ac_osx_32bit=yes],[ac_osx_32bit=no],[ac_osx_32bit=yes])
+     
+     if test "${ac_osx_32bit}" = "yes"; then
+-    	case `/usr/bin/arch` in
++    	case $($OSX_ARCH_PROG) in
+     	i386) 
+     		MACOSX_DEFAULT_ARCH="i386" 
+     		;;
+@@ -1938,7 +1951,7 @@
+     		;;
+     	esac
+     else
+-    	case `/usr/bin/arch` in
++    	case $($OSX_ARCH_PROG) in
+     	i386) 
+     		MACOSX_DEFAULT_ARCH="x86_64" 
+     		;;
+@@ -1977,8 +1990,8 @@
+ fi
+ 
+ AC_MSG_CHECKING(for dyld)
+-case $ac_sys_system/$ac_sys_release in
+-  Darwin/*)
++case $host in
++  *darwin*)
+   	AC_DEFINE(WITH_DYLD, 1, 
+         [Define if you want to use the new-style (Openstep, Rhapsody, MacOS)
+          dynamic linker (dyld) instead of the old-style (NextStep) dynamic
+@@ -2059,7 +2072,7 @@
+ 		# Use -undefined dynamic_lookup whenever possible (10.3 and later).
+ 		# This allows an extension to be used in any Python
+ 
+-		if test ${MACOSX_DEPLOYMENT_TARGET} '>' 10.2
++		if test ${MACOSX_DEPLOYMENT_TARGET} > 10.2
+ 		then
+ 			if test "${enable_universalsdk}"; then
+ 				LDFLAGS="${UNIVERSAL_ARCH_FLAGS} -isysroot ${UNIVERSALSDK} ${LDFLAGS}"
+@@ -2955,7 +2968,7 @@
+  mkfifoat mknod mknodat mktime mremap nice openat pathconf pause pipe2 plock poll \
+  posix_fallocate posix_fadvise pread \
+  pthread_init pthread_kill putenv pwrite readlink readlinkat readv realpath renameat \
+- select sem_open sem_timedwait sem_getvalue sem_unlink sendfile setegid seteuid \
++ select sem_open sem_timedwait sem_getvalue sem_unlink setegid seteuid \
+  setgid sethostname \
+  setlocale setregid setreuid setresuid setresgid setsid setpgid setpgrp setpriority setuid setvbuf \
+  sched_get_priority_max sched_setaffinity sched_setscheduler sched_setparam \
+diff -urN a/Modules/parsermodule.c b/Modules/parsermodule.c
+--- a/Modules/parsermodule.c	2012-06-28 19:08:33.743249375 +0100
++++ b/Modules/parsermodule.c	2012-06-28 19:08:42.191305198 +0100
+@@ -37,7 +37,7 @@
+ #undef Yield
+ #include "ast.h"
+ 
+-extern grammar _PyParser_Grammar; /* From graminit.c */
++PyAPI_DATA(grammar) _PyParser_Grammar; /* From graminit.c */
+ 
+ #ifdef lint
+ #include <note.h>

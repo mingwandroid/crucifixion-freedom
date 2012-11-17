@@ -1,0 +1,14 @@
+diff -urN a/setup.py b/setup.py
+--- a/setup.py	2012-06-30 13:16:25.986170701 +0100
++++ b/setup.py	2012-06-30 13:16:37.691257997 +0100
+@@ -1905,8 +1905,8 @@
+ 
+                 # Pass empty CFLAGS because we'll just append the resulting
+                 # CFLAGS to Python's; -g or -O2 is to be avoided.
+-                cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
+-                      % (ffi_builddir, ffi_srcdir, config_args)
++                cmd = "cd %s && env CFLAGS='' '%s/configure' %s --srcdir='%s'" \
++                      % (ffi_builddir, ffi_srcdir, config_args, ffi_srcdir)
+ 
+                 res = os.system(cmd)
+                 if res or not os.path.exists(ffi_configfile):

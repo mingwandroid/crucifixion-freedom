@@ -1,0 +1,15 @@
+diff -urN a/Modules/_cursesmodule.c b/Modules/_cursesmodule.c
+--- a/Modules/_cursesmodule.c	2012-06-28 19:19:32.899937912 +0100
++++ b/Modules/_cursesmodule.c	2012-06-28 19:19:47.201035331 +0100
+@@ -104,6 +104,11 @@
+ 
+ #include "Python.h"
+ 
++#ifdef __MINGW32__
++#ifndef _ISPAD
++#define _ISPAD 0x10
++#endif
++#endif
+ 
+ #ifdef __hpux
+ #define STRICT_SYSV_CURSES

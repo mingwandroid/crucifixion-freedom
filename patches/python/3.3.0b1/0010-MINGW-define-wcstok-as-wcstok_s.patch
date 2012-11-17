@@ -1,0 +1,11 @@
+diff -urN a/Modules/getpath.c b/Modules/getpath.c
+--- a/Modules/getpath.c	2012-06-28 23:37:23.326003635 +0100
++++ b/Modules/getpath.c	2012-06-28 23:38:18.315387877 +0100
+@@ -12,6 +12,7 @@
+ 
+ #ifdef MS_WINDOWS
+ #include <windows.h>
++#define wcstok wcstok_s
+ #endif
+ 
+ /* Search in some common locations for the associated Python libraries.
