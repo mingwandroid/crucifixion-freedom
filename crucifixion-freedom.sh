@@ -389,3 +389,31 @@ rm -rf autom4te.cache
 popd
 diff -urN a b > $PATCHESDIR/9999-re-configure-d.patch
 
+
+ROOT=$PWD
+PYVER=3.3.0b1
+rm -rf a-${PYVER} b-${PYVER} Python-${PYVER}
+tar -xjf ~/Dropbox/Python/SourceTarballs/3.3.0/Python-$PYVER.tar.bz2
+PATCHESDIR=$ROOT/patches/python/$PYVER
+pushd Python-$PYVER
+patch -p1 < $PATCHESDIR/0000-CROSS.patch
+patch -p1 < $PATCHESDIR/0005-MINGW.patch
+patch -p1 < $PATCHESDIR/0010-MINGW-fixes-use-posix-getpath.patch
+patch -p1 < $PATCHESDIR/0015-DARWIN-CROSS.patch
+patch -p1 < $PATCHESDIR/0020-MINGW-FIXES-sysconfig-like-posix.patch
+patch -p1 < $PATCHESDIR/0025-MINGW-pdcurses_ISPAD.patch
+patch -p1 < $PATCHESDIR/0030-MINGW-static-tcltk.patch
+patch -p1 < $PATCHESDIR/0035-MINGW-x86_64-size_t-format-specifier-pid_t.patch
+patch -p1 < $PATCHESDIR/0040-add-python-config-sh.patch
+patch -p1 < $PATCHESDIR/0045-force-libffi-configure-srcdir.patch
+patch -p1 < $PATCHESDIR/0050-MINGW-define-wcstok-as-wcstok_s.patch
+patch -p1 < $PATCHESDIR/0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
+patch -p1 < $PATCHESDIR/0075-msys-convert_path-fix-and-root-hack.patch
+patch -p1 < $PATCHESDIR/0080-py3k-mingw-ntthreads-vs-pthreads.patch
+
+
+patch -p1 < $PATCHESDIR/9999-re-configure-d.patch
+popd
+mv Python-$PYVER a-${PYVER}
+cp -rf a-${PYVER} b-${PYVER}
+pushd b-${PYVER}

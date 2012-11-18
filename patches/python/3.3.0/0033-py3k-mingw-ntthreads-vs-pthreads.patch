@@ -6,7 +6,7 @@ diff -urN a-3.3.0/Python/condvar.h b-3.3.0/Python/condvar.h
  #include "Python.h"
  
 +#ifdef __MINGW32__
-+# ifndef HAVE_PTHREAD_H
++# if !defined(HAVE_PTHREAD_H) || defined(NT_THREADS)
 +#  undef _POSIX_THREADS
 +# endif
 +#endif
@@ -22,7 +22,7 @@ diff -urN a-3.3.0/Python/thread.c b-3.3.0/Python/thread.c
    envirionment is installed posix thread package.
   */
 -# undef HAVE_PTHREAD_H
-+# ifndef HAVE_PTHREAD_H
++# if !defined(HAVE_PTHREAD_H) || defined(NT_THREADS)
 +#  undef _POSIX_THREADS
 +# endif
  #endif
