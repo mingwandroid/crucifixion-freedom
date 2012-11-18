@@ -127,6 +127,9 @@ gen_wrapper_program ()
       ar) FLAGS=$FLAGS" $EXTRA_ARFLAGS";;
       as) FLAGS=$FLAGS" $EXTRA_ASFLAGS";;
       ld|ld.bfd|ld.gold) FLAGS=$FLAGS" $EXTRA_LDFLAGS";;
+      # Due to a bug in MinGW-w64 x86-64 windres:
+      # https://sourceforge.net/tracker/?func=detail&aid=3588309&group_id=202880&atid=983354
+      windres) FLAGS=$FLAGS" --use-temp-file";;
     esac
 
     if [ -n "$CCACHE" ]; then

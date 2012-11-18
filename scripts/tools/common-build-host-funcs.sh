@@ -611,6 +611,7 @@ _bh_select_toolchain_for_host ()
             case $BH_BUILD_OS in
                 *)
                     # See comments above for windows-x86
+                    _bh_try_host_fullprefix "/c/mingw-w64/mingw64" x86_64-w64-mingw32
                     _bh_try_host_prefix x86_64-w64-mingw32
                     _bh_try_host_prefix i686-w64-mingw32 -m64
                     # Beware that this package is completely broken on many
