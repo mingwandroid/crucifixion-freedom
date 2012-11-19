@@ -351,6 +351,8 @@ patch -p1 < $PATCHESDIR/0092-mingw-pdcurses_ISPAD.patch
 patch -p1 < $PATCHESDIR/0095-no-xxmodule-for-PYDEBUG.patch
 patch -p1 < $PATCHESDIR/0100-grammar-fixes.patch
 patch -p1 < $PATCHESDIR/0105-builddir-fixes.patch
+patch -p1 < $PATCHESDIR/0110-msys-monkeypatch-os-system-via-sh-exe.patch
+patch -p1 < $PATCHESDIR/0115-msys-replace-slashes-used-in-io-redirection.patch
 
 # I didn't apply the following patches (they're in 3.3.0.alex and 
 # would need renumbering and regenerating...):
