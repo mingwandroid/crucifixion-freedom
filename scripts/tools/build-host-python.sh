@@ -520,6 +520,15 @@ build_host_python ()
     if [ ! -f "$SRCDIR/configure" ]; then
         panic "Missing configure script in $SRCDIR"
     fi
+    
+    # Currently, 3.3.0 builds generate $SRCDIR/Lib/_sysconfigdata.py, unless it already
+    # exists (in which case it ends up wrong)... this should really be in the build
+    # directory instead, and I think Roumen had patches for that, but I don't think they
+    # work.
+    if [ ! -f "$SRCDIR/Lib/_sysconfigdata.py" ]; then
+        log "Removing old $SRCDIR/Lib/_sysconfigdata.py"
+        rm -f $SRCDIR/Lib/_sysconfigdata.py
+    fi
 
     ARGS=" --prefix=$INSTALLDIR"
 
