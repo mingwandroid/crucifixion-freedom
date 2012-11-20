@@ -451,13 +451,12 @@ make_tcltk ()
         make install > install.log 2>&1
         )
     fi
-    # LDFLAGS_TCLTK is added to LDSHARED for Python
-    if [ $_HOST_TAG = windows-x86 -o $_HOST_TAG = windows-x86_64 ] ; then
-        LDFLAGS_TCLTK=""
-    elif [ $_HOST_TAG = darwin-x86 -o $_HOST_TAG = darwin-x86_64 ] ; then
-        LDFLAGS_TCLTK=""
-    else
-        LDFLAGS_TCLTK="-Wl,-rpath,$_PREFIX/lib/"
+    # For 3.3.0, LDFLAGS_TCLTK and CFLAGS_TCLTK are not needed as _sysconfigdata.py has
+    # the values but it shouldn't hurt either. LDFLAGS_TCLTK is added to LDSHARED.
+    LDFLAGS_TCLTK="-L$_PREFIX/lib"
+    CFLAGS_TCLTK="-I$_PREFIX/include"
+    if [ $_HOST_TAG = linux-x86 -o $_HOST_TAG = linux-x86_64 ] ; then
+        LDFLAGS_TCLTK=$LDFLAGS_TCLTK" -Wl,-rpath,$_PREFIX/lib/"
     fi
 }
 
@@ -619,12 +618,14 @@ build_host_python ()
       popd
     fi
 
+    CFLAGS=$CFLAGS" $CFLAGS_TCLTK"
+    LDSHARED="$CC $LDFLAGS_TCLTK"
     if [ $1 = darwin-x86 -o $1 = darwin-x86_64 ]; then
         # I could change AC_MSG_CHECKING(LDSHARED) in configure.ac
         # to check $host instead of $ac_sys_system/$ac_sys_release
         # but it handles loads of platforms
         # and I can only test on three, so instead...
-        export LDSHARED="$CC -bundle -undefined dynamic_lookup"
+        export LDSHARED=$LDSHARED "-bundle -undefined dynamic_lookup"
     elif [ $1 = windows-x86 -o $1 = windows-x86_64 ]; then
         local _WINTHREADS=$(mingw_threading_cflag)
         ARGS=$ARGS" $(mingw_threading_configure_arg)"
@@ -632,9 +633,9 @@ build_host_python ()
         CXXFLAGS=$CXXFLAGS" -D__USE_MINGW_ANSI_STDIO=1 $_WINTHREADS"
         # Need to add -L$HOST_STATIC_LIBDIR to LDSHARED if need
         # any static host libs.
-        export LDSHARED="$CC $LDFLAGS_TCLTK -shared $_WINTHREADS"
+        export LDSHARED=$LDSHARED" -shared $_WINTHREADS"
     elif [ $1 = linux-x86 -o $1 = linux-x86_64 ]; then
-        export LDSHARED="$CC $LDFLAGS_TCLTK -shared "
+        export LDSHARED=$LDSHARED" -shared "
     fi
 
     TEXT="$(bh_host_text) python-$BH_HOST_CONFIG:"
