@@ -158,14 +158,14 @@
       downloadHTTP "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/make/make-3.81-3/make-3.81-3-msys-1.0.13-bin.tar.lzma", MsysMake_destfile
       run "cmd /c " & Temp7zaExe & " x " & MsysMake_destfile & " -y"
       run "cmd /c " & Temp7zaExe & " x " & "make-3.81-3-msys-1.0.13-bin.tar" & " -y -o" & Dest & "\msys"
-      
     else
       MinGW64_Msys_filename = "MSYS-20111123.zip"
       MinGW64_Msys_destfile = WshShell.CurrentDirectory & "\" & MinGW64_Msys_filename
       downloadHTTP MinGW64_sourceforge & "/External binary packages (Win64 hosted)/MSYS (32-bit)/" & MinGW64_Msys_filename, MinGW64_Msys_destfile
       unZip MinGW64_Msys_destfile, Dest
+      downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/findutils/findutils-4.4.2-2/findutils-4.4.2-2-msys-1.0.13-bin.tar.lzma", Dest & "\msys"
     end if
-    
+
     downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/xz/xz-5.0.3-1/xz-5.0.3-1-msys-1.0.17-bin.tar.lzma", Dest & "\msys"
 
     result = msgbox("Do you need" & Chr(10) & "MSYS-autoconf, MSYS-texinfo, MSYS-libintl, MSYS-libiconv, MSYS-grep?" & Chr(10) & "(if you installed msys-git, you probably do)", vbYesNo, "Install MSYS shell dev tools?")
