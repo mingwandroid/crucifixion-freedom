@@ -155,11 +155,7 @@ download_package ()
 
     if [ ! -f "$ARCHIVE_DIR/$PKG_NAME" ]; then
         log "Downloading $PKG_URL..."
-        if [ -f "$PKG_URL" ] ; then
-            (cd $ARCHIVE_DIR && cp "$PKG_URL" "$PKG_NAME")
-        else
-            (cd $ARCHIVE_DIR && run curl -L -o "$PKG_NAME" "$PKG_URL")
-        fi
+        download_file "$PKG_URL" "$ARCHIVE_DIR/$PKG_NAME"
         fail_panic "Can't download '$PKG_URL'"
     fi
 
@@ -179,6 +175,8 @@ download_package ()
         fail_panic "Can't uncompress $ARCHIVE_DIR/$PKG_NAME"
     fi
 }
+
+prepare_download
 
 if [ -z "$BUILD_DIR" ] ; then
     BUILD_DIR=/tmp/ndk-$USER/buildhost
@@ -213,9 +211,9 @@ PROGDIR=$(cd $PROGDIR && pwd)
 # beta versions get removed from python's official ftp site.
 #BASEURL=http://www.python.org/ftp/python
 # this site keeps them around though.
-#BASEURL=http://mirrors.wayround.org/www.python.org/www.python.org/ftp/python
+BASEURL=http://mirrors.wayround.org/www.python.org/www.python.org/ftp/python
 # ..for quicker turn around when I'm developing:
-BASEURL=$HOME/Dropbox/Python/SourceTarballs
+#BASEURL=$HOME/Dropbox/Python/SourceTarballs
 
 for VERSION in $(commas_to_spaces $PYTHON_VERSION); do
     PYTHON_SRCDIR=$SRC_DIR/Python-$VERSION
@@ -340,6 +338,7 @@ make_readline ()
     local _PREFIX=$2
     local _BUILD="--build=$BH_BUILD_CONFIG"
     local _HOST="--host=$BH_HOST_CONFIG"
+    local _HOST_SRC_DIR=${SRC_DIR}-${_HOST_TAG}
 
     mkdir -p $_PREFIX/include
     mkdir -p $_PREFIX/lib

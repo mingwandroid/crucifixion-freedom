@@ -359,6 +359,9 @@ _bh_try_host_fullprefix ()
         local GCC="$PREFIX-gcc"
         if [ -f "$GCC" ]; then
             if bh_check_compiler "$GCC" "$@"; then
+                # MSYS's $(which blah)" returns
+                # blah.exe not blah (msysgit doesn't!)
+                GCC="${GCC%%.exe}"
                 HOST_FULLPREFIX="${GCC%%gcc}"
                 dump "$(bh_host_text) Using host gcc: $GCC $@"
             else
@@ -378,6 +381,9 @@ _bh_try_host_prefix ()
         local GCC="$(which $PREFIX-gcc 2>/dev/null)"
         if [ "$GCC" -a -e "$GCC" ]; then
             if bh_check_compiler "$GCC" "$@"; then
+                # MSYS's $(which blah)" returns
+                # blah.exe not blah (msysgit doesn't!)
+                GCC="${GCC%%.exe}"
                 HOST_FULLPREFIX=${GCC%%gcc}
                 dump "$(bh_host_text) Using host gcc: ${HOST_FULLPREFIX}gcc $@"
             else
