@@ -1,6 +1,6 @@
 diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
---- a-2.7.3/configure.in	Thu Nov 22 17:58:44 2012
-+++ b-2.7.3/configure.in	Thu Nov 22 18:01:53 2012
+--- a-2.7.3/configure.in	2012-11-22 20:47:41.198618089 +0000
++++ b-2.7.3/configure.in	2012-11-22 20:47:45.312508345 +0000
 @@ -914,6 +914,7 @@
  
  # Other platforms follow
@@ -25,7 +25,7 @@ diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
  
  AC_MSG_RESULT($LDLIBRARY)
  
-@@ -4807,6 +4810,6 @@
+@@ -4825,6 +4828,6 @@
  
  mv config.c Modules])
  AC_CONFIG_FILES([setup_info])
@@ -33,11 +33,10 @@ diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
 +AC_CONFIG_FILES([Makefile.pre Modules/Setup.config Misc/python.pc Misc/python-config.sh])
  AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
  AC_OUTPUT
-
 diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
---- a-2.7.3/Makefile.pre.in	Thu Nov 22 17:58:45 2012
-+++ b-2.7.3/Makefile.pre.in	Thu Nov 22 18:01:53 2012
-@@ -991,6 +991,8 @@
+--- a-2.7.3/Makefile.pre.in	2012-11-22 20:47:41.098669345 +0000
++++ b-2.7.3/Makefile.pre.in	2012-11-22 20:47:45.312508345 +0000
+@@ -990,6 +990,8 @@
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
  	sed -e "s,@EXENAME@,$(BINDIR)/python$(VERSION)$(EXE)," < $(srcdir)/Misc/python-config.in >python-config
@@ -46,7 +45,7 @@ diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
  
  # Install the include files
  INCLDIRSTOMAKE=$(INCLUDEDIR) $(CONFINCLUDEDIR) $(INCLUDEPY) $(CONFINCLUDEPY)
-@@ -1049,6 +1051,7 @@
+@@ -1048,6 +1050,7 @@
  	$(INSTALL_SCRIPT) $(srcdir)/Modules/makesetup $(DESTDIR)$(LIBPL)/makesetup
  	$(INSTALL_SCRIPT) $(srcdir)/install-sh $(DESTDIR)$(LIBPL)/install-sh
  	$(INSTALL_SCRIPT) python-config $(DESTDIR)$(BINDIR)/python$(VERSION)-config
@@ -55,8 +54,8 @@ diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
  	@if [ -s Modules/python.exp -a \
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
 diff -urN a-2.7.3/Misc/python-config.sh.in b-2.7.3/Misc/python-config.sh.in
---- a-2.7.3/Misc/python-config.sh.in	Thu Jan  1 00:00:00 1970
-+++ b-2.7.3/Misc/python-config.sh.in	Thu Nov 22 18:07:03 2012
+--- a-2.7.3/Misc/python-config.sh.in	1970-01-01 01:00:00.000000000 +0100
++++ b-2.7.3/Misc/python-config.sh.in	2012-11-22 20:47:45.312508345 +0000
 @@ -0,0 +1,101 @@
 +#!/bin/sh
 +
