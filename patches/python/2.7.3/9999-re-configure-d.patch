@@ -1,6 +1,6 @@
-diff -urN a/configure b/configure
---- a/configure	Tue Apr 10 00:07:36 2012
-+++ b/configure	Mon Oct  8 10:12:40 2012
+diff -urN a-2.7.3/configure b-2.7.3/configure
+--- a-2.7.3/configure	2012-04-10 00:07:36.000000000 +0100
++++ b-2.7.3/configure	2012-11-22 22:00:13.769647708 +0000
 @@ -597,7 +597,12 @@
  
  ac_subst_vars='LTLIBOBJS
@@ -22,15 +22,18 @@ diff -urN a/configure b/configure
  THREADOBJ
  LDLAST
  USE_THREAD_MODULE
-@@ -641,6 +647,7 @@
+@@ -641,8 +647,10 @@
  HGVERSION
  SVNVERSION
  ARFLAGS
 +ac_ct_AR
  AR
  RANLIB
++PY_ENABLE_SHARED
  GNULD
-@@ -669,8 +676,13 @@
+ LINKCC
+ RUNSHARED
+@@ -669,8 +677,13 @@
  CONFIGURE_MACOSX_DEPLOYMENT_TARGET
  EXTRAMACHDEPPATH
  EXTRAPLATDIR
@@ -44,7 +47,7 @@ diff -urN a/configure b/configure
  FRAMEWORKINSTALLAPPSPREFIX
  FRAMEWORKUNIXTOOLSPREFIX
  FRAMEWORKALTINSTALLLAST
-@@ -688,6 +700,18 @@
+@@ -688,6 +701,18 @@
  CONFIG_ARGS
  SOVERSION
  VERSION
@@ -63,7 +66,7 @@ diff -urN a/configure b/configure
  target_alias
  host_alias
  build_alias
-@@ -764,6 +788,7 @@
+@@ -764,6 +789,7 @@
        ac_precious_vars='build_alias
  host_alias
  target_alias
@@ -71,7 +74,7 @@ diff -urN a/configure b/configure
  CC
  CFLAGS
  LDFLAGS
-@@ -1368,6 +1393,10 @@
+@@ -1368,6 +1394,10 @@
  _ACEOF
  
    cat <<\_ACEOF
@@ -82,7 +85,7 @@ diff -urN a/configure b/configure
  _ACEOF
  fi
  
-@@ -1435,6 +1464,7 @@
+@@ -1435,6 +1465,7 @@
    --with-libc=STRING      C library
  
  Some influential environment variables:
@@ -90,7 +93,16 @@ diff -urN a/configure b/configure
    CC          C compiler command
    CFLAGS      C compiler flags
    LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
-@@ -2692,6 +2722,106 @@
+@@ -2600,7 +2631,7 @@
+       || { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error $? "failed to load site script $ac_site_file
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+   fi
+ done
+ 
+@@ -2692,6 +2723,106 @@
  
  ac_config_headers="$ac_config_headers pyconfig.h"
  
@@ -197,7 +209,7 @@ diff -urN a/configure b/configure
  
  
  if test "$prefix" != "/"; then
-@@ -2707,8 +2837,95 @@
+@@ -2707,8 +2838,95 @@
  rm confdefs.h
  mv confdefs.h.new confdefs.h
  
@@ -293,7 +305,7 @@ diff -urN a/configure b/configure
  
  
  SOVERSION=1.0
-@@ -2873,6 +3090,9 @@
+@@ -2873,6 +3091,9 @@
  		fi
  		enable_framework=
  		;;
@@ -303,7 +315,7 @@ diff -urN a/configure b/configure
  	*)
  		PYTHONFRAMEWORKPREFIX="${enableval}"
  		PYTHONFRAMEWORKINSTALLDIR=$PYTHONFRAMEWORKPREFIX/$PYTHONFRAMEWORKDIR
-@@ -2977,10 +3197,38 @@
+@@ -2977,10 +3198,38 @@
  ##
  # Set name for machine-dependent library files
  
@@ -342,7 +354,7 @@ diff -urN a/configure b/configure
  	ac_sys_system=`uname -s`
  	if test "$ac_sys_system" = "AIX" \
  	-o "$ac_sys_system" = "UnixWare" -o "$ac_sys_system" = "OpenUNIX"; then
-@@ -2994,12 +3242,18 @@
+@@ -2994,12 +3243,18 @@
  			   tr -d '/ ' | sed 's/^[A-Z]\.//' | sed 's/\..*//'`
  	MACHDEP="$ac_md_system$ac_md_release"
  
@@ -362,7 +374,7 @@ diff -urN a/configure b/configure
  	'')	MACHDEP="unknown";;
  	esac
  fi
-@@ -3129,6 +3383,40 @@
+@@ -3129,6 +3384,40 @@
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MACHDEP" >&5
  $as_echo "$MACHDEP" >&6; }
  
@@ -403,7 +415,7 @@ diff -urN a/configure b/configure
  # And add extra plat-mac for darwin
  
  
-@@ -3158,12 +3446,6 @@
+@@ -3158,12 +3447,6 @@
  CONFIGURE_MACOSX_DEPLOYMENT_TARGET=
  EXPORT_MACOSX_DEPLOYMENT_TARGET='#'
  
@@ -416,7 +428,61 @@ diff -urN a/configure b/configure
  # checks for alternative programs
  
  # compiler flags are generated in two sets, BASECFLAGS and OPT.  OPT is just
-@@ -4676,6 +4958,17 @@
+@@ -3532,7 +3815,7 @@
+ test -z "$CC" && { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error $? "no acceptable C compiler found in \$PATH
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+ 
+ # Provide some information about the compiler.
+ $as_echo "$as_me:${as_lineno-$LINENO}: checking for C compiler version" >&5
+@@ -3647,7 +3930,7 @@
+ { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "C compiler cannot create executables
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+ else
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
+@@ -3690,7 +3973,7 @@
+   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error $? "cannot compute suffix of executables: cannot compile and link
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+ fi
+ rm -f conftest conftest$ac_cv_exeext
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_exeext" >&5
+@@ -3749,7 +4032,7 @@
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error $? "cannot run C compiled programs.
+ If you meant to cross compile, use \`--host'.
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+     fi
+   fi
+ fi
+@@ -3801,7 +4084,7 @@
+ { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error $? "cannot compute suffix of object files: cannot compile
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+ fi
+ rm -f conftest.$ac_cv_objext conftest.$ac_ext
+ fi
+@@ -4344,7 +4627,7 @@
+   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error $? "C preprocessor \"$CPP\" fails sanity check
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+ fi
+ 
+ ac_ext=c
+@@ -4676,6 +4959,17 @@
  
  
  # Check for unsupported systems
@@ -434,7 +500,7 @@ diff -urN a/configure b/configure
  case $ac_sys_system/$ac_sys_release in
  atheos*|Linux*/1*)
     echo This system \($ac_sys_system/$ac_sys_release\) is no longer supported.
-@@ -4844,6 +5137,10 @@
+@@ -4844,6 +5138,10 @@
    *)
      enable_shared="no";;
    esac
@@ -445,7 +511,7 @@ diff -urN a/configure b/configure
  fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_shared" >&5
  $as_echo "$enable_shared" >&6; }
-@@ -4852,37 +5149,34 @@
+@@ -4852,37 +5150,34 @@
  $as_echo_n "checking for --enable-profiling... " >&6; }
  # Check whether --enable-profiling was given.
  if test "${enable_profiling+set}" = set; then :
@@ -502,7 +568,15 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking LDLIBRARY" >&5
  $as_echo_n "checking LDLIBRARY... " >&6; }
  
-@@ -4964,6 +5258,12 @@
+@@ -4903,6 +5198,7 @@
+ 
+ # Other platforms follow
+ if test $enable_shared = "yes"; then
++  PY_ENABLE_SHARED=1
+ 
+ $as_echo "#define Py_ENABLE_SHARED 1" >>confdefs.h
+ 
+@@ -4964,15 +5260,27 @@
  	;;
  
    esac
@@ -513,9 +587,10 @@ diff -urN a/configure b/configure
 +                              ;;
 +  esac
  else # shared is disabled
++  PY_ENABLE_SHARED=0
    case $ac_sys_system in
      CYGWIN*)
-@@ -4971,6 +5271,10 @@
+           BLDLIBRARY='$(LIBRARY)'
            LDLIBRARY='libpython$(VERSION).dll.a'
            ;;
    esac
@@ -525,8 +600,11 @@ diff -urN a/configure b/configure
 +  esac
  fi
  
++
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LDLIBRARY" >&5
-@@ -5068,11 +5372,11 @@
+ $as_echo "$LDLIBRARY" >&6; }
+ 
+@@ -5068,11 +5376,11 @@
    RANLIB="$ac_cv_prog_RANLIB"
  fi
  
@@ -543,7 +621,7 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
  $as_echo_n "checking for $ac_word... " >&6; }
  if test "${ac_cv_prog_AR+set}" = set; then :
-@@ -5088,7 +5392,7 @@
+@@ -5088,7 +5396,7 @@
    test -z "$as_dir" && as_dir=.
      for ac_exec_ext in '' $ac_executable_extensions; do
    if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
@@ -552,7 +630,7 @@ diff -urN a/configure b/configure
      $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
      break 2
    fi
-@@ -5108,9 +5412,65 @@
+@@ -5108,9 +5416,65 @@
  fi
  
  
@@ -620,7 +698,7 @@ diff -urN a/configure b/configure
  
  
  # tweak ARFLAGS only if the user didn't set it on the command line
-@@ -5226,35 +5586,6 @@
+@@ -5226,35 +5590,6 @@
  		INSTALL="${srcdir}/install-sh -c"
  	fi
  esac
@@ -656,7 +734,7 @@ diff -urN a/configure b/configure
  # Find a good install program.  We prefer a C program (faster),
  # so one script is as good as another.  But avoid the broken or
  # incompatible versions:
-@@ -5383,6 +5714,27 @@
+@@ -5383,6 +5718,27 @@
  $as_echo "no" >&6; }
  fi
  
@@ -684,7 +762,7 @@ diff -urN a/configure b/configure
  
  # XXX Shouldn't the code above that fiddles with BASECFLAGS and OPT be
  # merged with this chunk of code?
-@@ -5399,6 +5751,8 @@
+@@ -5399,6 +5755,8 @@
  
  # tweak OPT based on compiler and platform, only if the user didn't set
  # it on the command line
@@ -693,7 +771,7 @@ diff -urN a/configure b/configure
  
  if test "${OPT-unset}" = "unset"
  then
-@@ -5493,10 +5847,14 @@
+@@ -5493,10 +5851,14 @@
      # if using gcc on alpha, use -mieee to get (near) full IEEE 754
      # support.  Without this, treatment of subnormals doesn't follow
      # the standard.
@@ -709,7 +787,7 @@ diff -urN a/configure b/configure
      esac
  
      case $ac_sys_system in
-@@ -5527,7 +5885,7 @@
+@@ -5527,7 +5889,7 @@
  	    # Calculate the right deployment target for this build.
  	    #
  	    cur_target=`sw_vers -productVersion | sed 's/\(10\.[0-9]*\).*/\1/'`
@@ -718,7 +796,7 @@ diff -urN a/configure b/configure
  		    cur_target=10.3
  		    if test ${enable_universalsdk}; then
  			    if test "${UNIVERSAL_ARCHS}" = "all"; then
-@@ -5547,7 +5905,7 @@
+@@ -5547,7 +5909,7 @@
  				    cur_target='10.5'
  			    fi
  		    else
@@ -727,7 +805,7 @@ diff -urN a/configure b/configure
  				    # On Intel macs default to a deployment
  				    # target of 10.4, that's the first OSX
  				    # release with Intel support.
-@@ -5632,7 +5990,9 @@
+@@ -5632,7 +5994,9 @@
  esac
  
  if test "$Py_DEBUG" = 'true'; then
@@ -738,7 +816,7 @@ diff -urN a/configure b/configure
  else
    OPT="-DNDEBUG $OPT"
  fi
-@@ -5763,6 +6123,37 @@
+@@ -5763,6 +6127,37 @@
    CFLAGS=$save_CFLAGS
  fi
  
@@ -776,26 +854,30 @@ diff -urN a/configure b/configure
  # On some compilers, pthreads are available without further options
  # (e.g. MacOS X). On some of these systems, the compiler will not
  # complain if unaccepted options are passed (e.g. gcc on Mac OS X).
-@@ -5957,53 +6348,404 @@
- CC="$ac_save_cc"
+@@ -5960,6 +6355,7 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_pthread" >&5
+ $as_echo "$ac_cv_pthread" >&6; }
  fi
++fi
  
--{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_pthread" >&5
--$as_echo "$ac_cv_pthread" >&6; }
-+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_pthread" >&5
-+$as_echo "$ac_cv_pthread" >&6; }
-+fi
-+fi
-+
-+# If we have set a CC compiler flag for thread support then
-+# check if it works for CXX, too.
-+ac_cv_cxx_thread=no
-+if test ! -z "$CXX"
-+then
-+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CXX also accepts flags for thread support" >&5
-+$as_echo_n "checking whether $CXX also accepts flags for thread support... " >&6; }
-+ac_save_cxx="$CXX"
-+
+ # If we have set a CC compiler flag for thread support then
+ # check if it works for CXX, too.
+@@ -5970,40 +6366,390 @@
+ $as_echo_n "checking whether $CXX also accepts flags for thread support... " >&6; }
+ ac_save_cxx="$CXX"
+ 
+-if test "$ac_cv_kpthread" = "yes"
+-then
+-  CXX="$CXX -Kpthread"
+-  ac_cv_cxx_thread=yes
+-elif test "$ac_cv_kthread" = "yes"
+-then
+-  CXX="$CXX -Kthread"
+-  ac_cv_cxx_thread=yes
+-elif test "$ac_cv_pthread" = "yes"
+-then
+-  CXX="$CXX -pthread"
+-  ac_cv_cxx_thread=yes
 +if test "$ac_cv_kpthread" = "yes"
 +then
 +  CXX="$CXX -Kpthread"
@@ -1161,29 +1243,9 @@ diff -urN a/configure b/configure
 +
 +$as_echo "#define MAJOR_IN_MKDEV 1" >>confdefs.h
 +
- fi
- 
--# If we have set a CC compiler flag for thread support then
--# check if it works for CXX, too.
--ac_cv_cxx_thread=no
--if test ! -z "$CXX"
--then
--{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CXX also accepts flags for thread support" >&5
--$as_echo_n "checking whether $CXX also accepts flags for thread support... " >&6; }
--ac_save_cxx="$CXX"
- 
--if test "$ac_cv_kpthread" = "yes"
--then
--  CXX="$CXX -Kpthread"
--  ac_cv_cxx_thread=yes
--elif test "$ac_cv_kthread" = "yes"
--then
--  CXX="$CXX -Kthread"
--  ac_cv_cxx_thread=yes
--elif test "$ac_cv_pthread" = "yes"
--then
--  CXX="$CXX -pthread"
--  ac_cv_cxx_thread=yes
++fi
++
++
 +
 +  if test $ac_cv_header_sys_mkdev_h = no; then
 +    ac_fn_c_check_header_mongrel "$LINENO" "sys/sysmacros.h" "ac_cv_header_sys_sysmacros_h" "$ac_includes_default"
@@ -1219,7 +1281,7 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
  $as_echo_n "checking for ANSI C header files... " >&6; }
  if test "${ac_cv_header_stdc+set}" = set; then :
-@@ -6116,18 +6858,7 @@
+@@ -6116,18 +6862,7 @@
  
  fi
  
@@ -1239,7 +1301,7 @@ diff -urN a/configure b/configure
  do :
    as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
  ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
-@@ -6348,6 +7079,7 @@
+@@ -6348,6 +7083,7 @@
    fi
  fi
  
@@ -1247,7 +1309,142 @@ diff -urN a/configure b/configure
  
  # On Solaris, term.h requires curses.h
  for ac_header in term.h
-@@ -7321,29 +8053,6 @@
+@@ -6697,7 +7433,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (int)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_int=0
+    fi
+@@ -6730,7 +7466,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (long)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_long=0
+    fi
+@@ -6763,7 +7499,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (void *)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_void_p=0
+    fi
+@@ -6796,7 +7532,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (short)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_short=0
+    fi
+@@ -6829,7 +7565,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (float)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_float=0
+    fi
+@@ -6862,7 +7598,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (double)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_double=0
+    fi
+@@ -6895,7 +7631,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (fpos_t)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_fpos_t=0
+    fi
+@@ -6928,7 +7664,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (size_t)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_size_t=0
+    fi
+@@ -6961,7 +7697,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (pid_t)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_pid_t=0
+    fi
+@@ -7021,7 +7757,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (long long)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_long_long=0
+    fi
+@@ -7082,7 +7818,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (long double)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_long_double=0
+    fi
+@@ -7143,7 +7879,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (_Bool)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof__Bool=0
+    fi
+@@ -7191,7 +7927,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (uintptr_t)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_uintptr_t=0
+    fi
+@@ -7232,7 +7968,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (off_t)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_off_t=0
+    fi
+@@ -7294,7 +8030,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (time_t)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_time_t=0
+    fi
+@@ -7321,29 +8057,6 @@
  elif test "$ac_cv_pthread" = "yes"
  then CC="$CC -pthread"
  fi
@@ -1277,7 +1474,16 @@ diff -urN a/configure b/configure
    # The cast to long int works around a bug in the HP C Compiler
  # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
  # declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-@@ -7382,7 +8091,6 @@
+@@ -7365,7 +8078,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (pthread_t)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_pthread_t=0
+    fi
+@@ -7382,7 +8095,6 @@
  _ACEOF
  
  
@@ -1285,7 +1491,7 @@ diff -urN a/configure b/configure
  CC="$ac_save_cc"
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --enable-toolbox-glue" >&5
-@@ -7429,6 +8137,15 @@
+@@ -7429,6 +8141,15 @@
      ;;
  esac
  
@@ -1301,7 +1507,7 @@ diff -urN a/configure b/configure
  
  ARCH_RUN_32BIT=""
  
-@@ -7438,7 +8155,7 @@
+@@ -7438,7 +8159,7 @@
      if test "${enable_universalsdk}"; then
  	    :
      else
@@ -1310,7 +1516,7 @@ diff -urN a/configure b/configure
      fi
      LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -install_name $(PYTHONFRAMEWORKINSTALLDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK)'
      LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -compatibility_version $(VERSION) -current_version $(VERSION)';;
-@@ -7478,7 +8195,7 @@
+@@ -7478,7 +8199,7 @@
  
  
      if test "${ac_osx_32bit}" = "yes"; then
@@ -1319,7 +1525,7 @@ diff -urN a/configure b/configure
      	i386)
      		MACOSX_DEFAULT_ARCH="i386"
      		;;
-@@ -7490,7 +8207,7 @@
+@@ -7490,7 +8211,7 @@
      		;;
      	esac
      else
@@ -1328,7 +1534,7 @@ diff -urN a/configure b/configure
      	i386)
      		MACOSX_DEFAULT_ARCH="x86_64"
      		;;
-@@ -7533,8 +8250,8 @@
+@@ -7533,8 +8254,8 @@
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for dyld" >&5
  $as_echo_n "checking for dyld... " >&6; }
@@ -1339,7 +1545,7 @@ diff -urN a/configure b/configure
  
  $as_echo "#define WITH_DYLD 1" >>confdefs.h
  
-@@ -7570,6 +8287,16 @@
+@@ -7570,6 +8291,16 @@
  	CYGWIN*)   SO=.dll;;
  	*)	   SO=.so;;
  	esac
@@ -1356,7 +1562,7 @@ diff -urN a/configure b/configure
  else
  	# this might also be a termcap variable, see #610332
          echo
-@@ -7656,7 +8383,7 @@
+@@ -7656,7 +8387,7 @@
  		# Use -undefined dynamic_lookup whenever possible (10.3 and later).
  		# This allows an extension to be used in any Python
  
@@ -1365,7 +1571,7 @@ diff -urN a/configure b/configure
  		then
  			if test "${enable_universalsdk}"; then
  				LDFLAGS="${UNIVERSAL_ARCH_FLAGS} -isysroot ${UNIVERSALSDK} ${LDFLAGS}"
-@@ -7732,6 +8459,12 @@
+@@ -7732,6 +8463,12 @@
  		LDCXXSHARED="g++ -shared";;
  	*)	LDSHARED="ld";;
  	esac
@@ -1378,7 +1584,7 @@ diff -urN a/configure b/configure
  fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LDSHARED" >&5
  $as_echo "$LDSHARED" >&6; }
-@@ -7833,6 +8566,12 @@
+@@ -7833,6 +8570,12 @@
  		# when running test_compile.py.
  		LINKFORSHARED='-Wl,-E -N 2048K';;
  	esac
@@ -1391,7 +1597,7 @@ diff -urN a/configure b/configure
  fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LINKFORSHARED" >&5
  $as_echo "$LINKFORSHARED" >&6; }
-@@ -7851,6 +8590,12 @@
+@@ -7851,6 +8594,12 @@
  	*)
  		CFLAGSFORSHARED='$(CCSHARED)'
  	esac
@@ -1404,7 +1610,7 @@ diff -urN a/configure b/configure
  fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CFLAGSFORSHARED" >&5
  $as_echo "$CFLAGSFORSHARED" >&6; }
-@@ -7968,7 +8713,8 @@
+@@ -7968,7 +8717,8 @@
  
  # only check for sem_init if thread support is requested
  if test "$with_threads" = "yes" -o -z "$with_threads"; then
@@ -1414,7 +1620,7 @@ diff -urN a/configure b/configure
  $as_echo_n "checking for library containing sem_init... " >&6; }
  if test "${ac_cv_search_sem_init+set}" = set; then :
    $as_echo_n "(cached) " >&6
-@@ -8024,11 +8770,16 @@
+@@ -8024,11 +8774,16 @@
  
  fi
   # 'Real Time' functions on Solaris
@@ -1433,7 +1639,7 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for textdomain in -lintl" >&5
  $as_echo_n "checking for textdomain in -lintl... " >&6; }
  if test "${ac_cv_lib_intl_textdomain+set}" = set; then :
-@@ -8071,6 +8822,8 @@
+@@ -8071,6 +8826,8 @@
  
  fi
  
@@ -1442,7 +1648,52 @@ diff -urN a/configure b/configure
  
  # checks for system dependent C++ extensions support
  case "$ac_sys_system" in
-@@ -8532,6 +9285,15 @@
+@@ -8378,15 +9135,40 @@
+ fi
+ 
+ 
+-if test "$with_system_ffi" = "yes" && test -n "$PKG_CONFIG"; then
+-    LIBFFI_INCLUDEDIR="`"$PKG_CONFIG" libffi --cflags-only-I 2>/dev/null | sed -e 's/^-I//;s/ *$//'`"
++if test "$with_system_ffi" = "yes"; then
++    LIBFFI_INCLUDEDIR="$LIBFFI_INCLUDEDIR"
++fi
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $with_system_ffi" >&5
++$as_echo "$with_system_ffi" >&6; }
++
++ac_previous_cppflags=$CPPFLAGS
++CPPFLAGS="-I$LIBFFI_INCLUDEDIR"
++ac_previous_ldflags=$LDFLAGS
++# check for ffi.h
++ac_fn_c_check_header_mongrel "$LINENO" "ffi.h" "ac_cv_header_ffi_h" "$ac_includes_default"
++if test "x$ac_cv_header_ffi_h" = x""yes; then :
++
++
++$as_echo "#define WITH_SYSTEM_LIBFFI 1" >>confdefs.h
++
++  ffi_h="yes"
++
++else
++  ffi_h="no"
++
++fi
++
++
++if test "$ffi_h" = "yes"; then
++    LIBFFI_INCLUDEDIR="$LIBFFI_INCLUDEDIR"
+ else
+     LIBFFI_INCLUDEDIR=""
+ fi
++CPPFLAGS=$ac_previous_cppflags
++LDFLAGS=$ac_previous_ldflags
++
+ 
+ 
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $with_system_ffi" >&5
+-$as_echo "$with_system_ffi" >&6; }
+ 
+ # Check for --with-dbmliborder
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-dbmliborder" >&5
+@@ -8532,6 +9314,15 @@
  
      posix_threads=yes
      THREADOBJ="Python/thread.o"
@@ -1458,7 +1709,7 @@ diff -urN a/configure b/configure
  else
      if test ! -z "$with_threads" -a -d "$with_threads"
      then LDFLAGS="$LDFLAGS -L$with_threads"
-@@ -9063,6 +9825,18 @@
+@@ -9063,6 +9854,18 @@
  fi
  
  
@@ -1477,7 +1728,7 @@ diff -urN a/configure b/configure
  # Check for enable-ipv6
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if --enable-ipv6 is specified" >&5
-@@ -9517,6 +10291,14 @@
+@@ -9517,6 +10320,14 @@
  	fi
  	;;
  	esac
@@ -1492,7 +1743,7 @@ diff -urN a/configure b/configure
  fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DYNLOADFILE" >&5
  $as_echo "$DYNLOADFILE" >&6; }
-@@ -9532,14 +10314,24 @@
+@@ -9532,14 +10343,24 @@
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking MACHDEP_OBJS" >&5
  $as_echo_n "checking MACHDEP_OBJS... " >&6; }
@@ -1519,7 +1770,7 @@ diff -urN a/configure b/configure
  
  # checks for library functions
  for ac_func in alarm setitimer getitimer bind_textdomain_codeset chown \
-@@ -9569,6 +10361,7 @@
+@@ -9569,6 +10390,7 @@
  done
  
  
@@ -1527,7 +1778,7 @@ diff -urN a/configure b/configure
  # For some functions, having a definition is not sufficient, since
  # we want to take their address.
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for chroot" >&5
-@@ -10901,11 +11694,20 @@
+@@ -10901,11 +11723,20 @@
  fi
  
  fi
@@ -1549,7 +1800,7 @@ diff -urN a/configure b/configure
  then
  	if test $ipv6 = yes
  	then
-@@ -11211,7 +12013,12 @@
+@@ -11211,7 +12042,12 @@
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
@@ -1563,7 +1814,7 @@ diff -urN a/configure b/configure
  int
  main ()
  {
-@@ -11244,8 +12051,15 @@
+@@ -11244,8 +12080,15 @@
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
@@ -1581,7 +1832,7 @@ diff -urN a/configure b/configure
  int
  main ()
  {
-@@ -11829,6 +12643,9 @@
+@@ -11829,6 +12672,9 @@
  BeOS) ;;
  *) LIBM=-lm
  esac
@@ -1591,7 +1842,7 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-libm=STRING" >&5
  $as_echo_n "checking for --with-libm=STRING... " >&6; }
  
-@@ -11878,6 +12695,13 @@
+@@ -11878,6 +12724,13 @@
  # **************************************************
  # * Check for various properties of floating point *
  # **************************************************
@@ -1605,7 +1856,7 @@ diff -urN a/configure b/configure
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C doubles are little-endian IEEE 754 binary64" >&5
  $as_echo_n "checking whether C doubles are little-endian IEEE 754 binary64... " >&6; }
-@@ -12018,6 +12842,8 @@
+@@ -12018,6 +12871,8 @@
  
  # This inline assembler syntax may also work for suncc and icc,
  # so we try it on all platforms.
@@ -1614,7 +1865,7 @@ diff -urN a/configure b/configure
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether we can use gcc inline assembler to get and set x87 control word" >&5
  $as_echo_n "checking whether we can use gcc inline assembler to get and set x87 control word... " >&6; }
-@@ -12097,6 +12923,11 @@
+@@ -12097,6 +12952,11 @@
  fi
  
  CC="$ac_save_cc"
@@ -1626,7 +1877,7 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_x87_double_rounding" >&5
  $as_echo "$ac_cv_x87_double_rounding" >&6; }
  if test "$ac_cv_x87_double_rounding" = yes
-@@ -12117,6 +12948,12 @@
+@@ -12117,6 +12977,12 @@
  # -0. on some architectures.
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether tanh preserves the sign of zero" >&5
  $as_echo_n "checking whether tanh preserves the sign of zero... " >&6; }
@@ -1639,7 +1890,7 @@ diff -urN a/configure b/configure
  if test "${ac_cv_tanh_preserves_zero_sign+set}" = set; then :
    $as_echo_n "(cached) " >&6
  else
-@@ -12225,6 +13062,13 @@
+@@ -12225,6 +13091,13 @@
  # the kernel module that provides POSIX semaphores
  # isn't loaded by default, so an attempt to call
  # sem_open results in a 'Signal 12' error.
@@ -1653,7 +1904,7 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether POSIX semaphores are enabled" >&5
  $as_echo_n "checking whether POSIX semaphores are enabled... " >&6; }
  if test "${ac_cv_posix_semaphores_enabled+set}" = set; then :
-@@ -12268,6 +13112,9 @@
+@@ -12268,6 +13141,9 @@
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_posix_semaphores_enabled" >&5
  $as_echo "$ac_cv_posix_semaphores_enabled" >&6; }
@@ -1663,7 +1914,7 @@ diff -urN a/configure b/configure
  if test $ac_cv_posix_semaphores_enabled = no
  then
  
-@@ -12276,8 +13123,19 @@
+@@ -12276,8 +13152,19 @@
  fi
  
  # Multiprocessing check for broken sem_getvalue
@@ -1683,7 +1934,7 @@ diff -urN a/configure b/configure
  if test "${ac_cv_broken_sem_getvalue+set}" = set; then :
    $as_echo_n "(cached) " >&6
  else
-@@ -12329,6 +13187,7 @@
+@@ -12329,6 +13216,7 @@
  $as_echo "#define HAVE_BROKEN_SEM_GETVALUE 1" >>confdefs.h
  
  fi
@@ -1691,7 +1942,7 @@ diff -urN a/configure b/configure
  
  # determine what size digit to use for Python's longs
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking digit size for Python's longs" >&5
-@@ -12343,7 +13202,7 @@
+@@ -12343,7 +13231,7 @@
  15|30)
    ;;
  *)
@@ -1700,7 +1951,16 @@ diff -urN a/configure b/configure
  esac
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_big_digits" >&5
  $as_echo "$enable_big_digits" >&6; }
-@@ -12450,6 +13309,9 @@
+@@ -12395,7 +13283,7 @@
+      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+ as_fn_error 77 "cannot compute sizeof (wchar_t)
+-See \`config.log' for more details" "$LINENO" 5 ; }
++See \`config.log' for more details" "$LINENO" 5; }
+    else
+      ac_cv_sizeof_wchar_t=0
+    fi
+@@ -12450,6 +13338,9 @@
    # check whether wchar_t is signed or not
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether wchar_t is signed" >&5
  $as_echo_n "checking whether wchar_t is signed... " >&6; }
@@ -1710,7 +1970,21 @@ diff -urN a/configure b/configure
    if test "${ac_cv_wchar_t_signed+set}" = set; then :
    $as_echo_n "(cached) " >&6
  else
-@@ -12784,6 +13646,46 @@
+@@ -12514,7 +13405,7 @@
+       $as_echo "#define Py_UNICODE_SIZE 4" >>confdefs.h
+ 
+       ;;
+-*) as_fn_error $? "invalid value for --enable-unicode. Use either ucs2 or ucs4 (lowercase)." "$LINENO" 5  ;;
++*) as_fn_error $? "invalid value for --enable-unicode. Use either ucs2 or ucs4 (lowercase)." "$LINENO" 5 ;;
+ esac
+ 
+ 
+@@ -12780,10 +13671,50 @@
+      ;; #(
+    *)
+      as_fn_error $? "unknown endianness
+- presetting ac_cv_c_bigendian=no (or yes) will help" "$LINENO" 5  ;;
++ presetting ac_cv_c_bigendian=no (or yes) will help" "$LINENO" 5 ;;
   esac
  
  
@@ -1757,7 +2031,7 @@ diff -urN a/configure b/configure
  # Check whether right shifting a negative integer extends the sign bit
  # or fills with zeros (like the Cray J90, according to Tim Peters).
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether right shift extends the sign bit" >&5
-@@ -12875,7 +13777,7 @@
+@@ -12875,7 +13806,7 @@
  py_cv_lib_readline=no
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking how to link readline libs" >&5
  $as_echo_n "checking how to link readline libs... " >&6; }
@@ -1766,7 +2040,7 @@ diff -urN a/configure b/configure
    if test -z "$py_libtermcap"; then
      READLINE_LIBS="-lreadline"
    else
-@@ -12908,9 +13810,9 @@
+@@ -12908,9 +13839,9 @@
    if test $py_cv_lib_readline = yes; then
      break
    fi
@@ -1778,7 +2052,7 @@ diff -urN a/configure b/configure
  if test $py_cv_lib_readline = no; then
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: none" >&5
  $as_echo "none" >&6; }
-@@ -13659,38 +14561,89 @@
+@@ -13659,38 +14590,89 @@
  fi
  rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
  
@@ -1883,7 +2157,7 @@ diff -urN a/configure b/configure
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for %lld and %llu printf() format support" >&5
  $as_echo_n "checking for %lld and %llu printf() format support... " >&6; }
    if test "${ac_cv_have_long_long_format+set}" = set; then :
-@@ -13762,6 +14715,9 @@
+@@ -13762,6 +14744,9 @@
  fi
  
  
@@ -1893,7 +2167,7 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for %zd printf() format support" >&5
  $as_echo_n "checking for %zd printf() format support... " >&6; }
  if test "${ac_cv_have_size_t_format+set}" = set; then :
-@@ -13861,8 +14817,38 @@
+@@ -13861,8 +14846,38 @@
    THREADHEADERS="$THREADHEADERS \$(srcdir)/$h"
  done
  
@@ -1932,7 +2206,7 @@ diff -urN a/configure b/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for build directories" >&5
  $as_echo_n "checking for build directories... " >&6; }
  for dir in $SRCDIRS; do
-@@ -13874,7 +14860,13 @@
+@@ -13874,7 +14889,13 @@
  $as_echo "done" >&6; }
  
  # generate output files
@@ -1947,7 +2221,7 @@ diff -urN a/configure b/configure
  
  ac_config_files="$ac_config_files Modules/ld_so_aix"
  
-@@ -13978,6 +14970,21 @@
+@@ -13978,6 +14999,21 @@
  
  
  
@@ -1969,7 +2243,7 @@ diff -urN a/configure b/configure
  : ${CONFIG_STATUS=./config.status}
  ac_write_fail=0
  ac_clean_files_save=$ac_clean_files
-@@ -14412,6 +15419,7 @@
+@@ -14412,6 +15448,7 @@
  # Files that config.status was made for.
  config_files="$ac_config_files"
  config_headers="$ac_config_headers"
@@ -1977,7 +2251,7 @@ diff -urN a/configure b/configure
  
  _ACEOF
  
-@@ -14441,6 +15449,9 @@
+@@ -14441,6 +15478,9 @@
  Configuration headers:
  $config_headers
  
@@ -1987,7 +2261,7 @@ diff -urN a/configure b/configure
  Report bugs to <http://bugs.python.org/>."
  
  _ACEOF
-@@ -14575,9 +15586,12 @@
+@@ -14575,12 +15615,15 @@
      "Mac/IDLE/Makefile") CONFIG_FILES="$CONFIG_FILES Mac/IDLE/Makefile" ;;
      "Mac/Resources/framework/Info.plist") CONFIG_FILES="$CONFIG_FILES Mac/Resources/framework/Info.plist" ;;
      "Mac/Resources/app/Info.plist") CONFIG_FILES="$CONFIG_FILES Mac/Resources/app/Info.plist" ;;
@@ -1999,8 +2273,12 @@ diff -urN a/configure b/configure
 +    "Misc/python-config.sh") CONFIG_FILES="$CONFIG_FILES Misc/python-config.sh" ;;
      "Modules/ld_so_aix") CONFIG_FILES="$CONFIG_FILES Modules/ld_so_aix" ;;
  
-   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5 ;;
-@@ -14592,6 +15606,7 @@
+-  *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5 ;;
++  *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
+   esac
+ done
+ 
+@@ -14592,6 +15635,7 @@
  if $ac_need_defaults; then
    test "${CONFIG_FILES+set}" = set || CONFIG_FILES=$config_files
    test "${CONFIG_HEADERS+set}" = set || CONFIG_HEADERS=$config_headers
@@ -2008,7 +2286,7 @@ diff -urN a/configure b/configure
  fi
  
  # Have a temporary directory for convenience.  Make it in the build tree
-@@ -14886,7 +15901,7 @@
+@@ -14886,7 +15930,7 @@
  fi # test -n "$CONFIG_HEADERS"
  
  
@@ -2017,7 +2295,34 @@ diff -urN a/configure b/configure
  shift
  for ac_tag
  do
-@@ -15123,11 +16138,19 @@
+@@ -14895,7 +15939,7 @@
+   esac
+   case $ac_mode$ac_tag in
+   :[FHL]*:*);;
+-  :L* | :C*:*) as_fn_error $? "invalid tag \`$ac_tag'" "$LINENO" 5 ;;
++  :L* | :C*:*) as_fn_error $? "invalid tag \`$ac_tag'" "$LINENO" 5;;
+   :[FH]-) ac_tag=-:-;;
+   :[FH]*) ac_tag=$ac_tag:$ac_tag.in;;
+   esac
+@@ -14923,7 +15967,7 @@
+ 	   [\\/$]*) false;;
+ 	   *) test -f "$srcdir/$ac_f" && ac_f="$srcdir/$ac_f";;
+ 	   esac ||
+-	   as_fn_error 1 "cannot find input file: \`$ac_f'" "$LINENO" 5 ;;
++	   as_fn_error 1 "cannot find input file: \`$ac_f'" "$LINENO" 5;;
+       esac
+       case $ac_f in *\'*) ac_f=`$as_echo "$ac_f" | sed "s/'/'\\\\\\\\''/g"`;; esac
+       as_fn_append ac_file_inputs " '$ac_f'"
+@@ -14950,7 +15994,7 @@
+ 
+     case $ac_tag in
+     *:-:* | *:-) cat >"$tmp/stdin" \
+-      || as_fn_error $? "could not create $ac_file" "$LINENO" 5  ;;
++      || as_fn_error $? "could not create $ac_file" "$LINENO" 5 ;;
+     esac
+     ;;
+   esac
+@@ -15123,11 +16167,19 @@
    fi
   ;;
  
@@ -2038,7 +2343,7 @@ diff -urN a/configure b/configure
      "Modules/ld_so_aix":F) chmod +x Modules/ld_so_aix ;;
  
    esac
-@@ -15167,38 +16190,3 @@
+@@ -15167,38 +16219,3 @@
  $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
  fi
  
@@ -2077,9 +2382,9 @@ diff -urN a/configure b/configure
 -esac
 -
 -mv config.c Modules
-diff -urN a/pyconfig.h.in b/pyconfig.h.in
---- a/pyconfig.h.in	Mon Oct  8 10:10:43 2012
-+++ b/pyconfig.h.in	Mon Oct  8 10:12:07 2012
+diff -urN a-2.7.3/pyconfig.h.in b-2.7.3/pyconfig.h.in
+--- a-2.7.3/pyconfig.h.in	2012-11-22 22:00:12.525663347 +0000
++++ b-2.7.3/pyconfig.h.in	2012-11-22 22:00:13.989644942 +0000
 @@ -969,6 +969,9 @@
  /* Define if you want to have a Unicode type. */
  #undef Py_USING_UNICODE

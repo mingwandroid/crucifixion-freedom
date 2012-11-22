@@ -283,11 +283,8 @@ $ROOT/scripts/tools/build-host-python.sh \
 
 exit 0
 
-# You can ignore everything after this line. It's a scratch area!
-
-
-#
-$PATCHESDIR/0006-mingw-removal-of-libffi-patch.patch
+# You can ignore everything after this line. It's a scratch area I use for regenerating
+# patches!
 
 
 
@@ -324,7 +321,9 @@ pushd b-${PYVER}
 rm pyconfig.h.in~
 rm -rf autom4te.cache
 popd
-diff -urN a b > $PATCHESDIR/9999-re-configure-d.patch
+diff -urN a-${PYVER} b-${PYVER} > $PATCHESDIR/9999-re-configure-d.patch
+
+
 
 ROOT=$PWD
 PYVER=3.3.0
@@ -358,7 +357,6 @@ patch -p1 < $PATCHESDIR/0100-grammar-fixes.patch
 patch -p1 < $PATCHESDIR/0105-builddir-fixes.patch
 patch -p1 < $PATCHESDIR/0110-msys-monkeypatch-os-system-via-sh-exe.patch
 patch -p1 < $PATCHESDIR/0115-msys-replace-slashes-used-in-io-redirection.patch
-
 # I didn't apply the following patches (they're in 3.3.0.alex and 
 # would need renumbering and regenerating...):
 # patch -p1 < $PATCHESDIR/0013-CROSS-fix-typo-in-thread-AC_CACHE_VAL.patch
@@ -397,6 +395,7 @@ popd
 diff -urN a b > $PATCHESDIR/9999-re-configure-d.patch
 
 
+
 ROOT=$PWD
 PYVER=3.3.0b1
 rm -rf a-${PYVER} b-${PYVER} Python-${PYVER}
@@ -417,8 +416,6 @@ patch -p1 < $PATCHESDIR/0050-MINGW-define-wcstok-as-wcstok_s.patch
 patch -p1 < $PATCHESDIR/0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
 patch -p1 < $PATCHESDIR/0075-msys-convert_path-fix-and-root-hack.patch
 patch -p1 < $PATCHESDIR/0080-py3k-mingw-ntthreads-vs-pthreads.patch
-
-
 patch -p1 < $PATCHESDIR/9999-re-configure-d.patch
 popd
 mv Python-$PYVER a-${PYVER}
