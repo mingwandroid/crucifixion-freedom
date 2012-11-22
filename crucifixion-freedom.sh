@@ -286,6 +286,8 @@ exit 0
 # You can ignore everything after this line. It's a scratch area!
 
 
+#
+$PATCHESDIR/0006-mingw-removal-of-libffi-patch.patch
 
 
 
@@ -296,21 +298,24 @@ tar -xjf ~/Dropbox/Python/SourceTarballs/2.7.3/Python-$PYVER.tar.bz2
 PATCHESDIR=$ROOT/patches/python/$PYVER
 pushd Python-$PYVER
 patch -p1 < $PATCHESDIR/0000-CROSS.patch
-patch -p1 < $PATCHESDIR/0001-MINGW.patch
-patch -p1 < $PATCHESDIR/0002-MINGW-use-posix-getpath.patch
-patch -p1 < $PATCHESDIR/0003-DARWIN-CROSS.patch
-patch -p1 < $PATCHESDIR/0004-MINGW-FIXES-sysconfig-like-posix.patch
-patch -p1 < $PATCHESDIR/0005-MINGW-pdcurses_ISPAD.patch
-patch -p1 < $PATCHESDIR/0006-MINGW-static-tcltk.patch
-patch -p1 < $PATCHESDIR/0007-MINGW-x86_64-size_t-format-specifier-pid_t.patch
-patch -p1 < $PATCHESDIR/0008-Python-disable-dbm.patch
-patch -p1 < $PATCHESDIR/0009-Disable-Grammar-dependency-on-pgen-executable.patch
-patch -p1 < $PATCHESDIR/0010-add-python-config-sh.patch
-patch -p1 < $PATCHESDIR/0011-nt-threads-vs-pthreads.patch
-patch -p1 < $PATCHESDIR/0012-dont-add-multiarch-paths-if-cross-compiling.patch
-patch -p1 < $PATCHESDIR/0013-MINGW-reorder-bininstall-ln-symlink-creation.patch
-patch -p1 < $PATCHESDIR/0014-MINGW-use-backslashes-in-compileall-py.patch
-patch -p1 < $PATCHESDIR/0015-MINGW-distutils-MSYS-convert_path-fix-and-root-hack.patch
+patch -p1 < $PATCHESDIR/0005-MINGW.patch
+patch -p1 < $PATCHESDIR/0006-mingw-removal-of-libffi-patch.patch
+patch -p1 < $PATCHESDIR/0007-mingw-system-libffi.patch
+patch -p1 < $PATCHESDIR/0010-mingw-use-posix-getpath.patch
+patch -p1 < $PATCHESDIR/0015-cross-darwin.patch
+patch -p1 < $PATCHESDIR/0020-mingw-sysconfig-like-posix.patch
+patch -p1 < $PATCHESDIR/0025-mingw-pdcurses_ISPAD.patch
+patch -p1 < $PATCHESDIR/0030-mingw-static-tcltk.patch
+patch -p1 < $PATCHESDIR/0035-mingw-x86_64-size_t-format-specifier-pid_t.patch
+patch -p1 < $PATCHESDIR/0040-python-disable-dbm.patch
+patch -p1 < $PATCHESDIR/0045-disable-grammar-dependency-on-pgen-executable.patch
+patch -p1 < $PATCHESDIR/0050-add-python-config-sh.patch
+patch -p1 < $PATCHESDIR/0055-mingw-nt-threads-vs-pthreads.patch
+patch -p1 < $PATCHESDIR/0060-cross-dont-add-multiarch-paths-if.patch
+patch -p1 < $PATCHESDIR/0065-mingw-reorder-bininstall-ln-symlink-creation.patch
+patch -p1 < $PATCHESDIR/0070-mingw-use-backslashes-in-compileall-py.patch
+patch -p1 < $PATCHESDIR/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
+patch -p1 < $PATCHESDIR/0100-upgrade-internal-libffi-to-3.0.11.patch
 popd
 mv Python-${PYVER} a-${PYVER}
 cp -rf a-${PYVER} b-${PYVER}
