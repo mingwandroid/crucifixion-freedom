@@ -1,6 +1,6 @@
 diff -urN a-3.3.0/Python/ceval.c b-3.3.0/Python/ceval.c
---- a-3.3.0/Python/ceval.c	Fri Nov 16 16:37:52 2012
-+++ b-3.3.0/Python/ceval.c	Fri Nov 16 15:41:35 2012
+--- a-3.3.0/Python/ceval.c	Fri Nov 30 12:38:44 2012
++++ b-3.3.0/Python/ceval.c	Fri Nov 30 12:38:48 2012
 @@ -11,6 +11,17 @@
  
  #include "Python.h"
@@ -20,8 +20,8 @@ diff -urN a-3.3.0/Python/ceval.c b-3.3.0/Python/ceval.c
  #include "frameobject.h"
  #include "opcode.h"
 diff -urN a-3.3.0/Python/thread.c b-3.3.0/Python/thread.c
---- a-3.3.0/Python/thread.c	Fri Nov 16 16:37:14 2012
-+++ b-3.3.0/Python/thread.c	Fri Nov 16 15:41:35 2012
+--- a-3.3.0/Python/thread.c	Fri Nov 30 12:38:44 2012
++++ b-3.3.0/Python/thread.c	Fri Nov 30 12:38:48 2012
 @@ -7,6 +7,17 @@
  
  #include "Python.h"
@@ -41,9 +41,9 @@ diff -urN a-3.3.0/Python/thread.c b-3.3.0/Python/thread.c
  /* This means pthreads are not implemented in libc headers, hence the macro
     not present in unistd.h. But they still can be implemented as an external
 diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Fri Nov 16 16:34:58 2012
-+++ b-3.3.0/configure.ac	Fri Nov 16 15:41:27 2012
-@@ -1582,6 +1582,19 @@
+--- a-3.3.0/configure.ac	Fri Nov 30 12:38:35 2012
++++ b-3.3.0/configure.ac	Fri Nov 30 12:38:48 2012
+@@ -1584,6 +1584,19 @@
  AC_MSG_RESULT($ac_cv_pthread)
  fi
  
@@ -63,7 +63,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  # If we have set a CC compiler flag for thread support then
  # check if it works for CXX, too.
  ac_cv_cxx_thread=no
-@@ -1602,6 +1615,9 @@
+@@ -1604,6 +1617,9 @@
  then 
    CXX="$CXX -pthread"
    ac_cv_cxx_thread=yes
@@ -73,7 +73,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  fi
  
  if test $ac_cv_cxx_thread = yes
-@@ -1632,6 +1648,13 @@
+@@ -1634,6 +1650,13 @@
  
  # checks for header files
  AC_HEADER_STDC
@@ -87,7 +87,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  ac_save_cppflags="$CPPFLAGS"
  CPPFLAGS="$CPPFLAGS -I/usr/include/ncursesw"
  AC_CHECK_HEADERS(asm/types.h conio.h curses.h direct.h dlfcn.h errno.h \
-@@ -2285,11 +2308,20 @@
+@@ -2287,11 +2310,20 @@
  AC_CHECK_LIB(dld, shl_load)	# Dynamic linking for HP-UX
  
  # only check for sem_init if thread support is requested
@@ -108,7 +108,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  
  # check if we need libintl for locale functions
  case $host in
-@@ -2486,6 +2518,13 @@
+@@ -2488,6 +2520,13 @@
      AC_DEFINE(WITH_THREAD)
      posix_threads=yes
      THREADOBJ="Python/thread.o"
@@ -122,7 +122,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  else
      if test ! -z "$with_threads" -a -d "$with_threads"
      then LDFLAGS="$LDFLAGS -L$with_threads"
-@@ -2936,6 +2975,13 @@
+@@ -2938,6 +2977,13 @@
  fi
  
  # checks for library functions
@@ -136,7 +136,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  AC_CHECK_FUNCS(alarm accept4 setitimer getitimer bind_textdomain_codeset chown \
   clock confstr ctermid execv faccessat fchmod fchmodat fchown fchownat \
   fexecve fdopendir fork fpathconf fstatat ftime ftruncate futimesat \
-@@ -4007,6 +4053,13 @@
+@@ -4009,6 +4055,13 @@
  # the kernel module that provides POSIX semaphores
  # isn't loaded by default, so an attempt to call
  # sem_open results in a 'Signal 12' error.
@@ -150,7 +150,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  AC_MSG_CHECKING(whether POSIX semaphores are enabled)
  AC_CACHE_VAL(ac_cv_posix_semaphores_enabled,
  AC_RUN_IFELSE([AC_LANG_SOURCE([[
-@@ -4032,6 +4085,9 @@
+@@ -4034,6 +4087,9 @@
  [ac_cv_posix_semaphores_enabled=yes])
  )
  AC_MSG_RESULT($ac_cv_posix_semaphores_enabled)
@@ -160,7 +160,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  if test $ac_cv_posix_semaphores_enabled = no
  then
    AC_DEFINE(POSIX_SEMAPHORES_NOT_ENABLED, 1,
-@@ -4040,6 +4096,16 @@
+@@ -4042,6 +4098,16 @@
  
  # Multiprocessing check for broken sem_getvalue
  AC_MSG_CHECKING(for broken sem_getvalue)
@@ -178,8 +178,8 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  AC_RUN_IFELSE([AC_LANG_SOURCE([[
  #include <unistd.h>
 diff -urN a-3.3.0/Modules/_multiprocessing/multiprocessing.c b-3.3.0/Modules/_multiprocessing/multiprocessing.c
---- a-3.3.0/Modules/_multiprocessing/multiprocessing.c	Fri Nov 16 23:42:12 2012
-+++ b-3.3.0/Modules/_multiprocessing/multiprocessing.c	Fri Nov 16 23:52:12 2012
+--- a-3.3.0/Modules/_multiprocessing/multiprocessing.c	Fri Nov 30 12:38:42 2012
++++ b-3.3.0/Modules/_multiprocessing/multiprocessing.c	Fri Nov 30 12:38:48 2012
 @@ -200,6 +200,12 @@
          Py_DECREF(temp); Py_DECREF(value); return NULL; }         \
      Py_DECREF(value)
@@ -205,8 +205,8 @@ diff -urN a-3.3.0/Modules/_multiprocessing/multiprocessing.c b-3.3.0/Modules/_mu
      if (PyModule_AddObject(module, "flags", temp) < 0)
          return NULL;
 diff -urN a-3.3.0/Modules/signalmodule.c b-3.3.0/Modules/signalmodule.c
---- a-3.3.0/Modules/signalmodule.c	Fri Nov 16 23:42:12 2012
-+++ b-3.3.0/Modules/signalmodule.c	Fri Nov 16 23:52:12 2012
+--- a-3.3.0/Modules/signalmodule.c	Fri Nov 30 12:38:39 2012
++++ b-3.3.0/Modules/signalmodule.c	Fri Nov 30 12:38:48 2012
 @@ -5,6 +5,17 @@
  
  #include "Python.h"

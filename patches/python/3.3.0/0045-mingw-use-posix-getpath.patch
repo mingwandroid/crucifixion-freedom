@@ -1,6 +1,6 @@
 diff -urN a-3.3.0/Include/fileutils.h b-3.3.0/Include/fileutils.h
---- a-3.3.0/Include/fileutils.h	Sat Sep 29 09:00:25 2012
-+++ b-3.3.0/Include/fileutils.h	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Include/fileutils.h	Fri Nov 30 13:03:55 2012
++++ b-3.3.0/Include/fileutils.h	Fri Nov 30 13:04:15 2012
 @@ -15,7 +15,7 @@
      const wchar_t *text,
      size_t *error_pos);
@@ -11,8 +11,8 @@ diff -urN a-3.3.0/Include/fileutils.h b-3.3.0/Include/fileutils.h
      const wchar_t* path,
      struct stat *buf);
 diff -urN a-3.3.0/Include/osdefs.h b-3.3.0/Include/osdefs.h
---- a-3.3.0/Include/osdefs.h	Sat Nov 17 00:15:48 2012
-+++ b-3.3.0/Include/osdefs.h	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Include/osdefs.h	Fri Nov 30 13:03:55 2012
++++ b-3.3.0/Include/osdefs.h	Fri Nov 30 13:04:15 2012
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -39,8 +39,8 @@ diff -urN a-3.3.0/Include/osdefs.h b-3.3.0/Include/osdefs.h
  
  #ifdef __cplusplus
 diff -urN a-3.3.0/Lib/plat-generic/regen b-3.3.0/Lib/plat-generic/regen
---- a-3.3.0/Lib/plat-generic/regen	Sat Sep 29 09:00:31 2012
-+++ b-3.3.0/Lib/plat-generic/regen	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Lib/plat-generic/regen	Fri Nov 30 13:03:55 2012
++++ b-3.3.0/Lib/plat-generic/regen	Fri Nov 30 13:04:15 2012
 @@ -1,3 +1,9 @@
  #! /bin/sh
  set -v
@@ -53,8 +53,8 @@ diff -urN a-3.3.0/Lib/plat-generic/regen b-3.3.0/Lib/plat-generic/regen
 +fi
 +python$EXE ../../Tools/scripts/h2py.py -i '(u_long)' $REGENHEADER
 diff -urN a-3.3.0/Makefile.pre.in b-3.3.0/Makefile.pre.in
---- a-3.3.0/Makefile.pre.in	Sat Nov 17 00:15:49 2012
-+++ b-3.3.0/Makefile.pre.in	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Makefile.pre.in	Fri Nov 30 13:03:57 2012
++++ b-3.3.0/Makefile.pre.in	Fri Nov 30 13:04:15 2012
 @@ -27,6 +27,7 @@
  VERSION=	@VERSION@
  srcdir=		@srcdir@
@@ -100,8 +100,8 @@ diff -urN a-3.3.0/Makefile.pre.in b-3.3.0/Makefile.pre.in
  python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
 diff -urN a-3.3.0/Modules/Setup.config.in b-3.3.0/Modules/Setup.config.in
---- a-3.3.0/Modules/Setup.config.in	Sat Nov 17 00:15:48 2012
-+++ b-3.3.0/Modules/Setup.config.in	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Modules/Setup.config.in	Fri Nov 30 13:03:57 2012
++++ b-3.3.0/Modules/Setup.config.in	Fri Nov 30 13:04:15 2012
 @@ -15,6 +15,8 @@
  # On win32 host(mingw build in MSYS environment) show that site.py
  # fail to load if some modules are not build-in:
@@ -112,8 +112,8 @@ diff -urN a-3.3.0/Modules/Setup.config.in b-3.3.0/Modules/Setup.config.in
  
  # The rest of the modules previously listed in this file are built
 diff -urN a-3.3.0/Modules/Setup.dist b-3.3.0/Modules/Setup.dist
---- a-3.3.0/Modules/Setup.dist	Sat Nov 17 00:15:48 2012
-+++ b-3.3.0/Modules/Setup.dist	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Modules/Setup.dist	Fri Nov 30 13:03:57 2012
++++ b-3.3.0/Modules/Setup.dist	Fri Nov 30 13:04:15 2012
 @@ -84,14 +84,14 @@
  # Empty since this is now just the runtime prefix.
  DESTPATH=
@@ -132,8 +132,8 @@ diff -urN a-3.3.0/Modules/Setup.dist b-3.3.0/Modules/Setup.dist
  
  COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)
 diff -urN a-3.3.0/Modules/getpath.c b-3.3.0/Modules/getpath.c
---- a-3.3.0/Modules/getpath.c	Sat Sep 29 09:00:45 2012
-+++ b-3.3.0/Modules/getpath.c	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Modules/getpath.c	Fri Nov 30 13:03:57 2012
++++ b-3.3.0/Modules/getpath.c	Fri Nov 30 13:04:15 2012
 @@ -10,6 +10,10 @@
  #include <mach-o/dyld.h>
  #endif
@@ -322,8 +322,8 @@ diff -urN a-3.3.0/Modules/getpath.c b-3.3.0/Modules/getpath.c
 +}
 +#endif
 diff -urN a-3.3.0/Modules/posixmodule.c b-3.3.0/Modules/posixmodule.c
---- a-3.3.0/Modules/posixmodule.c	Sat Nov 17 00:15:48 2012
-+++ b-3.3.0/Modules/posixmodule.c	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Modules/posixmodule.c	Fri Nov 30 13:03:57 2012
++++ b-3.3.0/Modules/posixmodule.c	Fri Nov 30 13:04:15 2012
 @@ -791,7 +791,7 @@
  }
  
@@ -352,8 +352,8 @@ diff -urN a-3.3.0/Modules/posixmodule.c b-3.3.0/Modules/posixmodule.c
              list = win32_error("FindNextFile", namebuf);
              goto exit;
 diff -urN a-3.3.0/Python/fileutils.c b-3.3.0/Python/fileutils.c
---- a-3.3.0/Python/fileutils.c	Sat Sep 29 09:00:49 2012
-+++ b-3.3.0/Python/fileutils.c	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Python/fileutils.c	Fri Nov 30 13:04:00 2012
++++ b-3.3.0/Python/fileutils.c	Fri Nov 30 13:04:15 2012
 @@ -251,7 +251,7 @@
     Not sure whether the MS_WINDOWS guards are necessary:
     perhaps for cygwin/mingw builds?
@@ -364,8 +364,8 @@ diff -urN a-3.3.0/Python/fileutils.c b-3.3.0/Python/fileutils.c
  /* Get file status. Encode the path to the locale encoding. */
  
 diff -urN a-3.3.0/Python/pythonrun.c b-3.3.0/Python/pythonrun.c
---- a-3.3.0/Python/pythonrun.c	Sat Sep 29 09:00:49 2012
-+++ b-3.3.0/Python/pythonrun.c	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/Python/pythonrun.c	Fri Nov 30 13:04:00 2012
++++ b-3.3.0/Python/pythonrun.c	Fri Nov 30 13:04:15 2012
 @@ -787,6 +787,13 @@
  void
  Py_SetProgramName(wchar_t *pn)
@@ -381,8 +381,8 @@ diff -urN a-3.3.0/Python/pythonrun.c b-3.3.0/Python/pythonrun.c
          progname = pn;
  }
 diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Sat Nov 17 00:15:49 2012
-+++ b-3.3.0/configure.ac	Sat Nov 17 00:16:19 2012
+--- a-3.3.0/configure.ac	Fri Nov 30 13:03:54 2012
++++ b-3.3.0/configure.ac	Fri Nov 30 13:04:15 2012
 @@ -576,6 +576,27 @@
  fi
  AC_MSG_RESULT($MACHDEP)
@@ -411,7 +411,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  AC_MSG_CHECKING([for init system calls])
  AC_SUBST(INITSYS)
  case $host in
-@@ -4253,6 +4274,28 @@
+@@ -4255,6 +4276,28 @@
  # check for endianness
  AC_C_BIGENDIAN
  
@@ -440,7 +440,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  # ABI version string for Python extension modules.  This appears between the
  # periods in shared library file names, e.g. foo.<SOABI>.so.  It is calculated
  # from the following attributes which affect the ABI of this Python build (in
-@@ -4948,7 +4991,8 @@
+@@ -4950,7 +4993,8 @@
      # FIXME: why windows builds don't use PC/frozen_dllmain.o ?
      PYTHON_OBJS_FROZENMAIN=""
      # default sys.path calculations for windows platforms

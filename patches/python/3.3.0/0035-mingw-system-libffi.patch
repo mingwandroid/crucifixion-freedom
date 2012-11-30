@@ -1,6 +1,6 @@
 diff -urN a-3.3.0/Lib/ctypes/test/test_as_parameter.py b-3.3.0/Lib/ctypes/test/test_as_parameter.py
---- a-3.3.0/Lib/ctypes/test/test_as_parameter.py	Fri Nov 16 23:45:23 2012
-+++ b-3.3.0/Lib/ctypes/test/test_as_parameter.py	Fri Nov 16 23:52:12 2012
+--- a-3.3.0/Lib/ctypes/test/test_as_parameter.py	Fri Nov 30 13:02:59 2012
++++ b-3.3.0/Lib/ctypes/test/test_as_parameter.py	Fri Nov 30 13:03:12 2012
 @@ -1,6 +1,7 @@
  import unittest
  from ctypes import *
@@ -21,8 +21,8 @@ diff -urN a-3.3.0/Lib/ctypes/test/test_as_parameter.py b-3.3.0/Lib/ctypes/test/t
          class S8I(Structure):
              _fields_ = [("a", c_int),
 diff -urN a-3.3.0/Lib/ctypes/test/test_functions.py b-3.3.0/Lib/ctypes/test/test_functions.py
---- a-3.3.0/Lib/ctypes/test/test_functions.py	Fri Nov 16 23:45:23 2012
-+++ b-3.3.0/Lib/ctypes/test/test_functions.py	Fri Nov 16 23:52:12 2012
+--- a-3.3.0/Lib/ctypes/test/test_functions.py	Fri Nov 30 13:02:59 2012
++++ b-3.3.0/Lib/ctypes/test/test_functions.py	Fri Nov 30 13:03:12 2012
 @@ -359,6 +359,10 @@
              s2h = windll.s_ret_2h_func(S2H(99, 88))
              self.assertEqual((s2h.x, s2h.y), (99*2, 88*3))
@@ -36,7 +36,7 @@ diff -urN a-3.3.0/Lib/ctypes/test/test_functions.py b-3.3.0/Lib/ctypes/test/test
              _fields_ = [("a", c_int),
 diff -urN a-3.3.0/Lib/distutils/sysconfig.py.rej b-3.3.0/Lib/distutils/sysconfig.py.rej
 --- a-3.3.0/Lib/distutils/sysconfig.py.rej	Thu Jan  1 00:00:00 1970
-+++ b-3.3.0/Lib/distutils/sysconfig.py.rej	Fri Nov 16 23:52:12 2012
++++ b-3.3.0/Lib/distutils/sysconfig.py.rej	Fri Nov 30 13:03:12 2012
 @@ -0,0 +1,17 @@
 +***************
 +*** 553,559 ****
@@ -56,8 +56,8 @@ diff -urN a-3.3.0/Lib/distutils/sysconfig.py.rej b-3.3.0/Lib/distutils/sysconfig
 +              if (not os.path.isabs(_config_vars['srcdir']) and
 +                  base != os.getcwd()):
 diff -urN a-3.3.0/Makefile.pre.in b-3.3.0/Makefile.pre.in
---- a-3.3.0/Makefile.pre.in	Fri Nov 16 23:41:50 2012
-+++ b-3.3.0/Makefile.pre.in	Fri Nov 16 23:54:02 2012
+--- a-3.3.0/Makefile.pre.in	Fri Nov 30 13:03:03 2012
++++ b-3.3.0/Makefile.pre.in	Fri Nov 30 13:03:12 2012
 @@ -474,6 +474,10 @@
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) -S -m sysconfig --generate-posix-vars
  
@@ -70,8 +70,8 @@ diff -urN a-3.3.0/Makefile.pre.in b-3.3.0/Makefile.pre.in
  	case $$MAKEFLAGS in *s*) quiet=-q; esac; \
  	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
 diff -urN a-3.3.0/Modules/_ctypes/callproc.c b-3.3.0/Modules/_ctypes/callproc.c
---- a-3.3.0/Modules/_ctypes/callproc.c	Fri Nov 16 23:41:50 2012
-+++ b-3.3.0/Modules/_ctypes/callproc.c	Fri Nov 16 23:52:13 2012
+--- a-3.3.0/Modules/_ctypes/callproc.c	Fri Nov 30 13:03:03 2012
++++ b-3.3.0/Modules/_ctypes/callproc.c	Fri Nov 30 13:03:12 2012
 @@ -795,8 +795,10 @@
  #ifndef DONT_USE_SEH
      __try {
@@ -100,8 +100,8 @@ diff -urN a-3.3.0/Modules/_ctypes/callproc.c b-3.3.0/Modules/_ctypes/callproc.c
  #endif
      if ((flags & FUNCFLAG_PYTHONAPI) && PyErr_Occurred())
 diff -urN a-3.3.0/Modules/_ctypes/libffi/fficonfig.py.in b-3.3.0/Modules/_ctypes/libffi/fficonfig.py.in
---- a-3.3.0/Modules/_ctypes/libffi/fficonfig.py.in	Fri Nov 16 23:41:50 2012
-+++ b-3.3.0/Modules/_ctypes/libffi/fficonfig.py.in	Fri Nov 16 23:52:13 2012
+--- a-3.3.0/Modules/_ctypes/libffi/fficonfig.py.in	Fri Nov 30 13:03:03 2012
++++ b-3.3.0/Modules/_ctypes/libffi/fficonfig.py.in	Fri Nov 30 13:03:12 2012
 @@ -1,7 +1,6 @@
  ffi_sources = """
  src/prep_cif.c
@@ -129,9 +129,9 @@ diff -urN a-3.3.0/Modules/_ctypes/libffi/fficonfig.py.in b-3.3.0/Modules/_ctypes
  
  ffi_cflags = '@CFLAGS@'
 diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Fri Nov 16 23:43:34 2012
-+++ b-3.3.0/configure.ac	Fri Nov 16 23:52:13 2012
-@@ -2395,14 +2395,32 @@
+--- a-3.3.0/configure.ac	Fri Nov 30 13:02:59 2012
++++ b-3.3.0/configure.ac	Fri Nov 30 13:03:12 2012
+@@ -2397,14 +2397,32 @@
              [],
              [with_system_ffi="no"])
  
@@ -168,8 +168,8 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  # Check for use of the system libmpdec library
  AC_MSG_CHECKING(for --with-system-libmpdec)
 diff -urN a-3.3.0/pyconfig.h.in b-3.3.0/pyconfig.h.in
---- a-3.3.0/pyconfig.h.in	Fri Nov 16 23:42:12 2012
-+++ b-3.3.0/pyconfig.h.in	Fri Nov 16 23:54:46 2012
+--- a-3.3.0/pyconfig.h.in	Fri Nov 30 13:03:05 2012
++++ b-3.3.0/pyconfig.h.in	Fri Nov 30 13:03:12 2012
 @@ -1139,6 +1139,9 @@
  /* Define if mvwdelch in curses.h is an expression. */
  #undef MVWDELCH_IS_EXPRESSION
@@ -191,8 +191,8 @@ diff -urN a-3.3.0/pyconfig.h.in b-3.3.0/pyconfig.h.in
  /* Define if you want to compile in rudimentary thread support */
  #undef WITH_THREAD
 diff -urN a-3.3.0/setup.py b-3.3.0/setup.py
---- a-3.3.0/setup.py	Fri Nov 16 23:45:23 2012
-+++ b-3.3.0/setup.py	Fri Nov 16 23:52:13 2012
+--- a-3.3.0/setup.py	Fri Nov 30 13:03:05 2012
++++ b-3.3.0/setup.py	Fri Nov 30 13:03:13 2012
 @@ -1903,6 +1903,11 @@
          return True
  

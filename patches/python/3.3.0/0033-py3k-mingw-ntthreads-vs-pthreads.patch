@@ -1,6 +1,6 @@
 diff -urN a-3.3.0/Python/condvar.h b-3.3.0/Python/condvar.h
---- a-3.3.0/Python/condvar.h	Fri Nov 16 15:41:35 2012
-+++ b-3.3.0/Python/condvar.h	Fri Nov 16 17:11:23 2012
+--- a-3.3.0/Python/condvar.h	Fri Nov 30 12:57:11 2012
++++ b-3.3.0/Python/condvar.h	Fri Nov 30 13:00:42 2012
 @@ -42,6 +42,12 @@
  
  #include "Python.h"
@@ -15,8 +15,8 @@ diff -urN a-3.3.0/Python/condvar.h b-3.3.0/Python/condvar.h
  /* This means pthreads are not implemented in libc headers, hence the macro
     not present in unistd.h. But they still can be implemented as an external
 diff -urN a-3.3.0/Python/thread.c b-3.3.0/Python/thread.c
---- a-3.3.0/Python/thread.c	Fri Nov 16 15:41:35 2012
-+++ b-3.3.0/Python/thread.c	Fri Nov 16 17:11:23 2012
+--- a-3.3.0/Python/thread.c	Fri Nov 30 12:57:11 2012
++++ b-3.3.0/Python/thread.c	Fri Nov 30 13:00:42 2012
 @@ -15,7 +15,9 @@
    __MINGW32__ to prevent case when in GCC 3.4.5 build
    envirionment is installed posix thread package.
@@ -29,9 +29,9 @@ diff -urN a-3.3.0/Python/thread.c b-3.3.0/Python/thread.c
  
  #ifndef _POSIX_THREADS
 diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Fri Nov 16 15:41:27 2012
-+++ b-3.3.0/configure.ac	Fri Nov 16 17:11:23 2012
-@@ -1468,6 +1468,16 @@
+--- a-3.3.0/configure.ac	Fri Nov 30 12:55:49 2012
++++ b-3.3.0/configure.ac	Fri Nov 30 13:00:42 2012
+@@ -1470,6 +1470,16 @@
    CFLAGS=$save_CFLAGS
  fi
  
@@ -48,7 +48,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  # On some compilers, pthreads are available without further options
  # (e.g. MacOS X). On some of these systems, the compiler will not
  # complain if unaccepted options are passed (e.g. gcc on Mac OS X).
-@@ -1582,17 +1592,6 @@
+@@ -1584,17 +1594,6 @@
  AC_MSG_RESULT($ac_cv_pthread)
  fi
  
@@ -66,7 +66,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  fi
  
  # If we have set a CC compiler flag for thread support then
-@@ -1659,7 +1658,7 @@
+@@ -1661,7 +1660,7 @@
  CPPFLAGS="$CPPFLAGS -I/usr/include/ncursesw"
  AC_CHECK_HEADERS(asm/types.h conio.h curses.h direct.h dlfcn.h errno.h \
  fcntl.h grp.h \
@@ -75,7 +75,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  sched.h shadow.h signal.h stdint.h stropts.h termios.h \
  unistd.h utime.h \
  poll.h sys/devpoll.h sys/epoll.h sys/poll.h \
-@@ -1691,6 +1690,14 @@
+@@ -1693,6 +1692,14 @@
  ])
  
  
@@ -90,7 +90,7 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  # On Solaris, term.h requires curses.h
  AC_CHECK_HEADERS(term.h,,,[
  #ifdef HAVE_CURSES_H
-@@ -2316,9 +2323,11 @@
+@@ -2318,9 +2325,11 @@
    ;;
    *)
  if test "$with_threads" = "yes" -o -z "$with_threads"; then

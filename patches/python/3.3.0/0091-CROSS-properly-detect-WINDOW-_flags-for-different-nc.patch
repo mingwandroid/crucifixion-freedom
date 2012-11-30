@@ -1,6 +1,6 @@
 diff -urN a-3.3.0/Include/py_curses.h b-3.3.0/Include/py_curses.h
---- a-3.3.0/Include/py_curses.h	Sat Sep 29 09:00:26 2012
-+++ b-3.3.0/Include/py_curses.h	Sat Nov 17 00:25:00 2012
+--- a-3.3.0/Include/py_curses.h	Fri Nov 30 12:13:14 2012
++++ b-3.3.0/Include/py_curses.h	Fri Nov 30 12:13:31 2012
 @@ -14,7 +14,9 @@
  /* the following define is necessary for OS X 10.6; without it, the
     Apple-supplied ncurses.h sets NCURSES_OPAQUE to 1, and then Python
@@ -25,9 +25,9 @@ diff -urN a-3.3.0/Include/py_curses.h b-3.3.0/Include/py_curses.h
  #define MVWDELCH_IS_EXPRESSION 1
  #endif
 diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Sat Nov 17 00:24:30 2012
-+++ b-3.3.0/configure.ac	Sat Nov 17 00:25:00 2012
-@@ -4681,15 +4681,51 @@
+--- a-3.3.0/configure.ac	Fri Nov 30 12:13:13 2012
++++ b-3.3.0/configure.ac	Fri Nov 30 12:13:31 2012
+@@ -4682,15 +4682,51 @@
  fi
  
  AC_MSG_CHECKING(whether WINDOW has _flags)
@@ -82,8 +82,8 @@ diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
  if test "$ac_cv_window_has_flags" = yes
  then
 diff -urN a-3.3.0/pyconfig.h.in b-3.3.0/pyconfig.h.in
---- a-3.3.0/pyconfig.h.in	Sat Nov 17 00:24:30 2012
-+++ b-3.3.0/pyconfig.h.in	Sat Nov 17 00:25:00 2012
+--- a-3.3.0/pyconfig.h.in	Fri Nov 30 12:13:19 2012
++++ b-3.3.0/pyconfig.h.in	Fri Nov 30 12:13:31 2012
 @@ -1142,6 +1142,12 @@
  /* Define to 1 if you want to use native NT threads */
  #undef NT_THREADS
