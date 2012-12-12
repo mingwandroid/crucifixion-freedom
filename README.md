@@ -56,10 +56,20 @@ current situation with respect to available cross compilers, the
 following table illustrates which cross compilation combinations are
 possible.
 
-Build Machine:              Valid Hosts:
-GNU/Linux                   GNU/Linux,Windows,Darwin
-Windows                     Windows,Darwin
-Darwin                      Darwin
+Build Machine:
+GNU/Linux
+Valid Hosts:
+GNU/Linux,Windows,Darwin
+
+Build Machine:
+Windows
+Valid Hosts:
+Windows,Darwin
+
+Build Machine:
+Darwin
+Valid Hosts:
+Darwin
 
 To setup a Windows (MinGW-w64 with MSYS) build environment, execute:
 scripts/windows/BootstrapMinGW64.vbs
