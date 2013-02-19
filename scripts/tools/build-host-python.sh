@@ -185,7 +185,7 @@ fi
 bh_setup_build_dir $BUILD_DIR
 
 # "$BH_BUILD_MODE" = "debug" is broken currently!?
-PYDEBUG="--with-pydebug"
+# PYDEBUG="--with-pydebug"
 if [ "$BH_BUILD_MODE" = "debug" ] ; then
    PYDEBUG="--with-pydebug"
    SAVE_TEMPS=" --save-temps "
