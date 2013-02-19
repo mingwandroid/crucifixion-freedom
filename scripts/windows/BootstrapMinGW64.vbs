@@ -175,6 +175,9 @@
       downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/gettext/gettext-0.18.1.1-1/libintl-0.18.1.1-1-msys-1.0.17-dll-8.tar.lzma", Dest & "\msys"
       downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/libiconv/libiconv-1.14-1/libiconv-1.14-1-msys-1.0.17-dll-2.tar.lzma", Dest & "\msys"
       downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/grep/grep-2.5.4-2/grep-2.5.4-2-msys-1.0.13-bin.tar.lzma", Dest & "\msys"
+      ' Only want install.exe from this - commented out as it's untested.'
+      ' downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/coreutils/coreutils-5.97-3/coreutils-5.97-3-msys-1.0.13-bin.tar.lzma", TempDir
+      ' copy "bin/install.exe", Dest & "\msys\bin"
     end if
 
     result = msgbox("Do you need MSYS-binutils," & Chr(10) & "MSYS-gcc, MSYS-coredev and MSYS-w32api?" & Chr(10) & "Hint: unless you plan to develop" & Chr(10) & "MSYS tools, you don't", vbYesNo, "Install MSYS developer tools?")
