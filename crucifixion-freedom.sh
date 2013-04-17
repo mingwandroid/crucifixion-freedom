@@ -291,7 +291,7 @@ exit 0
 ROOT=$PWD
 PYVER=2.7.3
 rm -rf a-${PYVER} b-${PYVER} Python-${PYVER}
-tar -xjf ~/Dropbox/Python/SourceTarballs/2.7.3/Python-$PYVER.tar.bz2
+tar -xjf ~/Dropbox/Python/SourceTarballs/${PYVER}/Python-$PYVER.tar.bz2
 PATCHESDIR=$ROOT/patches/python/$PYVER
 pushd Python-$PYVER
 patch -p1 < $PATCHESDIR/0000-CROSS.patch
@@ -322,6 +322,43 @@ rm pyconfig.h.in~
 rm -rf autom4te.cache
 popd
 diff -urN a-${PYVER} b-${PYVER} > $PATCHESDIR/9999-re-configure-d.patch
+
+
+
+ROOT=$PWD
+PYVER=2.7.4
+rm -rf a-${PYVER} b-${PYVER} Python-${PYVER}
+tar -xjf ~/Dropbox/Python/SourceTarballs/${PYVER}/Python-$PYVER.tar.bz2
+PATCHESDIR=$ROOT/patches/python/$PYVER
+pushd Python-$PYVER
+patch -p1 < $PATCHESDIR/0000-CROSS.patch
+patch -p1 < $PATCHESDIR/0005-MINGW.patch
+patch -p1 < $PATCHESDIR/0006-mingw-removal-of-libffi-patch.patch
+patch -p1 < $PATCHESDIR/0007-mingw-system-libffi.patch
+patch -p1 < $PATCHESDIR/0010-mingw-use-posix-getpath.patch
+patch -p1 < $PATCHESDIR/0015-cross-darwin.patch
+patch -p1 < $PATCHESDIR/0020-mingw-sysconfig-like-posix.patch
+patch -p1 < $PATCHESDIR/0025-mingw-pdcurses_ISPAD.patch
+patch -p1 < $PATCHESDIR/0030-mingw-static-tcltk.patch
+patch -p1 < $PATCHESDIR/0035-mingw-x86_64-size_t-format-specifier-pid_t.patch
+patch -p1 < $PATCHESDIR/0040-python-disable-dbm.patch
+patch -p1 < $PATCHESDIR/0050-add-python-config-sh.patch
+patch -p1 < $PATCHESDIR/0055-mingw-nt-threads-vs-pthreads.patch
+patch -p1 < $PATCHESDIR/0060-cross-dont-add-multiarch-paths-if.patch
+patch -p1 < $PATCHESDIR/0065-mingw-reorder-bininstall-ln-symlink-creation.patch
+patch -p1 < $PATCHESDIR/0070-mingw-use-backslashes-in-compileall-py.patch
+patch -p1 < $PATCHESDIR/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
+popd
+mv Python-${PYVER} a-${PYVER}
+cp -rf a-${PYVER} b-${PYVER}
+pushd b-${PYVER}
+autoconf; autoheader;
+rm pyconfig.h.in~
+rm -rf autom4te.cache
+popd
+diff -urN a-${PYVER} b-${PYVER} > $PATCHESDIR/9999-re-configure-d.patch
+
+
 
 
 
