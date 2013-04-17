@@ -565,6 +565,14 @@ check_md5sum ()
     fi
 }
 
+pwd_shell ()
+{
+   (
+    cd "$1"
+    echo $(pwd)
+   )
+}
+
 # Find if a given shell program is available.
 # We need to take care of the fact that the 'which <foo>' command
 # may return either an empty string (Linux) or something like

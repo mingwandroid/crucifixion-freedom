@@ -209,9 +209,9 @@ PROGDIR=`dirname $0`
 PROGDIR=$(cd $PROGDIR && pwd)
 
 # beta versions get removed from python's official ftp site.
-#BASEURL=http://www.python.org/ftp/python
+BASEURL=http://www.python.org/ftp/python
 # this site keeps them around though.
-BASEURL=http://mirrors.wayround.org/www.python.org/www.python.org/ftp/python
+#BASEURL=http://mirrors.wayround.org/www.python.org/www.python.org/ftp/python
 # ..for quicker turn around when I'm developing:
 #BASEURL=$HOME/Dropbox/Python/SourceTarballs
 

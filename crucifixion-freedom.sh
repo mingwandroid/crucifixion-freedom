@@ -35,7 +35,7 @@ if [ "$OSTYPE" = "msys" ] ; then
         if [ ! -f $PWD/expr.exe ] ; then
             curl -S -L -O http://mingw-and-ndk.googlecode.com/files/expr.exe
         fi
-        export PATH=$PWD:$PATH
+        export PATH="$(pwd -W)":$PATH
     fi
 fi
 
@@ -43,7 +43,7 @@ NDK_BUILDTOOLS_PATH="$(dirname $0)/scripts/tools"
 . "$NDK_BUILDTOOLS_PATH/prebuilt-common.sh"
 . "$NDK_BUILDTOOLS_PATH/common-build-host-funcs.sh"
 
-PYTHON_VERSION=2.7.3,3.3.0b1
+PYTHON_VERSION=2.7.3,3.3.0
 
 register_var_option "--python-version=<versions>" PYTHON_VERSION "Select Python version(s)."
 
@@ -53,7 +53,7 @@ register_var_option "--darwin-sdk=<path>" DARWIN_SYSROOT "Select Darwin SDK path
 PYTHON_BUILD_DIR=/tmp2/cr-build
 register_var_option "--build-dir=<path>" PYTHON_BUILD_DIR "Select temp build directory."
 
-TOOLCHAINS=$HOME
+TOOLCHAINS=$(pwd_shell $HOME)
 register_var_option "--toolchains=<path>" TOOLCHAINS "Select toolchain root directory."
 
 DATESUFFIX=$(date +%y%m%d)
@@ -68,7 +68,7 @@ register_var_option "--with-tcltk=<path>" TCLTK "Build static tcltk (for Idle)"
 
 PROGRAM_DESCRIPTION="\
 This program sets up and uses a compilation environment to cross compile Python
-2.7.3 and/or 3.3.0b1. It calls scripts/tools/build-host-python.sh to do all of
+2.7.3 and/or 3.3.0. It calls scripts/tools/build-host-python.sh to do all of
 the hard work.
 
 If you want to use this on Windows, you need to have a good mingw-w64
