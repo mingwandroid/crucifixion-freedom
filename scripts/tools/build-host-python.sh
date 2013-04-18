@@ -546,12 +546,11 @@ build_host_python ()
 
     LDFLAGS_TCLTK=
     # Just for now.
-#    python_dependencies_unpack $1 $TEMPINSTALLDIR $INSTALLDIR my
-    if [ $1 = windows-x86 -a "$TEST_ALEX_PUX_LIBS" = "yes" ] ; then
-        python_dependencies_unpack $1 $TEMPINSTALLDIR $INSTALLDIR alexpux
-    else
-        python_dependencies_build $1 $TEMPINSTALLDIR $INSTALLDIR
-    fi
+#    if [ $1 = windows-x86 -a "$TEST_ALEX_PUX_LIBS" = "yes" ] ; then
+#        python_dependencies_unpack $1 $TEMPINSTALLDIR $INSTALLDIR alexpux
+#    else
+#        python_dependencies_build $1 $TEMPINSTALLDIR $INSTALLDIR
+#    fi
 
     CFG_SITE=
     export LDFLAGS="-L${TEMPINSTALLDIR}/lib"
