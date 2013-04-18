@@ -483,7 +483,7 @@ diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
 +    posix_build = None
      if compiler.compiler_type == "unix":
 +       posix_build = True
-+    elif compiler.compiler_type == "mingw32:
++    elif compiler.compiler_type == "mingw32":
 +        if sys.version.find('GCC') >= 0:
 +            posix_build = True
 +    if posix_build == True:
