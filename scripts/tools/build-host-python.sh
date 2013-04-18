@@ -465,7 +465,7 @@ python_dependencies_build ()
     local _PREFIXSTATIC=$2
     local _PREFIXFINAL=$3
 
-    dump "python_build_dependencies PDCURSES_RL=$PDCURSES_RL TCLTK=$TCLTK _HOST=$_HOST"
+    dump "python_dependencies_build PDCURSES_RL=$PDCURSES_RL TCLTK=$TCLTK _HOST=$_HOST"
 
     # For windows...
     if [ $_HOST = windows-x86 -o $_HOST = windows-x86_64 ] ; then
