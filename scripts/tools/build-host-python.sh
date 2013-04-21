@@ -65,8 +65,6 @@ WINTHREADS=nt
 # NYI
 # register_var_option "--winthreads=<posix|nt>" WINTHREADS "Select Windows threading API."
 
-TEST_ALEX_PUX_LIBS=no
-
 # Selects PDCurses instead of ncurses and mingweditline instead of readline.
 AVOID_GPL=yes
 
@@ -233,12 +231,6 @@ for VERSION in $(commas_to_spaces $PYTHON_VERSION); do
     if [ ! -d "$PYTHON_SRCDIR" ]; then
         panic "Missing source directory: $PYTHON_SRCDIR"
     fi
-
-    # Latest 3.3.0 patches are from Alex and he didn't update configure.
-    if [ "$VERSION" = "3.4.x" -o "$VERSION" = "3.3.0" ] ; then
-        (cd $SRC_DIR/Python-$VERSION; run ~/autoconf-2.69/bin/autoconf; run ~/autoconf-2.69/bin/autoheader; rm pyconfig.h.in~; rm -rf autom4te.cache)
-    fi
-
 done
 
 
@@ -545,16 +537,10 @@ build_host_python ()
     bh_setup_host_env
 
     LDFLAGS_TCLTK=
-    # Just for now.
-#    if [ $1 = windows-x86 -a "$TEST_ALEX_PUX_LIBS" = "yes" ] ; then
-#        python_dependencies_unpack $1 $TEMPINSTALLDIR $INSTALLDIR alexpux
-#    else
-#        python_dependencies_build $1 $TEMPINSTALLDIR $INSTALLDIR
-#    fi
+    python_dependencies_build $1 $TEMPINSTALLDIR $INSTALLDIR
 
     CFG_SITE=
     export LDFLAGS="-L${TEMPINSTALLDIR}/lib"
-    # -I${TEMPINSTALLDIR}/include/ncursesw is for alex pux's static libraries.
     CFLAGS="$SAVE_TEMPS -I${TEMPINSTALLDIR}/include -I${TEMPINSTALLDIR}/include/ncursesw"
     CXXFLAGS="$CFLAGS"
     if [ ! $BH_HOST_TAG = $BH_BUILD_TAG ]; then

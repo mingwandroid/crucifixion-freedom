@@ -120,6 +120,16 @@ if [ ! -d $HOME/autoconf-2.69 ]; then
 fi
 # export PATH=$HOME/autoconf-2.69/bin:$PATH
 
+if [ ! -z "$PYTHONHOME" ]; then
+    echo "ERROR: PYTHONHOME variable set to $PYTHONHOME, refusing to build."
+    exit 1
+fi
+
+if [ ! -z "$PYTHONPATH" ]; then
+    echo "ERROR: PYTHONPATH variable set to $PYTHONPATH, refusing to build."
+    exit 1
+fi
+
 bh_set_build_tag $HOST_TAG
 
 # Need to write a shell function that takes the host tag and the build tag and returns some properties:
