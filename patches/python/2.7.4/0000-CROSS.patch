@@ -1,170 +1,6 @@
-diff -urN a/Lib/distutils/README b/Lib/distutils/README
---- a/Lib/distutils/README	Wed Apr 17 21:33:48 2013
-+++ b/Lib/distutils/README	Wed Apr 17 21:56:49 2013
-@@ -9,5 +9,10 @@
-     http://www.python.org/sigs/distutils-sig/
- 
- WARNING : Distutils must remain compatible with 2.3
-+NOTE: After "Revision 77704 : taking sysconfig out of distutils"
-+Distutils package is not compatible with versions before 2.7a3.
-+Although "Revision 77759 : reintroduced the names in Distutils for APIs
-+that were relocated"(i.e. API is backward compatibile) to cross compile
-+python on build system has to be at least version 2.7a3.
- 
- $Id$
-diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	Wed Apr 17 21:33:49 2013
-+++ b/Lib/sysconfig.py	Wed Apr 17 21:56:49 2013
-@@ -3,7 +3,15 @@
- """
- import sys
- import os
--from os.path import pardir, realpath
-+# revert patch from issue 7880 :
-+#  - the test case (from issue 7880) works for me
-+#  - realpath break cross compilation
-+# => so lets use abspath again ;)
-+# NOTE "Issue #6612: Fix site and sysconfig to catch os.getcwd() error,
-+# eg. if the current directory was deleted." replase all occurrence of
-+# realpath with _safe_realpath. Instead to update _safe_realpath to use
-+# abspath the cross-compilation revert all!
-+from os.path import pardir, abspath
- 
- _INSTALL_SCHEMES = {
-     'posix_prefix': {
-@@ -94,27 +102,21 @@
- _CONFIG_VARS = None
- _USER_BASE = None
- 
--def _safe_realpath(path):
--    try:
--        return realpath(path)
--    except OSError:
--        return path
--
- if sys.executable:
--    _PROJECT_BASE = os.path.dirname(_safe_realpath(sys.executable))
-+    _PROJECT_BASE = os.path.dirname(abspath(sys.executable))
- else:
-     # sys.executable can be empty if argv[0] has been changed and Python is
-     # unable to retrieve the real program name
--    _PROJECT_BASE = _safe_realpath(os.getcwd())
-+    _PROJECT_BASE = abspath(os.getcwd())
- 
- if os.name == "nt" and "pcbuild" in _PROJECT_BASE[-8:].lower():
--    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir))
-+    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir))
- # PC/VS7.1
- if os.name == "nt" and "\\pc\\v" in _PROJECT_BASE[-10:].lower():
--    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir, pardir))
-+    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir, pardir))
- # PC/AMD64
- if os.name == "nt" and "\\pcbuild\\amd64" in _PROJECT_BASE[-14:].lower():
--    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir, pardir))
-+    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir, pardir))
- 
- # set for cross builds
- if "_PYTHON_PROJECT_BASE" in os.environ:
-@@ -317,7 +319,7 @@
-     vars['SO'] = '.pyd'
-     vars['EXE'] = '.exe'
-     vars['VERSION'] = _PY_VERSION_SHORT_NO_DOT
--    vars['BINDIR'] = os.path.dirname(_safe_realpath(sys.executable))
-+    vars['BINDIR'] = os.path.dirname(abspath(sys.executable))
- 
- #
- # public APIs
-diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	Wed Apr 17 21:33:54 2013
-+++ b/Makefile.pre.in	Wed Apr 17 21:56:49 2013
-@@ -200,6 +200,10 @@
- PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
- #PROFILE_TASK=	$(srcdir)/Lib/test/regrtest.py
- 
-+# Don't define HOST_OS as makefile macro !
-+@CROSS_ON@RUNPYTHON=	HOST_OS=@HOST_OS@ @SYSPYTHON@
-+@CROSS_OFF@RUNPYTHON=	$(RUNSHARED) ./$(BUILDPYTHON)
-+
- # === Definitions added by makesetup ===
- 
- 
-@@ -467,10 +471,10 @@
- 
- libpython$(VERSION).so: $(LIBRARY_OBJS)
- 	if test $(INSTSONAME) != $(LDLIBRARY); then \
--		$(BLDSHARED) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
-+		$(LDSHARED) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
- 		$(LN) -f $(INSTSONAME) $@; \
- 	else \
--		$(BLDSHARED) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
-+		$(LDSHARED) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
- 	fi
- 
- libpython$(VERSION).dylib: $(LIBRARY_OBJS)
-@@ -526,18 +530,17 @@
- oldsharedmods: $(SHAREDMODS)
- 
- 
-+setup_info: setup_info.in config.status
-+	$(SHELL) ./config.status $@
-+
-+
- Makefile Modules/config.c: Makefile.pre \
- 				$(srcdir)/Modules/config.c.in \
- 				$(MAKESETUP) \
- 				Modules/Setup.config \
- 				Modules/Setup \
- 				Modules/Setup.local
--	$(SHELL) $(MAKESETUP) -c $(srcdir)/Modules/config.c.in \
--				-s Modules \
--				Modules/Setup.config \
--				Modules/Setup.local \
--				Modules/Setup
--	@mv config.c Modules
-+	$(SHELL) ./config.status Makefile
- 	@echo "The Makefile was updated, you may need to re-run make."
- 
- 
-@@ -757,6 +760,7 @@
- 
- TESTOPTS=	-l $(EXTRATESTOPTS)
- TESTPROG=	$(srcdir)/Lib/test/regrtest.py
-+# FIXME: next test may fail in cross-compilation environment
- TESTPYTHON=	$(RUNSHARED) ./$(BUILDPYTHON) -Wd -3 -E -tt $(TESTPYTHONOPTS)
- test:		all platform
- 		-find $(srcdir)/Lib -name '*.py[co]' -print | xargs rm -f
-@@ -1166,7 +1170,7 @@
- 		fi; \
- 	done
- 	$(LN) -fsn include/python$(VERSION) $(DESTDIR)$(prefix)/Headers
--	sed 's/%VERSION%/'"`$(RUNSHARED) ./$(BUILDPYTHON) -c 'import platform; print platform.python_version()'`"'/g' < $(RESSRCDIR)/Info.plist > $(DESTDIR)$(prefix)/Resources/Info.plist
-+	sed 's/%VERSION%/'"`$(RUNPYTHON) -c 'import platform; print platform.python_version()'`"'/g' < $(RESSRCDIR)/Info.plist > $(DESTDIR)$(prefix)/Resources/Info.plist
- 	$(LN) -fsn $(VERSION) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Versions/Current
- 	$(LN) -fsn Versions/Current/$(PYTHONFRAMEWORK) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/$(PYTHONFRAMEWORK)
- 	$(LN) -fsn Versions/Current/Headers $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Headers
-@@ -1228,8 +1232,8 @@
- # Rerun configure with the same options as it was run last time,
- # provided the config.status script exists
- recheck:
--	$(SHELL) config.status --recheck
--	$(SHELL) config.status
-+	$(SHELL) ./config.status --recheck
-+	$(SHELL) ./config.status
- 
- # Rebuild the configure script from configure.ac; also rebuild pyconfig.h.in
- autoconf:
-@@ -1330,7 +1334,7 @@
- 
- # Perform some verification checks on any modified files.
- patchcheck:
--	$(RUNSHARED) ./$(BUILDPYTHON) $(srcdir)/Tools/scripts/patchcheck.py
-+	$(RUNPYTHON) $(srcdir)/Tools/scripts/patchcheck.py
- 
- # Dependencies
- 
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	Wed Apr 17 21:33:47 2013
-+++ b/configure.ac	Wed Apr 17 21:56:49 2013
+--- a/configure.ac	2013-04-06 15:02:41.000000000 +0100
++++ b/configure.ac	2013-04-21 22:07:52.485618491 +0100
 @@ -11,6 +11,7 @@
  AC_INIT(python, PYTHON_VERSION, http://bugs.python.org/)
  AC_CONFIG_SRCDIR([Include/object.h])
@@ -363,9 +199,180 @@ diff -urN a/configure.ac b/configure.ac
 +AC_CONFIG_FILES([Makefile.pre Modules/Setup.config Misc/python.pc])
 +AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
 +AC_OUTPUT
+diff -urN a/Lib/distutils/README b/Lib/distutils/README
+--- a/Lib/distutils/README	2013-04-06 15:02:26.000000000 +0100
++++ b/Lib/distutils/README	2013-04-21 22:07:52.486618499 +0100
+@@ -9,5 +9,10 @@
+     http://www.python.org/sigs/distutils-sig/
+ 
+ WARNING : Distutils must remain compatible with 2.3
++NOTE: After "Revision 77704 : taking sysconfig out of distutils"
++Distutils package is not compatible with versions before 2.7a3.
++Although "Revision 77759 : reintroduced the names in Distutils for APIs
++that were relocated"(i.e. API is backward compatibile) to cross compile
++python on build system has to be at least version 2.7a3.
+ 
+ $Id$
+diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
+--- a/Lib/sysconfig.py	2013-04-06 15:02:29.000000000 +0100
++++ b/Lib/sysconfig.py	2013-04-21 22:07:52.487618506 +0100
+@@ -3,7 +3,15 @@
+ """
+ import sys
+ import os
+-from os.path import pardir, realpath
++# revert patch from issue 7880 :
++#  - the test case (from issue 7880) works for me
++#  - realpath break cross compilation
++# => so lets use abspath again ;)
++# NOTE "Issue #6612: Fix site and sysconfig to catch os.getcwd() error,
++# eg. if the current directory was deleted." replase all occurrence of
++# realpath with _safe_realpath. Instead to update _safe_realpath to use
++# abspath the cross-compilation revert all!
++from os.path import pardir, abspath
+ 
+ _INSTALL_SCHEMES = {
+     'posix_prefix': {
+@@ -94,27 +102,21 @@
+ _CONFIG_VARS = None
+ _USER_BASE = None
+ 
+-def _safe_realpath(path):
+-    try:
+-        return realpath(path)
+-    except OSError:
+-        return path
+-
+ if sys.executable:
+-    _PROJECT_BASE = os.path.dirname(_safe_realpath(sys.executable))
++    _PROJECT_BASE = os.path.dirname(abspath(sys.executable))
+ else:
+     # sys.executable can be empty if argv[0] has been changed and Python is
+     # unable to retrieve the real program name
+-    _PROJECT_BASE = _safe_realpath(os.getcwd())
++    _PROJECT_BASE = abspath(os.getcwd())
+ 
+ if os.name == "nt" and "pcbuild" in _PROJECT_BASE[-8:].lower():
+-    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir))
++    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir))
+ # PC/VS7.1
+ if os.name == "nt" and "\\pc\\v" in _PROJECT_BASE[-10:].lower():
+-    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir, pardir))
++    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir, pardir))
+ # PC/AMD64
+ if os.name == "nt" and "\\pcbuild\\amd64" in _PROJECT_BASE[-14:].lower():
+-    _PROJECT_BASE = _safe_realpath(os.path.join(_PROJECT_BASE, pardir, pardir))
++    _PROJECT_BASE = abspath(os.path.join(_PROJECT_BASE, pardir, pardir))
+ 
+ # set for cross builds
+ if "_PYTHON_PROJECT_BASE" in os.environ:
+@@ -317,7 +319,7 @@
+     vars['SO'] = '.pyd'
+     vars['EXE'] = '.exe'
+     vars['VERSION'] = _PY_VERSION_SHORT_NO_DOT
+-    vars['BINDIR'] = os.path.dirname(_safe_realpath(sys.executable))
++    vars['BINDIR'] = os.path.dirname(abspath(sys.executable))
+ 
+ #
+ # public APIs
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-04-06 15:02:34.000000000 +0100
++++ b/Makefile.pre.in	2013-04-21 22:07:52.487618506 +0100
+@@ -200,6 +200,10 @@
+ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
+ #PROFILE_TASK=	$(srcdir)/Lib/test/regrtest.py
+ 
++# Don't define HOST_OS as makefile macro !
++@CROSS_ON@RUNPYTHON=	HOST_OS=@HOST_OS@ @SYSPYTHON@
++@CROSS_OFF@RUNPYTHON=	$(RUNSHARED) ./$(BUILDPYTHON)
++
+ # === Definitions added by makesetup ===
+ 
+ 
+@@ -467,10 +471,10 @@
+ 
+ libpython$(VERSION).so: $(LIBRARY_OBJS)
+ 	if test $(INSTSONAME) != $(LDLIBRARY); then \
+-		$(BLDSHARED) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
++		$(LDSHARED) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
+ 		$(LN) -f $(INSTSONAME) $@; \
+ 	else \
+-		$(BLDSHARED) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
++		$(LDSHARED) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
+ 	fi
+ 
+ libpython$(VERSION).dylib: $(LIBRARY_OBJS)
+@@ -526,18 +530,17 @@
+ oldsharedmods: $(SHAREDMODS)
+ 
+ 
++setup_info: setup_info.in config.status
++	$(SHELL) ./config.status $@
++
++
+ Makefile Modules/config.c: Makefile.pre \
+ 				$(srcdir)/Modules/config.c.in \
+ 				$(MAKESETUP) \
+ 				Modules/Setup.config \
+ 				Modules/Setup \
+ 				Modules/Setup.local
+-	$(SHELL) $(MAKESETUP) -c $(srcdir)/Modules/config.c.in \
+-				-s Modules \
+-				Modules/Setup.config \
+-				Modules/Setup.local \
+-				Modules/Setup
+-	@mv config.c Modules
++	$(SHELL) ./config.status Makefile
+ 	@echo "The Makefile was updated, you may need to re-run make."
+ 
+ 
+@@ -757,6 +760,7 @@
+ 
+ TESTOPTS=	-l $(EXTRATESTOPTS)
+ TESTPROG=	$(srcdir)/Lib/test/regrtest.py
++# FIXME: next test may fail in cross-compilation environment
+ TESTPYTHON=	$(RUNSHARED) ./$(BUILDPYTHON) -Wd -3 -E -tt $(TESTPYTHONOPTS)
+ test:		all platform
+ 		-find $(srcdir)/Lib -name '*.py[co]' -print | xargs rm -f
+@@ -1166,7 +1170,7 @@
+ 		fi; \
+ 	done
+ 	$(LN) -fsn include/python$(VERSION) $(DESTDIR)$(prefix)/Headers
+-	sed 's/%VERSION%/'"`$(RUNSHARED) ./$(BUILDPYTHON) -c 'import platform; print platform.python_version()'`"'/g' < $(RESSRCDIR)/Info.plist > $(DESTDIR)$(prefix)/Resources/Info.plist
++	sed 's/%VERSION%/'"`$(RUNPYTHON) -c 'import platform; print platform.python_version()'`"'/g' < $(RESSRCDIR)/Info.plist > $(DESTDIR)$(prefix)/Resources/Info.plist
+ 	$(LN) -fsn $(VERSION) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Versions/Current
+ 	$(LN) -fsn Versions/Current/$(PYTHONFRAMEWORK) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/$(PYTHONFRAMEWORK)
+ 	$(LN) -fsn Versions/Current/Headers $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Headers
+@@ -1228,8 +1232,8 @@
+ # Rerun configure with the same options as it was run last time,
+ # provided the config.status script exists
+ recheck:
+-	$(SHELL) config.status --recheck
+-	$(SHELL) config.status
++	$(SHELL) ./config.status --recheck
++	$(SHELL) ./config.status
+ 
+ # Rebuild the configure script from configure.ac; also rebuild pyconfig.h.in
+ autoconf:
+@@ -1330,7 +1334,7 @@
+ 
+ # Perform some verification checks on any modified files.
+ patchcheck:
+-	$(RUNSHARED) ./$(BUILDPYTHON) $(srcdir)/Tools/scripts/patchcheck.py
++	$(RUNPYTHON) $(srcdir)/Tools/scripts/patchcheck.py
+ 
+ # Dependencies
+ 
+diff -urN a/setup_info.in b/setup_info.in
+--- a/setup_info.in	1970-01-01 01:00:00.000000000 +0100
++++ b/setup_info.in	2013-04-21 22:07:52.488618514 +0100
+@@ -0,0 +1,3 @@
++# file with data from configure file
++
++READLINE_LIBS=@READLINE_LIBS@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	Wed Apr 17 21:33:59 2013
-+++ b/setup.py	Wed Apr 17 22:28:37 2013
+--- a/setup.py	2013-04-06 15:02:41.000000000 +0100
++++ b/setup.py	2013-04-21 22:07:52.488618514 +0100
 @@ -29,6 +29,22 @@
      return sys.platform
  host_platform = get_platform()
@@ -463,10 +470,3 @@ diff -urN a/setup.py b/setup.py
              curses_library = readline_termcap_library
          elif self.compiler.find_library_file(lib_dirs, 'ncursesw'):
              curses_library = 'ncursesw'
-diff -urN a/setup_info.in b/setup_info.in
---- a/setup_info.in	Thu Jan  1 00:00:00 1970
-+++ b/setup_info.in	Wed Apr 17 22:28:37 2013
-@@ -0,0 +1,3 @@
-+# file with data from configure file
-+
-+READLINE_LIBS=@READLINE_LIBS@

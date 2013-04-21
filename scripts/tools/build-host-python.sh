@@ -412,7 +412,7 @@ make_tcltk ()
 
     if [ ! -f $_PREFIX/include/tk.h ] ; then
 
-        TCLTKVER=8.5.11
+        TCLTKVER=8.5.14
         if [ $_HOST_TAG = windows-x86 -o $_HOST_TAG = windows-x86_64 ] ; then
             # Originally I wanted to build tcltk statically, but a compiled .rc file needs to
             # be linked with the target program or dll (_tkinter.pyd here) for this to work.
@@ -530,7 +530,10 @@ build_host_python ()
 #    fi
     ARGS=$ARGS" --host=$BH_HOST_CONFIG"
     ARGS=$ARGS" $PYDEBUG"
-#    ARGS=$ARGS" --disable-ipv6"
+    # When cross compiling from linux-x86_64 to linux-x86 we sometimes have failures with:
+    # checking getaddrinfo bug
+    # configure:12139: result: yes
+    ARGS=$ARGS" --disable-ipv6"
 
     mkdir -p "$BUILDDIR" && rm -rf "$BUILDDIR"/*
     cd "$BUILDDIR" &&
@@ -588,17 +591,14 @@ build_host_python ()
         fi
     fi
 
-    dump "BH_BUILD_TAG is $BH_BUILD_TAG, BH_HOST_TAG is $BH_HOST_TAG, dollar 1 is $1"
     if [ $BH_BUILD_TAG = windows-x86_64 -o $BH_BUILD_TAG = windows-x86 ] ; then
-     # Bit of a hack for running natively on MinGW where python.exe tries to run
+      # Bit of a hack for running natively on MSYS/MinGW where python.exe tries to run
       # our toolchain wrapper shell script via CreateProcess (and of course fails)
-      # Another option is to set:
-      #  CC  to $(dirname $(which gcc.exe)/gcc.exe
-      #  CXX to $(dirname $(which g++.exe)/g++.exe
+      # Instead we call it via sh.exe.
       pushd $(dirname $(which sh.exe))
       export CC="$(pwd -W)/sh.exe $CC"
       export CXX="$(pwd -W)/sh.exe $CXX"
-      dump "exported CC of $CC"
+      dump "MSYS Workaround :: exported CC of $CC"
       popd
     fi
 

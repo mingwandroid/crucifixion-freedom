@@ -1,6 +1,6 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	Wed Apr 17 23:28:01 2013
-+++ b/setup.py	Wed Apr 17 23:29:04 2013
+--- a/setup.py	2013-04-21 22:08:02.314693098 +0100
++++ b/setup.py	2013-04-21 22:08:02.706696074 +0100
 @@ -586,7 +586,7 @@
          if host_platform == 'hp-ux11':
              lib_dirs += ['/usr/lib/hpux64', '/usr/lib/hpux32']

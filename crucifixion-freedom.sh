@@ -18,6 +18,13 @@
 # Wrapper script to rebuild the host Python binaries from sources.
 #
 
+# platform/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.6
+# git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.6
+# platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
+# git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
+
+# PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86
+
 ANDROID_NDK_ROOT=$(cd $PWD && pwd)
 NDK=$PWD
 
@@ -47,7 +54,7 @@ PYTHON_VERSION=2.7.3,3.3.0
 
 register_var_option "--python-version=<versions>" PYTHON_VERSION "Select Python version(s)."
 
-DARWIN_SYSROOT="/usr/nec/host_compiler_tools/darwin/MacOSX10.7.sdk"
+DARWIN_SYSROOT="$HOME/darwin-cross/MacOSX10.7.sdk"
 register_var_option "--darwin-sdk=<path>" DARWIN_SYSROOT "Select Darwin SDK path."
 
 PYTHON_BUILD_DIR=/tmp2/cr-build
@@ -204,6 +211,8 @@ win_mklink ()
     cmd.exe /c "if not exist $_LINK_WIN mklink /D \"$_LINK_WIN\" \"$_TARG_WIN\""
 }
 
+prebuilts/gcc/linux-x86/host/
+
 if [ $BH_BUILD_OS = windows ]; then
     DARWIN_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Windows-120614.7z
     MINGW_CROSS_FILENAME=http://heanet.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/rubenvb/release/i686-w64-mingw32-gcc-4.7.0-release-win32_rubenvb.7z
@@ -216,7 +225,9 @@ elif [ $BH_BUILD_OS = darwin ]; then
 elif [ $BH_BUILD_OS = linux ]; then
     DARWIN_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz
     MINGW_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/i686-w64-mingw32-linux-i686-glibc2.7.tar.bz2
-    LINUX_CROSS_TOOLCHAIN=http://mingw-and-ndk.googlecode.com/files/i686-linux-glibc2.7-4.4.3.tar.bz2
+    # The next two are git repositories.
+    LINUX32_CROSS_TOOLCHAIN=https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.6
+    LINUX64_CROSS_TOOLCHAIN=https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
     DEFAULT_SYSTEMS=darwin-x86,darwin-x86_64,windows-x86,windows-x86_64,linux-x86_64,linux-x86
 fi
 
@@ -229,15 +240,22 @@ SYSTEMSLIST=$(commas_to_spaces $BH_HOST_SYSTEMS)
 
 if [ ! $(bh_list_contains "linux-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "linux-x86_64" $SYSTEMSLIST) = no ] ; then
     # I need Linux targeting cross compilers for Darwin and Windows...
-    if [ ! -z "$LINUX_CROSS_TOOLCHAIN" ] ; then
+    for LINUX_CROSS_TOOLCHAIN in $LINUX32_CROSS_TOOLCHAIN $LINUX64_CROSS_TOOLCHAIN; do
         if [ ! -d $TOOLCHAINS/google-prebuilt ]; then
-            if [ ! -f $ROOT/toolchain-tarballs/$(basename $LINUX_CROSS_TOOLCHAIN) ]; then
-                (cd $ROOT/toolchain-tarballs; curl -S -L -O $LINUX_CROSS_TOOLCHAIN)
-            fi
-            (mkdir -p $TOOLCHAINS/google-prebuilt; cd $TOOLCHAINS/google-prebuilt; tar -xJf $ROOT/toolchain-tarballs/$(basename $LINUX_CROSS_TOOLCHAIN))
+            mkdir -p $TOOLCHAINS/google-prebuilt
         fi
-        export PATH=$TOOLCHAINS/google-prebuilt/linux-x86/toolchain/i686-linux-glibc2.7-4.4.3/bin:$PATH
-    fi
+        if [ ! -d $TOOLCHAINS/google-prebuilt/$(basename $LINUX_CROSS_TOOLCHAIN) ]; then
+            (cd $TOOLCHAINS/google-prebuilt; git clone $LINUX_CROSS_TOOLCHAIN $(basename $LINUX_CROSS_TOOLCHAIN))
+        fi
+        if [ ! -d prebuilts/gcc/linux-x86/host ]; then
+            mkdir -p prebuilts/gcc/linux-x86/host
+        fi
+        set -x
+        if [ ! -d prebuilts/gcc/linux-x86/host/$(basename $LINUX_CROSS_TOOLCHAIN) ]; then
+            ln -s $TOOLCHAINS/google-prebuilt/$(basename $LINUX_CROSS_TOOLCHAIN) prebuilts/gcc/linux-x86/host/$(basename $LINUX_CROSS_TOOLCHAIN)
+        fi
+        export PATH=$TOOLCHAINS/google-prebuilt/$(basename $LINUX_CROSS_TOOLCHAIN)/bin:$PATH
+    done
 fi
 
 if [ ! $(bh_list_contains "windows-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "windows-x86_64" $SYSTEMSLIST) = no ] ; then
@@ -296,6 +314,10 @@ exit 0
 # You can ignore everything after this line. It's a scratch area I use for regenerating
 # patches!
 
+PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,windows-x86,windows-x86_64
+PATH=$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,darwin-x86
+
+PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86,darwin-x86,darwin-x86_64,windows-x86,windows-x86_64
 
 
 ROOT=$PWD
@@ -338,8 +360,8 @@ diff -urN a-${PYVER} b-${PYVER} > $PATCHESDIR/9999-re-configure-d.patch
 
 ROOT=$PWD
 PYVER=2.7.4
-rm -rf a-${PYVER} b-${PYVER} Python-${PYVER}
-tar -xjf /c/Users/nonesush/Dropbox/Python/SourceTarballs/${PYVER}/Python-$PYVER.tar.bz2
+rm -rf a b Python-${PYVER}
+tar -xjf $HOME/Dropbox/Python/SourceTarballs/${PYVER}/Python-$PYVER.tar.bz2
 PATCHESDIR=$ROOT/patches/python/$PYVER
 pushd Python-$PYVER
 patch -p1 < $PATCHESDIR/0000-CROSS.patch
@@ -359,7 +381,7 @@ patch -p1 < $PATCHESDIR/0055-mingw-pdcurses_ISPAD.patch
 patch -p1 < $PATCHESDIR/0060-mingw-static-tcltk.patch
 patch -p1 < $PATCHESDIR/0065-mingw-x86_64-size_t-format-specifier-pid_t.patch
 patch -p1 < $PATCHESDIR/0070-python-disable-dbm.patch
-patch -p1 < $PATCHESDIR/0075-add-python-config-sh.patch # Needs clean.
+patch -p1 < $PATCHESDIR/0075-add-python-config-sh.patch
 patch -p1 < $PATCHESDIR/0080-mingw-nt-threads-vs-pthreads.patch
 patch -p1 < $PATCHESDIR/0085-cross-dont-add-multiarch-paths-if.patch
 patch -p1 < $PATCHESDIR/0090-mingw-reorder-bininstall-ln-symlink-creation.patch
@@ -369,20 +391,76 @@ patch -p1 < $PATCHESDIR/0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
 patch -p1 < $PATCHESDIR/0110-mingw-_PyNode_SizeOf-decl-fix.patch
 patch -p1 < $PATCHESDIR/0115-mingw-cross-includes-lower-case.patch
 patch -p1 < $PATCHESDIR/0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
-patch -p1 < $PATCHESDIR/9999-re-configure-d.patch
 popd
-mv Python-${PYVER} a-${PYVER}
-cp -rf a-${PYVER} b-${PYVER}
-pushd b-${PYVER}
+mv Python-${PYVER} a
+cp -rf a b
+pushd b
 autoconf; autoheader;
 rm pyconfig.h.in~
 rm -rf autom4te.cache
 popd
-diff -urN a-${PYVER} b-${PYVER} > $PATCHESDIR/9999-re-configure-d.patch
+diff -urN a b > $PATCHESDIR/9999-re-configure-d.patch
 
+tidy_patches ()
+{
+    PYVER=$1; shift
+    PATCHES="$1"; shift
+    ROOT=$PWD
+    PATCHESDIR=$ROOT/patches/python/$PYVER
+    PATCHESDIRNEW=$ROOT/patches/python/$PYVER
+    # For when not feeling confident about this!
+    PATCHESDIRNEW=$ROOT/patches/python/$PYVER.new
+    mkdir -p $PATCHESDIRNEW
+    tar -xjf $HOME/Dropbox/Python/SourceTarballs/${PYVER}/Python-$PYVER.tar.bz2
+    rm -rf ${PATCHESDIR}.backup
+    cp -rf ${PATCHESDIR} ${PATCHESDIR}.backup
+    if [ -d a ]; then
+        rm -rf a
+    fi
+    mv Python-$PYVER a
+    for PATCH in $PATCHES; do
+        if [ -d b ]; then
+            rm -rf b
+        fi
+        cp -rf a b
+        pushd b
+        patch -p1 < ${PATCHESDIR}/$PATCH
+        if [ $(find . -name "*.rej") ]; then
+            popd
+            echo "ERROR: Failed to apply $PATCH"
+            return 1
+        fi
+        find . -name "*.orig" -exec rm {} \;
+        popd
+        diff -urN a b > ${PATCHESDIRNEW}/$PATCH
+        rm -rf a
+        cp -rf b a
+    done
+    rm -rf a
+    cp -rf b a
+    pushd b
+    autoconf; autoheader;
+    rm pyconfig.h.in~
+    rm -rf autom4te.cache
+    popd
+    diff -urN a b > ${PATCHESDIRNEW}/9999-re-configure-d.patch
+    return 0
+}
 
+PATCHES_274=\
+"0000-CROSS.patch 0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch 0007-mingw-system-libffi.patch \
+0010-mingw-osdefs-DELIM.patch 0015-mingw-use-posix-getpath.patch 0020-mingw-w64-test-for-REPARSE_DATA_BUFFER.patch \
+0025-mingw-regen-with-stddef-instead.patch 0030-mingw-add-libraries-for-_msi.patch 0035-MSYS-add-MSYSVPATH-AC_ARG.patch \
+0040-mingw-cygwinccompiler-use-CC-envvars-and-ld-from-print-prog-name.patch 0045-cross-darwin.patch \
+0050-mingw-sysconfig-like-posix.patch 0055-mingw-pdcurses_ISPAD.patch 0060-mingw-static-tcltk.patch \
+0065-mingw-x86_64-size_t-format-specifier-pid_t.patch 0070-python-disable-dbm.patch 0075-add-python-config-sh.patch \
+0080-mingw-nt-threads-vs-pthreads.patch 0085-cross-dont-add-multiarch-paths-if.patch \
+0090-mingw-reorder-bininstall-ln-symlink-creation.patch 0095-mingw-use-backslashes-in-compileall-py.patch \
+0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
+0110-mingw-_PyNode_SizeOf-decl-fix.patch 0115-mingw-cross-includes-lower-case.patch \
+0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch"
 
-
+tidy_patches "2.7.4" "$PATCHES_274"
 
 ROOT=$PWD
 PYVER=3.3.0
