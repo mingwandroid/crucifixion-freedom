@@ -1,6 +1,6 @@
-diff -urN a-2.7.4/configure b-2.7.4/configure
---- a-2.7.4/configure	2013-04-06 15:02:41.000000000 +0100
-+++ b-2.7.4/configure	2013-04-18 00:07:17.689156090 +0100
+diff -urN a/configure b/configure
+--- a/configure	2013-04-21 16:08:58.635725390 +0100
++++ b/configure	2013-04-21 16:09:15.631005158 +0100
 @@ -625,7 +625,12 @@
  
  ac_subst_vars='LTLIBOBJS
@@ -244,7 +244,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
 +DELIM=:
 +if test "$MACHDEP" = "win"
 +then
-+	DELIM=\;
++       DELIM=\;
 +fi
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $DELIM" >&5
 +$as_echo "$DELIM" >&6; }
@@ -253,7 +253,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
 +# MSYS make uses a 'virtual' VPATH, but getpath.c uses
 +# GetModuleFileNameW (replacing \ with /). This allows the user to
 +# define the 'actual 'real' value. Note, it should contain / not \,
-+# which is what is returned by "pwd -W".
++# (/ is returned by "pwd -W")
 +
 +if test -z "$MSYSVPATH"; then
 +    MSYSVPATH=$srcdir
@@ -454,16 +454,14 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  # On some compilers, pthreads are available without further options
  # (e.g. MacOS X). On some of these systems, the compiler will not
  # complain if unaccepted options are passed (e.g. gcc on Mac OS X).
-@@ -6469,67 +6727,418 @@
-   (void)pthread_detach(p);
-   return 0;
- }
--
-+
-+_ACEOF
-+if ac_fn_c_try_run "$LINENO"; then :
-+  ac_cv_pthread=yes
-+else
+@@ -6474,62 +6732,413 @@
+ if ac_fn_c_try_run "$LINENO"; then :
+   ac_cv_pthread=yes
+ else
+-  ac_cv_pthread=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
 +  ac_cv_pthread=no
 +fi
 +rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
@@ -833,16 +831,10 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
 +  ;
 +  return 0;
 +}
- _ACEOF
--if ac_fn_c_try_run "$LINENO"; then :
--  ac_cv_pthread=yes
++_ACEOF
 +if ac_fn_c_try_link "$LINENO"; then :
 +  ac_cv_header_sys_types_h_makedev=yes
- else
--  ac_cv_pthread=no
--fi
--rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
--  conftest.$ac_objext conftest.beam conftest.$ac_ext
++else
 +  ac_cv_header_sys_types_h_makedev=no
  fi
 +rm -f core conftest.err conftest.$ac_objext \
@@ -1539,7 +1531,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for %zd printf() format support" >&5
  $as_echo_n "checking for %zd printf() format support... " >&6; }
  if ${ac_cv_have_size_t_format+:} false; then :
-@@ -14497,8 +15293,38 @@
+@@ -14497,8 +15293,37 @@
    THREADHEADERS="$THREADHEADERS \$(srcdir)/$h"
  done
  
@@ -1565,7 +1557,6 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
 +    # FIXME: why windows builds don't use PC/frozen_dllmain.o ?
 +    PYTHON_OBJS_FROZENMAIN=""
 +    # default sys.path calculations for windows platforms
-+    # MODULE_GETPATH=PC/getpathp.o
 +    MODULE_GETPATH=Modules/getpath.o
 +    ;;
 +esac
@@ -1578,7 +1569,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for build directories" >&5
  $as_echo_n "checking for build directories... " >&6; }
  for dir in $SRCDIRS; do
-@@ -14510,7 +15336,13 @@
+@@ -14510,7 +15335,13 @@
  $as_echo "done" >&6; }
  
  # generate output files
@@ -1593,7 +1584,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  
  ac_config_files="$ac_config_files Modules/ld_so_aix"
  
-@@ -14625,6 +15457,21 @@
+@@ -14625,6 +15456,21 @@
  
  
  
@@ -1615,7 +1606,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  : "${CONFIG_STATUS=./config.status}"
  ac_write_fail=0
  ac_clean_files_save=$ac_clean_files
-@@ -15048,6 +15895,7 @@
+@@ -15048,6 +15894,7 @@
  # Files that config.status was made for.
  config_files="$ac_config_files"
  config_headers="$ac_config_headers"
@@ -1623,7 +1614,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  
  _ACEOF
  
-@@ -15077,6 +15925,9 @@
+@@ -15077,6 +15924,9 @@
  Configuration headers:
  $config_headers
  
@@ -1633,7 +1624,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  Report bugs to <http://bugs.python.org/>."
  
  _ACEOF
-@@ -15212,9 +16063,12 @@
+@@ -15212,9 +16062,12 @@
      "Mac/IDLE/Makefile") CONFIG_FILES="$CONFIG_FILES Mac/IDLE/Makefile" ;;
      "Mac/Resources/framework/Info.plist") CONFIG_FILES="$CONFIG_FILES Mac/Resources/framework/Info.plist" ;;
      "Mac/Resources/app/Info.plist") CONFIG_FILES="$CONFIG_FILES Mac/Resources/app/Info.plist" ;;
@@ -1646,7 +1637,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
      "Modules/ld_so_aix") CONFIG_FILES="$CONFIG_FILES Modules/ld_so_aix" ;;
  
    *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
-@@ -15229,6 +16083,7 @@
+@@ -15229,6 +16082,7 @@
  if $ac_need_defaults; then
    test "${CONFIG_FILES+set}" = set || CONFIG_FILES=$config_files
    test "${CONFIG_HEADERS+set}" = set || CONFIG_HEADERS=$config_headers
@@ -1654,7 +1645,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  fi
  
  # Have a temporary directory for convenience.  Make it in the build tree
-@@ -15525,7 +16380,7 @@
+@@ -15525,7 +16379,7 @@
  fi # test -n "$CONFIG_HEADERS"
  
  
@@ -1663,7 +1654,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
  shift
  for ac_tag
  do
-@@ -15769,11 +16624,19 @@
+@@ -15769,11 +16623,19 @@
    fi
   ;;
  
@@ -1684,7 +1675,7 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
      "Modules/ld_so_aix":F) chmod +x Modules/ld_so_aix ;;
  
    esac
-@@ -15813,38 +16676,3 @@
+@@ -15813,38 +16675,3 @@
  $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
  fi
  
@@ -1723,9 +1714,9 @@ diff -urN a-2.7.4/configure b-2.7.4/configure
 -esac
 -
 -mv config.c Modules
-diff -urN a-2.7.4/pyconfig.h.in b-2.7.4/pyconfig.h.in
---- a-2.7.4/pyconfig.h.in	2013-04-18 00:06:46.830190497 +0100
-+++ b-2.7.4/pyconfig.h.in	2013-04-18 00:07:19.557324248 +0100
+diff -urN a/pyconfig.h.in b/pyconfig.h.in
+--- a/pyconfig.h.in	2013-04-21 16:08:58.656725744 +0100
++++ b/pyconfig.h.in	2013-04-21 16:09:15.954010359 +0100
 @@ -981,6 +981,9 @@
  /* Define if you want to have a Unicode type. */
  #undef Py_USING_UNICODE

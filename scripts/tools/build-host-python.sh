@@ -525,9 +525,9 @@ build_host_python ()
     # Python considers it cross compiling if --host is passed # ??? SHOULD THIS BE --build ???
     #  and that then requires that a CONFIG_SITE file is used.
     # This is not necessary if it's only the arch that differs.
-    if [ ! $BH_HOST_CONFIG = $BH_BUILD_CONFIG -o "$BH_HOST_CONFIG" = "i586-pc-mingw32msvc" ] ; then
+#    if [ ! $BH_HOST_CONFIG = $BH_BUILD_CONFIG -o "$BH_HOST_CONFIG" = "i586-pc-mingw32msvc" ] ; then
         ARGS=$ARGS" --build=$BH_BUILD_CONFIG"
-    fi
+#    fi
     ARGS=$ARGS" --host=$BH_HOST_CONFIG"
     ARGS=$ARGS" $PYDEBUG"
 #    ARGS=$ARGS" --disable-ipv6"
@@ -622,7 +622,7 @@ build_host_python ()
         export LDSHARED=$LDSHARED" -shared "
     fi
 
-    TEXT="$(bh_host_text) python-$BH_HOST_CONFIG:"
+    TEXT="$(bh_host_text) python-$2:"
 
     touch $SRCDIR/Include/graminit.h
     touch $SRCDIR/Python/graminit.c
@@ -673,7 +673,7 @@ install_host_python ()
 
     need_build_host_python $1 $2
 
-    dump "$(bh_host_text) python-$BH_HOST_ARCH-$2: Installing"
+    dump "$(bh_host_text) python-$2: Installing"
     run copy_directory "$SRCDIR/bin"     "$DSTDIR/bin"
     run copy_directory "$SRCDIR/lib"     "$DSTDIR/lib"
     run copy_directory "$SRCDIR/share"   "$DSTDIR/share"
