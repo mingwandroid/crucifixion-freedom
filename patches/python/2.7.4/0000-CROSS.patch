@@ -162,52 +162,6 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  
  # Dependencies
  
-diff -urN a/Makefile.pre.in.rej.autosave b/Makefile.pre.in.rej.autosave
---- a/Makefile.pre.in.rej.autosave	Thu Jan  1 00:00:00 1970
-+++ b/Makefile.pre.in.rej.autosave	Wed Apr 17 22:04:55 2013
-@@ -0,0 +1,42 @@
-+***************
-+*** 1164,1183 ****
-+  
-+  # This installs a few of the useful scripts in Tools/scripts
-+  scriptsinstall:
-+- 	SRCDIR=$(srcdir) $(RUNSHARED) \
-+- 	./$(BUILDPYTHON) $(srcdir)/Tools/scripts/setup.py install \
-+  	--prefix=$(prefix) \
-+  	--install-scripts=$(BINDIR) \
-+  	--root=$(DESTDIR)/
-+  
-+  # Build the toplevel Makefile
-+  Makefile.pre: Makefile.pre.in config.status
-+- 	CONFIG_FILES=Makefile.pre CONFIG_HEADERS= $(SHELL) config.status
-+- 	$(MAKE) -f Makefile.pre Makefile
-+  
-+  # Run the configure script.
-+  config.status:	$(srcdir)/configure
-+- 	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
-+  
-+  .PRECIOUS: config.status $(BUILDPYTHON) Makefile Makefile.pre
-+  
-+--- 1169,1187 ----
-+  
-+  # This installs a few of the useful scripts in Tools/scripts
-+  scriptsinstall:
-++ 	SRCDIR=$(srcdir) \
-++ 	$(RUNPYTHON) $(srcdir)/Tools/scripts/setup.py install \
-+  	--prefix=$(prefix) \
-+  	--install-scripts=$(BINDIR) \
-+  	--root=$(DESTDIR)/
-+  
-+  # Build the toplevel Makefile
-+  Makefile.pre: Makefile.pre.in config.status
-++ 	$(SHELL) ./config.status $@
-+  
-+  # Run the configure script.
-+  config.status:	$(srcdir)/configure
-++ 	$(SHELL) ./config.status --recheck
-+  
-+  .PRECIOUS: config.status $(BUILDPYTHON) Makefile Makefile.pre
-+  
 diff -urN a/configure.ac b/configure.ac
 --- a/configure.ac	Wed Apr 17 21:33:47 2013
 +++ b/configure.ac	Wed Apr 17 21:56:49 2013

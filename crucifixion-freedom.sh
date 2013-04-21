@@ -336,21 +336,30 @@ patch -p1 < $PATCHESDIR/0000-CROSS.patch
 patch -p1 < $PATCHESDIR/0005-MINGW.patch
 patch -p1 < $PATCHESDIR/0006-mingw-removal-of-libffi-patch.patch
 patch -p1 < $PATCHESDIR/0007-mingw-system-libffi.patch
-patch -p1 < $PATCHESDIR/0010-mingw-use-posix-getpath.patch
-patch -p1 < $PATCHESDIR/0015-cross-darwin.patch
-patch -p1 < $PATCHESDIR/0020-mingw-sysconfig-like-posix.patch
-patch -p1 < $PATCHESDIR/0025-mingw-pdcurses_ISPAD.patch
-patch -p1 < $PATCHESDIR/0030-mingw-static-tcltk.patch
-patch -p1 < $PATCHESDIR/0035-mingw-x86_64-size_t-format-specifier-pid_t.patch
-patch -p1 < $PATCHESDIR/0040-python-disable-dbm.patch
-patch -p1 < $PATCHESDIR/0050-add-python-config-sh.patch
-patch -p1 < $PATCHESDIR/0055-mingw-nt-threads-vs-pthreads.patch
-patch -p1 < $PATCHESDIR/0060-cross-dont-add-multiarch-paths-if.patch
-patch -p1 < $PATCHESDIR/0065-mingw-reorder-bininstall-ln-symlink-creation.patch
-patch -p1 < $PATCHESDIR/0070-mingw-use-backslashes-in-compileall-py.patch
-patch -p1 < $PATCHESDIR/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
-patch -p1 < $PATCHESDIR/0080-mingw-MSYS-no-usr-lib-or-usr-include.patch
-
+patch -p1 < $PATCHESDIR/0010-mingw-osdefs-DELIM.patch
+patch -p1 < $PATCHESDIR/0015-mingw-use-posix-getpath.patch
+patch -p1 < $PATCHESDIR/0020-mingw-w64-test-for-REPARSE_DATA_BUFFER.patch
+patch -p1 < $PATCHESDIR/0025-mingw-regen-with-stddef-instead.patch
+patch -p1 < $PATCHESDIR/0030-mingw-add-libraries-for-_msi.patch
+patch -p1 < $PATCHESDIR/0035-MSYS-add-MSYSVPATH-AC_ARG.patch
+patch -p1 < $PATCHESDIR/0040-mingw-cygwinccompiler-use-CC-envvars-and-ld-from-print-prog-name.patch
+patch -p1 < $PATCHESDIR/0045-cross-darwin.patch
+patch -p1 < $PATCHESDIR/0050-mingw-sysconfig-like-posix.patch
+patch -p1 < $PATCHESDIR/0055-mingw-pdcurses_ISPAD.patch
+patch -p1 < $PATCHESDIR/0060-mingw-static-tcltk.patch
+patch -p1 < $PATCHESDIR/0065-mingw-x86_64-size_t-format-specifier-pid_t.patch
+patch -p1 < $PATCHESDIR/0070-python-disable-dbm.patch
+patch -p1 < $PATCHESDIR/0075-add-python-config-sh.patch # Needs clean.
+patch -p1 < $PATCHESDIR/0080-mingw-nt-threads-vs-pthreads.patch
+patch -p1 < $PATCHESDIR/0085-cross-dont-add-multiarch-paths-if.patch
+patch -p1 < $PATCHESDIR/0090-mingw-reorder-bininstall-ln-symlink-creation.patch
+patch -p1 < $PATCHESDIR/0095-mingw-use-backslashes-in-compileall-py.patch
+patch -p1 < $PATCHESDIR/0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
+patch -p1 < $PATCHESDIR/0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
+patch -p1 < $PATCHESDIR/0110-mingw-_PyNode_SizeOf-decl-fix.patch
+patch -p1 < $PATCHESDIR/0115-mingw-cross-includes-lower-case.patch
+patch -p1 < $PATCHESDIR/0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
+patch -p1 < $PATCHESDIR/9999-re-configure-d.patch
 popd
 mv Python-${PYVER} a-${PYVER}
 cp -rf a-${PYVER} b-${PYVER}

@@ -1,7 +1,7 @@
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	Wed Apr 17 23:38:21 2013
-+++ b/Makefile.pre.in	Wed Apr 17 23:39:12 2013
-@@ -1051,6 +1051,8 @@
+--- a/Makefile.pre.in	2013-04-21 00:50:10 +0100
++++ b/Makefile.pre.in	2013-04-21 00:50:56 +0100
+@@ -1050,6 +1050,8 @@
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
  	sed -e "s,@EXENAME@,$(BINDIR)/python$(VERSION)$(EXE)," < $(srcdir)/Misc/python-config.in >python-config
@@ -10,7 +10,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  
  # Install the include files
  INCLDIRSTOMAKE=$(INCLUDEDIR) $(CONFINCLUDEDIR) $(INCLUDEPY) $(CONFINCLUDEPY)
-@@ -1109,6 +1111,7 @@
+@@ -1108,6 +1110,7 @@
  	$(INSTALL_SCRIPT) $(srcdir)/Modules/makesetup $(DESTDIR)$(LIBPL)/makesetup
  	$(INSTALL_SCRIPT) $(srcdir)/install-sh $(DESTDIR)$(LIBPL)/install-sh
  	$(INSTALL_SCRIPT) python-config $(DESTDIR)$(BINDIR)/python$(VERSION)-config
@@ -19,8 +19,8 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  	@if [ -s Modules/python.exp -a \
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
 diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
---- a/Misc/python-config.sh.in	Thu Jan  1 00:00:00 1970
-+++ b/Misc/python-config.sh.in	Wed Apr 17 23:39:12 2013
+--- a/Misc/python-config.sh.in	1970-01-01 00:00:00 +0000
++++ b/Misc/python-config.sh.in	2013-04-21 00:50:56 +0100
 @@ -0,0 +1,101 @@
 +#!/bin/sh
 +
@@ -124,8 +124,8 @@ diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 +esac
 +done
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	Wed Apr 17 23:38:13 2013
-+++ b/configure.ac	Wed Apr 17 23:39:12 2013
+--- a/configure.ac	2013-04-21 00:50:10 +0100
++++ b/configure.ac	2013-04-21 00:50:56 +0100
 @@ -1006,6 +1006,7 @@
  
  # Other platforms follow
@@ -150,7 +150,7 @@ diff -urN a/configure.ac b/configure.ac
  
  if test "$cross_compiling" = yes; then
  	RUNSHARED=
-@@ -4987,6 +4990,6 @@
+@@ -4986,6 +4989,6 @@
  
  mv config.c Modules])
  AC_CONFIG_FILES([setup_info])
