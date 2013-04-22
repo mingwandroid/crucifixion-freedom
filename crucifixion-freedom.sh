@@ -213,8 +213,6 @@ win_mklink ()
     cmd.exe /c "if not exist $_LINK_WIN mklink /D \"$_LINK_WIN\" \"$_TARG_WIN\""
 }
 
-prebuilts/gcc/linux-x86/host/
-
 if [ $BH_BUILD_OS = windows ]; then
     DARWIN_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Windows-120614.7z
     MINGW_CROSS_FILENAME=http://heanet.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/rubenvb/release/i686-w64-mingw32-gcc-4.7.0-release-win32_rubenvb.7z

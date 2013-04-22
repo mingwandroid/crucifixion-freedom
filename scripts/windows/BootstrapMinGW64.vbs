@@ -1,6 +1,7 @@
-    ' This script sets up a MinGW64 and MSYS environment.
-    ' I've had enough of MinGW32 and it's lack of features
-    ' (where is crtdbg.h etc etc) or cross-platform support.
+    ' This script sets up a MinGW64 (mingwbuilds) and MSYS
+    ' environment. It will optionally install msysgit for MSYS.
+    ' Finally it grabs a few MSYS tools that I've built for
+    ' various reasons described at the end.
 
     dim WshShell
     set WshShell = WScript.CreateObject("WScript.Shell")
@@ -36,7 +37,8 @@
         if verbose = 1 then
             msgbox "downloadHTTP sourceUrl " & sourceUrl & " destFilepath " & destFilepath
         end if
-        set xmlhttp=createobject("MSXML2.XMLHTTP.3.0")
+         
+        set xmlhttp=createobject("MSXML2.ServerXMLHTTP.3.0")
         'xmlhttp.SetOption 2, 13056 'If https -> Ignore all SSL errors
         xmlhttp.Open "GET", sourceUrl, false
         xmlhttp.Send
@@ -110,15 +112,16 @@
     end if
 
     MinGW64_sourceforge = "http://garr.dl.sourceforge.net/project/mingw-w64"
-    MinGW64_32_filename = "i686-w64-mingw32-gcc-4.7.2-release-win32_rubenvb.7z"
-    MinGW64_32_destfile = WshShell.CurrentDirectory & "\" & MinGW64_32_filename
-    MinGW64_64_filename = "x86_64-w64-mingw32-gcc-4.7.2-release-win64_rubenvb.7z"
-    MinGW64_64_destfile = WshShell.CurrentDirectory & "\" & MinGW64_64_filename
+    MinGWbuilds_sourceforge = "http://garr.dl.sourceforge.net/project/mingwbuilds"
+    MinGWbuilds_32_filename = "x32-4.8.0-release-win32-dwarf-rev2.7z"
+    MinGWbuilds_32_destfile = WshShell.CurrentDirectory & "\" & MinGWbuilds_32_filename
+    MinGWbuilds_64_filename = "x64-4.8.0-release-win32-seh-rev2.7z"
+    MinGWbuilds_64_destfile = WshShell.CurrentDirectory & "\" & MinGWbuilds_64_filename
 
     SevenZaZip = WshShell.CurrentDirectory & "\7za920.zip"
     TempDir = WshShell.CurrentDirectory & "\Temp7za"
-    MinGW64_32 = WshShell.CurrentDirectory & "\" & MinGW64_32_filename
-    MinGW64_64 = WshShell.CurrentDirectory & "\" & MinGW64_64_filename 
+    MinGW64_32 = WshShell.CurrentDirectory & "\" & MinGWbuilds_32_filename
+    MinGW64_64 = WshShell.CurrentDirectory & "\" & MinGWbuilds_64_filename
 
     downloadHTTP "http://garr.dl.sourceforge.net/project/sevenzip/7-Zip/9.20/7za920.zip", SevenZaZip
     unZip SevenZaZip, TempDir
@@ -127,26 +130,26 @@
     downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/xz/xz-5.0.3-1/xz-5.0.3-1-msys-1.0.17-bin.tar.lzma", Dest & "\msys"
     downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/xz/xz-5.0.3-1/liblzma-5.0.3-1-msys-1.0.17-dll-5.tar.lzma", Dest & "\msys"
 
-    downloadHTTP MinGW64_sourceforge & "/Toolchains targetting Win32/Personal Builds/rubenvb/gcc-4.7-release/" & MinGW64_32_filename, MinGW64_32_destfile
-    downloadHTTP MinGW64_sourceforge & "/Toolchains targetting Win64/Personal Builds/rubenvb/gcc-4.7-release/" & MinGW64_64_filename, MinGW64_64_destfile
+    downloadHTTP MinGWbuilds_sourceforge & "/host-windows/releases/4.8.0/32-bit/threads-win32/dwarf/" & MinGWbuilds_32_filename, MinGWbuilds_32_destfile
+    downloadHTTP MinGWbuilds_sourceforge & "/host-windows/releases/4.8.0/64-bit/threads-win32/seh/" & MinGWbuilds_64_filename, MinGWbuilds_64_destfile
 
     ' The top level folders in each archive is different (mingw32, mingw64) so for this question to
     ' be worthwhile I'd have to deliberately mix them, which is probably asking for problems.
     'result = msgbox("Do you want the default GCC to be 64bit?", vbYesNo, "Choose GCC Architecture")
     'if result = vbYes then
       ' Extract win32 then win64.
-      run "cmd /c " & Temp7zaExe & " x " & MinGW64_32_destfile & " -y -o" & Dest
-      run "cmd /c " & Temp7zaExe & " x " & MinGW64_64_destfile & " -y -o" & Dest
+      run "cmd /c " & Temp7zaExe & " x " & MinGWbuilds_32_destfile & " -y -o" & Dest
+      run "cmd /c " & Temp7zaExe & " x " & MinGWbuilds_64_destfile & " -y -o" & Dest
     'else
     '  ' Extract win64 then win32.
     '  run "cmd /c " & Temp7zaExe & " x " & MinGW64_64_destfile & " -y -o" & Dest
     '  run "cmd /c " & Temp7zaExe & " x " & MinGW64_32_destfile & " -y -o" & Dest
     'end if
 
-    result = msgbox("Yes installs msysgit (MSYS with git)" & Chr(10) & "No installs MSYS (32-bit) from mingw-w64 project", vbYesNo, "Do you want Git with your MSYS?")
+    result = msgbox("Yes installs msysgit (MSYS with git)" & Chr(10) & "No installs MSYS (32-bit) from mingw-w64 project" & Chr(10) & "(in all cases, GCC comes from mingwbuilds project)", vbYesNo, "Do you want Git with your MSYS?")
     if result = vbYes then
       'MsysGit_file = "msysGit-netinstall-1.7.11-preview20120620.exe"'
-      MsysGit_file = "Git-1.7.11-preview20120704.exe"
+      MsysGit_file = "Git-1.8.1.2-preview20130201.exe"
       MsysGit_filename = "http://msysgit.googlecode.com/files/" & MsysGit_file
       MinMsysGit_destfile = WshShell.CurrentDirectory & "\" & MsysGit_file
       downloadHTTP MsysGit_filename, MinMsysGit_destfile
@@ -168,7 +171,7 @@
 
     downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/xz/xz-5.0.3-1/xz-5.0.3-1-msys-1.0.17-bin.tar.lzma", Dest & "\msys"
 
-    result = msgbox("Do you need" & Chr(10) & "MSYS-autoconf, MSYS-texinfo, MSYS-libintl, MSYS-libiconv, MSYS-grep?" & Chr(10) & "(if you installed msys-git, you probably do)", vbYesNo, "Install MSYS shell dev tools?")
+    result = msgbox("Do you need:" & Chr(10) & "MSYS-autoconf, MSYS-texinfo, MSYS-libintl, MSYS-libiconv, MSYS-grep?" & Chr(10) & "(if you installed msysgit, you probably do)", vbYesNo, "Install MSYS shell dev tools?")
     if result = vbYes then
       downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/msysdev/autoconf/autoconf-2.68-1/autoconf-2.68-1-msys-1.0.17-bin.tar.lzma", Dest & "\msys"
       downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/Base/texinfo/texinfo-4.13a-2/texinfo-4.13a-2-msys-1.0.13-bin.tar.lzma", Dest & "\msys"
@@ -180,7 +183,7 @@
       ' copy "bin/install.exe", Dest & "\msys\bin"
     end if
 
-    result = msgbox("Do you need MSYS-binutils," & Chr(10) & "MSYS-gcc, MSYS-coredev and MSYS-w32api?" & Chr(10) & "Hint: unless you plan to develop" & Chr(10) & "MSYS tools, you don't", vbYesNo, "Install MSYS developer tools?")
+    result = msgbox("Do you need MSYS-binutils, MSYS-gcc" & Chr(10) & "MSYS-coredev and MSYS-w32api?" & Chr(10) & "Hint: unless you plan to develop MSYS tools," & Chr(10) & "you don't!", vbYesNo, "Install MSYS developer tools?")
     if result = vbYes then
         downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/msysdev/binutils/binutils-2.19.51-3/binutils-2.19.51-3-msys-1.0.13-bin.tar.lzma", Dest & "\msys"
         downloadUnpack "http://garr.dl.sourceforge.net/project/mingw/MSYS/msysdev/gcc/gcc-3.4.4-3/gcc-3.4.4-3-msys-1.0.13-bin.tar.lzma", Dest & "\msys"
@@ -224,9 +227,11 @@
     end if
 
     ' Download some newer or better versions of some tools'
-    'wget is stdio (--) compat with ssl'
-    'expr is from coreutils-8.17 compiled for MSYS'
+    ' wget is stdio (--) compat with ssl'
+    ' expr is from coreutils-8.17 compiled for MSYS'
     downloadHTTP "http://mingw-and-ndk.googlecode.com/files/wget.exe", Dest & "\msys\bin\wget.exe"
     downloadHTTP "http://mingw-and-ndk.googlecode.com/files/expr.exe", Dest & "\msys\bin\expr.exe"
-    'And copy 7za over too'
+    ' Some sensible keyboard mappings too (alt-left, alt-right, home, end for quick cursor movement)'
+    downloadHTTP "http://mingw-and-ndk.googlecode.com/files/.inputrc.mingw", Dest & "\msys\etc\inputrc"
+    ' Copy 7za over too - it's not an MSYS application so shouldn't really be put in msys\bin'
     copy Temp7zaExe, Dest & "\msys\bin\"
