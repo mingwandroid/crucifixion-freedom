@@ -609,7 +609,7 @@ build_host_python ()
         # to check $host instead of $ac_sys_system/$ac_sys_release
         # but it handles loads of platforms
         # and I can only test on three, so instead...
-        export LDSHARED=$LDSHARED "-bundle -undefined dynamic_lookup"
+        export LDSHARED="$LDSHARED -bundle -undefined dynamic_lookup"
     elif [ $1 = windows-x86 -o $1 = windows-x86_64 ]; then
         local _WINTHREADS=$(mingw_threading_cflag)
         ARGS=$ARGS" $(mingw_threading_configure_arg)"

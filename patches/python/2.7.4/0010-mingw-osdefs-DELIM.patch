@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-04-22 00:16:22.027168449 +0100
-+++ b/configure.ac	2013-04-22 00:16:22.418170032 +0100
+--- a/configure.ac	2013-04-22 02:19:29.041473671 +0100
++++ b/configure.ac	2013-04-22 02:19:29.526477364 +0100
 @@ -493,6 +493,16 @@
  fi
  AC_MSG_RESULT($MACHDEP)
@@ -19,8 +19,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_SUBST(INITSYS)
  case $host in
 diff -urN a/Include/osdefs.h b/Include/osdefs.h
---- a/Include/osdefs.h	2013-04-22 00:16:22.025168441 +0100
-+++ b/Include/osdefs.h	2013-04-22 00:16:22.418170032 +0100
+--- a/Include/osdefs.h	2013-04-22 02:19:29.039473656 +0100
++++ b/Include/osdefs.h	2013-04-22 02:19:29.528477380 +0100
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -55,8 +55,8 @@ diff -urN a/Include/osdefs.h b/Include/osdefs.h
  
  #ifdef __cplusplus
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-04-22 00:16:22.013168392 +0100
-+++ b/Makefile.pre.in	2013-04-22 00:16:22.418170032 +0100
+--- a/Makefile.pre.in	2013-04-22 02:19:29.027473565 +0100
++++ b/Makefile.pre.in	2013-04-22 02:19:29.528477380 +0100
 @@ -84,7 +84,8 @@
  # C flags used for building the interpreter object files
  PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
@@ -68,8 +68,8 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  MACHDEP=	@MACHDEP@
  
 diff -urN a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	2013-04-22 00:16:21.975168238 +0100
-+++ b/Modules/getpath.c	2013-04-22 00:16:22.419170036 +0100
+--- a/Modules/getpath.c	2013-04-22 02:19:28.985473245 +0100
++++ b/Modules/getpath.c	2013-04-22 02:19:29.528477380 +0100
 @@ -117,7 +117,7 @@
  #endif
  
@@ -80,8 +80,8 @@ diff -urN a/Modules/getpath.c b/Modules/getpath.c
  #endif
  
 diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
---- a/Modules/Setup.dist	2013-04-22 00:16:21.984168275 +0100
-+++ b/Modules/Setup.dist	2013-04-22 00:16:22.419170036 +0100
+--- a/Modules/Setup.dist	2013-04-22 02:19:28.993473306 +0100
++++ b/Modules/Setup.dist	2013-04-22 02:19:29.529477387 +0100
 @@ -84,22 +84,22 @@
  # Empty since this is now just the runtime prefix.
  DESTPATH=

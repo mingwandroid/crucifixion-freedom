@@ -25,6 +25,7 @@
 
 # PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
+# rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,darwin-x86
 
 ANDROID_NDK_ROOT=$(cd $PWD && pwd)
 NDK=$PWD
@@ -365,7 +366,6 @@ rm -rf a b Python-${PYVER}
 tar -xjf $HOME/Dropbox/Python/SourceTarballs/${PYVER}/Python-$PYVER.tar.bz2
 PATCHESDIR=$ROOT/patches/python/$PYVER
 pushd Python-$PYVER
-patch -p1 < $PATCHESDIR/0000-CROSS.patch
 patch -p1 < $PATCHESDIR/0005-MINGW.patch
 patch -p1 < $PATCHESDIR/0006-mingw-removal-of-libffi-patch.patch
 patch -p1 < $PATCHESDIR/0007-mingw-system-libffi.patch
