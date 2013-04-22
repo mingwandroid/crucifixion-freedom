@@ -24,6 +24,7 @@
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
 
 # PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86
+# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
 
 ANDROID_NDK_ROOT=$(cd $PWD && pwd)
 NDK=$PWD
@@ -448,7 +449,7 @@ tidy_patches ()
 }
 
 PATCHES_274=\
-"0000-CROSS.patch 0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch 0007-mingw-system-libffi.patch \
+"0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch 0007-mingw-system-libffi.patch \
 0010-mingw-osdefs-DELIM.patch 0015-mingw-use-posix-getpath.patch 0020-mingw-w64-test-for-REPARSE_DATA_BUFFER.patch \
 0025-mingw-regen-with-stddef-instead.patch 0030-mingw-add-libraries-for-_msi.patch 0035-MSYS-add-MSYSVPATH-AC_ARG.patch \
 0040-mingw-cygwinccompiler-use-CC-envvars-and-ld-from-print-prog-name.patch 0045-cross-darwin.patch \

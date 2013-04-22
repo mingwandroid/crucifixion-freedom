@@ -1,7 +1,7 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-04-21 22:08:08.776742145 +0100
-+++ b/setup.py	2013-04-21 22:08:09.168745120 +0100
-@@ -554,15 +554,16 @@
+--- a/setup.py	2013-04-22 00:16:35.825225371 +0100
++++ b/setup.py	2013-04-22 00:16:36.218227024 +0100
+@@ -531,15 +531,16 @@
          inc_dirs = self.compiler.include_dirs[:]
          lib_dirs = self.compiler.library_dirs[:]
          if not cross_compiling:

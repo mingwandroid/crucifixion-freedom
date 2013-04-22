@@ -1,7 +1,7 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-04-21 22:07:54.317632397 +0100
-+++ b/configure.ac	2013-04-21 22:07:54.698635289 +0100
-@@ -2467,14 +2467,32 @@
+--- a/configure.ac	2013-04-22 00:16:21.270165391 +0100
++++ b/configure.ac	2013-04-22 00:16:21.657166954 +0100
+@@ -2399,14 +2399,32 @@
              [],
              [with_system_ffi="no"])
  
@@ -38,8 +38,8 @@ diff -urN a/configure.ac b/configure.ac
  # Check for --with-dbmliborder
  AC_MSG_CHECKING(for --with-dbmliborder)
 diff -urN a/Lib/ctypes/test/test_as_parameter.py b/Lib/ctypes/test/test_as_parameter.py
---- a/Lib/ctypes/test/test_as_parameter.py	2013-04-21 22:07:54.420633179 +0100
-+++ b/Lib/ctypes/test/test_as_parameter.py	2013-04-21 22:07:54.699635297 +0100
+--- a/Lib/ctypes/test/test_as_parameter.py	2013-04-22 00:16:21.375165815 +0100
++++ b/Lib/ctypes/test/test_as_parameter.py	2013-04-22 00:16:21.658166958 +0100
 @@ -1,6 +1,7 @@
  import unittest
  from ctypes import *
@@ -60,8 +60,8 @@ diff -urN a/Lib/ctypes/test/test_as_parameter.py b/Lib/ctypes/test/test_as_param
          class S8I(Structure):
              _fields_ = [("a", c_int),
 diff -urN a/Lib/ctypes/test/test_functions.py b/Lib/ctypes/test/test_functions.py
---- a/Lib/ctypes/test/test_functions.py	2013-04-21 22:07:54.420633179 +0100
-+++ b/Lib/ctypes/test/test_functions.py	2013-04-21 22:07:54.699635297 +0100
+--- a/Lib/ctypes/test/test_functions.py	2013-04-22 00:16:21.374165811 +0100
++++ b/Lib/ctypes/test/test_functions.py	2013-04-22 00:16:21.658166958 +0100
 @@ -359,6 +359,10 @@
              s2h = windll.s_ret_2h_func(S2H(99, 88))
              self.assertEqual((s2h.x, s2h.y), (99*2, 88*3))
@@ -74,8 +74,8 @@ diff -urN a/Lib/ctypes/test/test_functions.py b/Lib/ctypes/test/test_functions.p
          class S8I(Structure):
              _fields_ = [("a", c_int),
 diff -urN a/Modules/_ctypes/callproc.c b/Modules/_ctypes/callproc.c
---- a/Modules/_ctypes/callproc.c	2013-04-21 22:07:54.251631896 +0100
-+++ b/Modules/_ctypes/callproc.c	2013-04-21 22:07:54.699635297 +0100
+--- a/Modules/_ctypes/callproc.c	2013-04-22 00:16:21.202165117 +0100
++++ b/Modules/_ctypes/callproc.c	2013-04-22 00:16:21.659166962 +0100
 @@ -827,8 +827,10 @@
  #ifndef DONT_USE_SEH
      __try {
@@ -104,8 +104,8 @@ diff -urN a/Modules/_ctypes/callproc.c b/Modules/_ctypes/callproc.c
          return -1;
      return 0;
 diff -urN a/Modules/_ctypes/libffi/fficonfig.py.in b/Modules/_ctypes/libffi/fficonfig.py.in
---- a/Modules/_ctypes/libffi/fficonfig.py.in	2013-04-21 22:07:54.263631987 +0100
-+++ b/Modules/_ctypes/libffi/fficonfig.py.in	2013-04-21 22:07:54.700635305 +0100
+--- a/Modules/_ctypes/libffi/fficonfig.py.in	2013-04-22 00:16:21.214165165 +0100
++++ b/Modules/_ctypes/libffi/fficonfig.py.in	2013-04-22 00:16:21.659166962 +0100
 @@ -1,7 +1,6 @@
  ffi_sources = """
  src/prep_cif.c
@@ -133,8 +133,8 @@ diff -urN a/Modules/_ctypes/libffi/fficonfig.py.in b/Modules/_ctypes/libffi/ffic
  
  ffi_cflags = '@CFLAGS@'
 diff -urN a/pyconfig.h.in b/pyconfig.h.in
---- a/pyconfig.h.in	2013-04-21 22:07:54.340632572 +0100
-+++ b/pyconfig.h.in	2013-04-21 22:07:54.700635305 +0100
+--- a/pyconfig.h.in	2013-04-22 00:16:21.293165484 +0100
++++ b/pyconfig.h.in	2013-04-22 00:16:21.659166962 +0100
 @@ -1116,6 +1116,9 @@
  /* Define if you want to compile in Python-specific mallocs */
  #undef WITH_PYMALLOC
@@ -146,8 +146,8 @@ diff -urN a/pyconfig.h.in b/pyconfig.h.in
  #undef WITH_THREAD
  
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-04-21 22:07:54.304632299 +0100
-+++ b/setup.py	2013-04-21 22:07:54.701635312 +0100
+--- a/setup.py	2013-04-22 00:16:21.256165335 +0100
++++ b/setup.py	2013-04-22 00:16:21.660166966 +0100
 @@ -16,6 +16,7 @@
  from distutils.command.install import install
  from distutils.command.install_lib import install_lib
@@ -156,11 +156,11 @@ diff -urN a/setup.py b/setup.py
  
  cross_compiling = "_PYTHON_HOST_PLATFORM" in os.environ
  
-@@ -2093,6 +2094,11 @@
+@@ -2047,6 +2048,11 @@
          return True
  
      def configure_ctypes(self, ext):
-+        if host_platform in ['mingw', 'win32']:
++        if host_platform == 'win':
 +            ext.libraries.extend(['ole32', 'oleaut32', 'uuid'])
 +            #AdditionalOptions="/EXPORT:DllGetClassObject,PRIVATE /EXPORT:DllCanUnloadNow,PRIVATE"
 +            ext.export_symbols.extend(['DllGetClassObject PRIVATE',
@@ -168,11 +168,11 @@ diff -urN a/setup.py b/setup.py
          if not self.use_system_libffi:
              if host_platform == 'darwin':
                  return self.configure_ctypes_darwin(ext)
-@@ -2117,6 +2123,10 @@
+@@ -2071,6 +2077,10 @@
                  if not self.verbose:
                      config_args.append("-q")
  
-+                if host_platform in ['mingw', 'win32']:
++                if host_platform == 'win':
 +                    table = maketrans('\\', '/')
 +                    ffi_builddir = ffi_builddir.translate(table)
 +                    ffi_srcdir = ffi_srcdir.translate(table)
