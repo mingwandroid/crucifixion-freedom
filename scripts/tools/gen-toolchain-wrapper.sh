@@ -127,11 +127,21 @@ gen_wrapper_program ()
       ar) FLAGS=$FLAGS" $EXTRA_ARFLAGS";;
       as) FLAGS=$FLAGS" $EXTRA_ASFLAGS";;
       ld|ld.bfd|ld.gold) FLAGS=$FLAGS" $EXTRA_LDFLAGS";;
-      # Due to a bug in MinGW-w64 x86-64 windres:
-      # https://sourceforge.net/tracker/?func=detail&aid=3588309&group_id=202880&atid=983354
-      windres) FLAGS=$FLAGS" --use-temp-file";;
+      windres)
+        # Due to a bug in MinGW-w64 x86-64 windres:
+        # https://sourceforge.net/tracker/?func=detail&aid=3588309&group_id=202880&atid=983354
+        FLAGS=$FLAGS" --use-temp-file"
+        # Should pass -F flag value in instead of having it depend on the value of EXTRA_CFLAGS
+        case $EXTRA_CFLAGS in
+          *-m32*)
+              FLAGS=$FLAGS" -F pe-i386"
+              ;;
+          *-m64*)
+              FLAGS=$FLAGS" -F pe-x86-64"
+              ;;
+        esac
+        ;;
     esac
-
     if [ -n "$CCACHE" ]; then
         DST_PREFIX=$CCACHE" "$DST_PREFIX
     fi
