@@ -1,8 +1,8 @@
-diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
---- a-2.7.3/configure.in	2012-11-22 20:47:41.198618089 +0000
-+++ b-2.7.3/configure.in	2012-11-22 20:47:45.312508345 +0000
+diff -urN a/configure.in b/configure.in
+--- a/configure.in	Tue Apr 23 21:06:40 2013
++++ b/configure.in	Tue Apr 23 21:07:10 2013
 @@ -914,6 +914,7 @@
- 
+
  # Other platforms follow
  if test $enable_shared = "yes"; then
 +  PY_ENABLE_SHARED=1
@@ -22,20 +22,20 @@ diff -urN a-2.7.3/configure.in b-2.7.3/configure.in
    esac
  fi
 +AC_SUBST(PY_ENABLE_SHARED)
- 
+
  AC_MSG_RESULT($LDLIBRARY)
- 
+
 @@ -4825,6 +4828,6 @@
- 
+
  mv config.c Modules])
  AC_CONFIG_FILES([setup_info])
 -AC_CONFIG_FILES([Makefile.pre Modules/Setup.config Misc/python.pc])
 +AC_CONFIG_FILES([Makefile.pre Modules/Setup.config Misc/python.pc Misc/python-config.sh])
  AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
  AC_OUTPUT
-diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
---- a-2.7.3/Makefile.pre.in	2012-11-22 20:47:41.098669345 +0000
-+++ b-2.7.3/Makefile.pre.in	2012-11-22 20:47:45.312508345 +0000
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	Tue Apr 23 21:06:44 2013
++++ b/Makefile.pre.in	Tue Apr 23 21:07:10 2013
 @@ -990,6 +990,8 @@
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
@@ -53,17 +53,23 @@ diff -urN a-2.7.3/Makefile.pre.in b-2.7.3/Makefile.pre.in
  	rm python-config
  	@if [ -s Modules/python.exp -a \
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
-diff -urN a-2.7.3/Misc/python-config.sh.in b-2.7.3/Misc/python-config.sh.in
---- a-2.7.3/Misc/python-config.sh.in	1970-01-01 01:00:00.000000000 +0100
-+++ b-2.7.3/Misc/python-config.sh.in	2012-11-22 20:47:45.312508345 +0000
-@@ -0,0 +1,101 @@
-+#!/bin/sh
+diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
+--- a/Misc/python-config.sh.in	Thu Jan  1 00:00:00 1970
++++ b/Misc/python-config.sh.in	Tue Apr 23 21:08:52 2013
+@@ -0,0 +1,107 @@
++#!/usr/bin/env sh
 +
 +exit_with_usage ()
 +{
-+    echo "Usage: $0 --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--extension-suffix|--help|--abiflags|--configdir"
++    echo "Usage: $0 [ignored.py] --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--extension-suffix|--help|--abiflags|--configdir"
 +    exit 1
 +}
++
++case "$1" in
++    *.py)
++        shift
++    ;;
++esac
 +
 +if [ "$1" = "" ] ; then
 +    exit_with_usage
