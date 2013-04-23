@@ -1,6 +1,6 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	Wed Apr 17 22:36:12 2013
-+++ b/setup.py	Wed Apr 17 23:08:06 2013
+--- a/setup.py	2013-04-24 00:25:25.704204803 +0100
++++ b/setup.py	2013-04-24 00:25:26.121207795 +0100
 @@ -477,14 +477,16 @@
          lib_dirs = self.compiler.library_dirs
          inc_dirs = self.compiler.include_dirs

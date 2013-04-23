@@ -409,7 +409,7 @@ tidy_patches ()
     PATCHES="$1"; shift
     ROOT=$PWD
     PATCHESDIR=$ROOT/patches/python/$PYVER
-    PATCHESDIRNEW=$ROOT/patches/python/$PYVER
+    PATCHESDIRNEW=$ROOT/patches/python/$PYVER.new
     # For when not feeling confident about this!
     PATCHESDIRNEW=$ROOT/patches/python/$PYVER.new
     mkdir -p $PATCHESDIRNEW

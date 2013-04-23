@@ -76,7 +76,7 @@ diff -urN a-3.3.0/Include/pyport.h b-3.3.0/Include/pyport.h
 +   generalized on definitions of _WIN32 or WIN32 and to be common for
 +   all windows build instead explicitly to define only for non-autotools
 +   based builds (see PC/pyconfig.h for details). */
-+#if defined(_WIN64)
++#if !defined(MS_WIN64) && defined(_WIN64)
 +#  define MS_WIN64
 +#endif
 +#if !defined(MS_WIN32) && defined(_WIN32)
