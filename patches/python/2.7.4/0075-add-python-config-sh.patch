@@ -110,9 +110,9 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
 +LINKFORSHARED="@LINKFORSHARED@"
 +OPT="@OPT@"
 +PY_ENABLE_SHARED="@PY_ENABLE_SHARED@"
-+LDVERSION="@LDVERSION@"
++DLLLIBRARY="@DLLLIBRARY@"
 +LIBDEST=${prefix}/lib/python${VERSION}
-+LIBPL=${LIBDEST}/config-${LDVERSION}
++LIBPL=${LIBDEST}/config
 +SO="@SO@"
 +PYTHONFRAMEWORK="@PYTHONFRAMEWORK@"
 +INCDIR="-I$includedir/python${VERSION}${ABIFLAGS}"
@@ -157,7 +157,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
 +                LINKFORSHAREDUSED=$LINKFORSHARED
 +            fi
 +            LIBPLUSED=
-+            if [ "$PY_ENABLE_SHARED" = "0" ] ; then
++            if [ "$PY_ENABLE_SHARED" = "0" -o -n "$(DLLLIBRARY)" ] ; then
 +                LIBPLUSED="-L$LIBPL"
 +            fi
 +            echo "$LIBPLUSED -L$libdir $LIBS $LINKFORSHAREDUSED"

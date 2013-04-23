@@ -28,7 +28,7 @@
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
 # rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,darwin-x86
 
-# rm -rf /tmp2/cr-build; export PATH=$PATH/mingw64/x86_64-w64-mingw32/bin ./crucifixion-freedom.sh --python-version=2.7.3,2.7.4 --systems=windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin && ./crucifixion-freedom.sh --python-version=2.7.4 --systems=windows-x86,windows-x86_64
 
 ANDROID_NDK_ROOT=$(cd $PWD && pwd)
 NDK=$PWD
@@ -325,7 +325,7 @@ PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH
 
 ROOT=$PWD
 PYVER=2.7.3
-rm -rf a-${PYVER} b-${PYVER} Python-${PYVER}
+rm -rf a b Python-${PYVER}
 tar -xjf /c/Users/nonesush/Dropbox/Python/SourceTarballs/${PYVER}/Python-$PYVER.tar.bz2
 PATCHESDIR=$ROOT/patches/python/$PYVER
 pushd Python-$PYVER
@@ -350,14 +350,14 @@ patch -p1 < $PATCHESDIR/0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack
 patch -p1 < $PATCHESDIR/0100-upgrade-internal-libffi-to-3.0.11.patch
 patch -p1 < $PATCHESDIR/0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
 popd
-mv Python-${PYVER} a-${PYVER}
-cp -rf a-${PYVER} b-${PYVER}
-pushd b-${PYVER}
+mv Python-${PYVER} a
+cp -rf a b
+pushd b
 ~/autoconf-2.67/bin/autoconf; ~/autoconf-2.67/bin/autoheader;
 rm pyconfig.h.in~
 rm -rf autom4te.cache
 popd
-diff -urN a-${PYVER} b-${PYVER} > $PATCHESDIR/9999-re-configure-d.patch
+diff -urN a b > $PATCHESDIR/9999-re-configure-d.patch
 
 
 
@@ -449,6 +449,19 @@ tidy_patches ()
     return 0
 }
 
+PATCHES_273=\
+"0000-CROSS.patch 0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch \
+0007-mingw-system-libffi.patch 0010-mingw-use-posix-getpath.patch 0015-cross-darwin.patch \
+0020-mingw-sysconfig-like-posix.patch 0025-mingw-pdcurses_ISPAD.patch \
+0030-mingw-static-tcltk.patch 0035-mingw-x86_64-size_t-format-specifier-pid_t.patch \
+0040-python-disable-dbm.patch 0045-disable-grammar-dependency-on-pgen-executable.patch \
+0050-add-python-config-sh.patch 0055-mingw-nt-threads-vs-pthreads.patch \
+0060-cross-dont-add-multiarch-paths-if.patch 0065-mingw-reorder-bininstall-ln-symlink-creation.patch \
+0070-mingw-use-backslashes-in-compileall-py.patch 0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch \
+0100-upgrade-internal-libffi-to-3.0.11.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
+9999-re-configure-d.patch"
+tidy_patches "2.7.3" "$PATCHES_273"
+
 PATCHES_274=\
 "0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch 0007-mingw-system-libffi.patch \
 0010-mingw-osdefs-DELIM.patch 0015-mingw-use-posix-getpath.patch 0020-mingw-w64-test-for-REPARSE_DATA_BUFFER.patch \
@@ -461,7 +474,6 @@ PATCHES_274=\
 0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
 0110-mingw-_PyNode_SizeOf-decl-fix.patch 0115-mingw-cross-includes-lower-case.patch \
 0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch"
-
 tidy_patches "2.7.4" "$PATCHES_274"
 
 ROOT=$PWD
