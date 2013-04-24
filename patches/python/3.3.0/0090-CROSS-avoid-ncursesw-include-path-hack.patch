@@ -1,7 +1,7 @@
-diff -urN a-3.3.0/configure.ac b-3.3.0/configure.ac
---- a-3.3.0/configure.ac	Fri Nov 30 13:11:46 2012
-+++ b-3.3.0/configure.ac	Fri Nov 30 13:12:26 2012
-@@ -1677,7 +1677,9 @@
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-04-24 23:35:40.388749595 +0100
++++ b/configure.ac	2013-04-24 23:35:40.727751844 +0100
+@@ -1678,7 +1678,9 @@
      ;;
  esac
  ac_save_cppflags="$CPPFLAGS"
