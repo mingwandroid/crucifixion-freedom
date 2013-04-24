@@ -441,7 +441,7 @@ tidy_patches ()
     rm -rf a
     cp -rf b a
     pushd b
-    autoconf; autoheader;
+    /usr/local/bin/autoconf; autoheader;
     rm pyconfig.h.in~
     rm -rf autom4te.cache
     popd
@@ -477,19 +477,18 @@ PATCHES_274=\
 tidy_patches "2.7.4" "$PATCHES_274"
 
 PATCHES_330=\
-"0000-add-python-config-sh.patch 0005-cross-fixes.patch 0010-cross-darwin-feature.patch
-0030-py3k-20121004-MINGW.patch 0031-py3k-20121004-MINGW-removal-of-pthread-patch.patch
-0032-py3k-20121004-MINGW-ntthreads.patch 0033-py3k-mingw-ntthreads-vs-pthreads.patch
-0034-py3k-20121004-MINGW-removal-of-libffi-patch.patch 0035-mingw-system-libffi.patch
-0045-mingw-use-posix-getpath.patch 0050-mingw-sysconfig-like-posix.patch
-0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch 0060-mingw-x86_64-size_t-format-specifier-pid_t.patch
-0065-cross-dont-add-multiarch-paths-if-cross-compiling.patch 0070-mingw-use-backslashes-in-compileall-py.patch
-0075-msys-convert_path-fix-and-root-hack.patch 0080-mingw-hack-around-double-copy-scripts-issue.patch
-0085-allow-static-tcltk.patch 0090-CROSS-avoid-ncursesw-include-path-hack.patch
-0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch 0092-mingw-pdcurses_ISPAD.patch
-0095-no-xxmodule-for-PYDEBUG.patch 0100-grammar-fixes.patch
-0105-builddir-fixes.patch 0110-msys-monkeypatch-os-system-via-sh-exe.patch
-0115-msys-replace-slashes-used-in-io-redirection.patch"
+"0000-add-python-config-sh.patch 0005-cross-fixes.patch \
+0010-cross-darwin-feature.patch 0030-py3k-20121004-MINGW.patch \
+0031-py3k-20121004-MINGW-removal-of-pthread-patch.patch 0032-py3k-20121004-MINGW-ntthreads.patch \
+0033-py3k-mingw-ntthreads-vs-pthreads.patch 0034-py3k-20121004-MINGW-removal-of-libffi-patch.patch \
+0035-mingw-system-libffi.patch 0045-mingw-use-posix-getpath.patch \
+0050-mingw-sysconfig-like-posix.patch 0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch \
+0060-mingw-x86_64-size_t-format-specifier-pid_t.patch 0065-cross-dont-add-multiarch-paths-if-cross-compiling.patch \
+0070-mingw-use-backslashes-in-compileall-py.patch 0075-msys-convert_path-fix-and-root-hack.patch \
+0080-mingw-hack-around-double-copy-scripts-issue.patch 0085-allow-static-tcltk.patch \
+0090-CROSS-avoid-ncursesw-include-path-hack.patch 0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch \
+0092-mingw-pdcurses_ISPAD.patch 0095-no-xxmodule-for-PYDEBUG.patch 0100-grammar-fixes.patch \
+0105-builddir-fixes.patch 0110-msys-monkeypatch-os-system-via-sh-exe.patch 0115-msys-replace-slashes-used-in-io-redirection.patch"
 tidy_patches "3.3.0" "$PATCHES_330"
 
 ROOT=$PWD
