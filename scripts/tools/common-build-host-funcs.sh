@@ -160,6 +160,20 @@ bh_set_target_tag ()
   BH_TARGET_CONFIG=$(bh_tag_to_config_triplet $1)
 }
 
+# Return the executable suffix corresponding to host executables
+bh_get_host_exe_ext ()
+{
+    case $BH_HOST_OS in
+        windows*)
+            echo ".exe"
+            ;;
+        *)
+            echo ""
+            ;;
+    esac
+}
+
+
 bh_sort_systems_build_first ()
 {
   local IN_SYSTEMS="$1"
@@ -495,9 +509,7 @@ _bh_select_toolchain_for_host ()
         linux-x86)
             # If possible, automatically use our custom toolchain to generate
             # 32-bit executables that work on Ubuntu 8.04 and higher.
-            _bh_try_host_fullprefix "$(dirname $ANDROID_NDK_ROOT)/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.6" i686-linux
-            _bh_try_host_fullprefix "$(dirname $ANDROID_NDK_ROOT)/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.4.3" i686-linux
-            _bh_try_host_fullprefix "$(dirname $ANDROID_NDK_ROOT)/prebuilt/linux-x86/toolchain/i686-linux-glibc2.7-4.4.3" i686-linux
+            _bh_try_host_fullprefix "${HOME}/google-prebuilt/i686-linux-glibc2.7-4.6" i686-linux
             _bh_try_host_prefix i686-linux-gnu
             _bh_try_host_prefix i686-linux
             _bh_try_host_prefix x86_64-linux-gnu -m32
@@ -505,9 +517,9 @@ _bh_select_toolchain_for_host ()
             ;;
 
         linux-x86_64)
-            # If possible, automaticaly use our custom toolchain to generate
+            # If possible, automatically use our custom toolchain to generate
             # 64-bit executables that work on Ubuntu 8.04 and higher.
-            _bh_try_host_fullprefix "$(dirname $ANDROID_NDK_ROOT)/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6" x86_64-linux
+            _bh_try_host_fullprefix "${HOME}/google-prebuilt/x86_64-linux-glibc2.7-4.6" x86_64-linux
             _bh_try_host_prefix x86_64-linux-gnu
             _bh_try_host_prefix x84_64-linux
             _bh_try_host_prefix i686-linux-gnu -m64
@@ -772,14 +784,18 @@ bh_setup_build_for_host ()
 #
 bh_setup_host_env ()
 {
-    CC=$BH_HOST_CONFIG-gcc
-    CXX=$BH_HOST_CONFIG-g++
-    LD=$BH_HOST_CONFIG-ld
-    AR=$BH_HOST_CONFIG-ar
-    AS=$BH_HOST_CONFIG-as
-    RANLIB=$BH_HOST_CONFIG-ranlib
-    NM=$BH_HOST_CONFIG-nm
-    RC=$BH_HOST_CONFIG-windres
+    # So we can switch absolute paths on and off easily
+    # (testing _ctypes/ffi problem)
+    local TC_PREFIX=${BH_WRAPPERS_DIR}/${BH_HOST_CONFIG}
+#    local TC_PREFIX=${BH_HOST_CONFIG}
+    CC=$TC_PREFIX-gcc
+    CXX=$TC_PREFIX-g++
+    LD=$TC_PREFIX-ld
+    AR=$TC_PREFIX-ar
+    AS=$TC_PREFIX-as
+    RANLIB=$TC_PREFIX-ranlib
+    NM=$TC_PREFIX-nm
+    RC=$TC_PREFIX-windres
     RANLIB_HOST=${CC_TAG}-ranlib
     AR_HOST=${CC_TAG}-ar
     RC_HOST=${CC_TAG}-windres
@@ -803,7 +819,7 @@ bh_setup_host_env ()
     esac
     export CFLAGS CXXFLAGS LDFLAGS
 
-    PATH=$BH_WRAPPERS_DIR:$PATH
+    export PATH=$BH_WRAPPERS_DIR:$PATH
 }
 
 _bh_option_no_color ()

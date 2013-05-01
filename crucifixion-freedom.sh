@@ -24,11 +24,11 @@
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
 
 # PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86
-# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=3.3.0 --systems=linux-x86_64,windows-x86,windows-x86_64
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
 # rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,darwin-x86
 
-# rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin && ./crucifixion-freedom.sh --python-version=2.7.4 --systems=windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin && ./crucifixion-freedom.sh --python-version=3.3.0 --systems=windows-x86,windows-x86_64
 
 ANDROID_NDK_ROOT=$(cd $PWD && pwd)
 NDK=$PWD
@@ -55,7 +55,8 @@ NDK_BUILDTOOLS_PATH="$(dirname $0)/scripts/tools"
 . "$NDK_BUILDTOOLS_PATH/prebuilt-common.sh"
 . "$NDK_BUILDTOOLS_PATH/common-build-host-funcs.sh"
 
-PYTHON_VERSION=2.7.3,3.3.0
+# PYTHON_VERSION=2.7.3,3.3.0
+PYTHON_VERSION=2.7.4
 
 register_var_option "--python-version=<versions>" PYTHON_VERSION "Select Python version(s)."
 
@@ -393,6 +394,7 @@ patch -p1 < $PATCHESDIR/0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
 patch -p1 < $PATCHESDIR/0110-mingw-_PyNode_SizeOf-decl-fix.patch
 patch -p1 < $PATCHESDIR/0115-mingw-cross-includes-lower-case.patch
 patch -p1 < $PATCHESDIR/0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
+patch -p1 < $PATCHESDIR/0505-add-build-sysroot-config-option.patch
 popd
 mv Python-${PYVER} a
 cp -rf a b
@@ -473,7 +475,7 @@ PATCHES_274=\
 0090-mingw-reorder-bininstall-ln-symlink-creation.patch 0095-mingw-use-backslashes-in-compileall-py.patch \
 0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
 0110-mingw-_PyNode_SizeOf-decl-fix.patch 0115-mingw-cross-includes-lower-case.patch \
-0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch"
+0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch 0505-add-build-sysroot-config-option.patch"
 tidy_patches "2.7.4" "$PATCHES_274"
 
 PATCHES_330=\

@@ -42,14 +42,14 @@ following:
    darwin-x86
    darwin-x86_64
 
-For example, here's how to rebuild Python 2.7.3 on Linux
+For example, here's how to rebuild Python 2.7.4 on Linux
 for six different systems:
 
   $PROGNAME --build-dir=/path/to/toolchain/src \n \
-    --python-version=2.7.3 \n \
+    --python-version=2.7.4 \n \
     --systems=linux-x86,linux-x86_64,windows,windows-x86_64,darwin-x86,darwin-x86_64"
 
-PYTHON_VERSION=2.7.3
+PYTHON_VERSION=2.7.4
 register_var_option "--python-version=<version>" PYTHON_VERSION "Select Python version."
 
 NDK_DIR=$ANDROID_NDK_ROOT
@@ -79,16 +79,48 @@ if [ -n "$PARAMETERS" ]; then
 fi
 
 BH_HOST_SYSTEMS=$(commas_to_spaces $BH_HOST_SYSTEMS)
+AUTO_BUILD="no"
+
+determine_systems ()
+{
+    local IN_SYSTEMS="$1"
+    local OUT_SYSTEMS
+
+    for SYSTEM in $IN_SYSTEMS; do
+        if [ "$TRY64" = "yes" ]; then
+            case $SYSTEM in
+                darwin-x86|linux-x86|windows-x86)
+                    SYSTEM=${SYSTEM%%x86}x86_64
+                    ;;
+                windows)
+                    SYSTEM=windows-x86_64
+                    ;;
+            esac
+        else
+            # 'windows-x86' causes substitution
+            # failure at the packing stage.
+            case $SYSTEM in
+                windows-x86)
+                    SYSTEM=windows
+                    ;;
+            esac
+        fi
+        OUT_SYSTEMS="$OUT_SYSTEMS $SYSTEM"
+    done
+    echo $OUT_SYSTEMS
+}
+
+BH_HOST_SYSTEMS=$(determine_systems "$BH_HOST_SYSTEMS")
+
+# Build python for build machine automatically
+if [ "$(bh_list_contains $BH_BUILD_TAG $BH_HOST_SYSTEMS)" = "no" ]; then
+    BH_HOST_SYSTEMS="$BH_BUILD_TAG $BH_HOST_SYSTEMS"
+    AUTO_BUILD="yes"
+fi
 
 # Python needs to execute itself during its build process, so must build the build
 # Python first. It should also be an error if not asked to build for build machine.
 BH_HOST_SYSTEMS=$(bh_sort_systems_build_first "$BH_HOST_SYSTEMS")
-
-# Make sure that the the user asked for the build OS's Python to be built.
-#  and that the above sort command worked correctly.
-if [ ! "$(bh_list_contains $BH_BUILD_TAG $BH_HOST_SYSTEMS)" = "first" ] ; then
-    panic "Cross-compiling Python requires building for the build OS, add $BH_BUILD_TAG to --systems=<list>"
-fi
 
 if [ ! "$(bh_list_contains darwin-x86 $BH_HOST_SYSTEMS)" = "no" -o ! "$(bh_list_contains darwin-x86_64 $BH_HOST_SYSTEMS)" = "no" ] ; then
     if [ ! -d "$DARWIN_SYSROOT" ]; then
@@ -182,11 +214,9 @@ fi
 
 bh_setup_build_dir $BUILD_DIR
 
-# "$BH_BUILD_MODE" = "debug" is broken currently!?
-# PYDEBUG="--with-pydebug"
 if [ "$BH_BUILD_MODE" = "debug" ] ; then
    PYDEBUG="--with-pydebug"
-   SAVE_TEMPS=" --save-temps "
+#   SAVE_TEMPS=" --save-temps "
 fi
 
 # Sanity check that we have the right compilers for all hosts
@@ -232,7 +262,6 @@ for VERSION in $(commas_to_spaces $PYTHON_VERSION); do
         panic "Missing source directory: $PYTHON_SRCDIR"
     fi
 done
-
 
 # Return the build install directory of a given Python version
 # $1: host system tag
@@ -480,20 +509,6 @@ python_dependencies_build ()
 #    fi
 }
 
-python_dependencies_unpack ()
-{
-    local _HOST=$1
-    local _PREFIXSTATIC=$2
-    local _PREFIXFINAL=$3
-    local _WHOSLIBS=$4
-
-    if [ ! -d ${_PREFIXSTATIC} ] ; then
-        mkdir -p ${_PREFIXSTATIC}
-    fi
-    download_package ${HOME}/Dropbox/Python/${_WHOSLIBS}.static.libs.tar.bz2 ${_PREFIXSTATIC}
-}
-
-
 # $1: host system tag
 # $2: python version
 build_host_python ()
@@ -521,18 +536,16 @@ build_host_python ()
     fi
 
     ARGS=" --prefix=$INSTALLDIR"
+    ARGS=$ARGS" --with-build-sysroot=$TEMPINSTALLDIR"
 
-    # Python considers it cross compiling if --host is passed # ??? SHOULD THIS BE --build ???
+    # Python considers it cross compiling if --host is passed
     #  and that then requires that a CONFIG_SITE file is used.
     # This is not necessary if it's only the arch that differs.
-#    if [ ! $BH_HOST_CONFIG = $BH_BUILD_CONFIG -o "$BH_HOST_CONFIG" = "i586-pc-mingw32msvc" ] ; then
+    # if [ ! $BH_HOST_CONFIG = $BH_BUILD_CONFIG ] ; then
         ARGS=$ARGS" --build=$BH_BUILD_CONFIG"
-#    fi
+    # fi
     ARGS=$ARGS" --host=$BH_HOST_CONFIG"
     ARGS=$ARGS" $PYDEBUG"
-    # When cross compiling from linux-x86_64 to linux-x86 we sometimes have failures with:
-    # checking getaddrinfo bug
-    # configure:12139: result: yes
     ARGS=$ARGS" --disable-ipv6"
 
     mkdir -p "$BUILDDIR" && rm -rf "$BUILDDIR"/*
@@ -546,6 +559,7 @@ build_host_python ()
     export LDFLAGS="-L${TEMPINSTALLDIR}/lib"
     CFLAGS="$SAVE_TEMPS -I${TEMPINSTALLDIR}/include -I${TEMPINSTALLDIR}/include/ncursesw"
     CXXFLAGS="$CFLAGS"
+    export LDSHARED="$CC -shared "
     if [ ! $BH_HOST_TAG = $BH_BUILD_TAG ]; then
 
         # Cross compiling.
@@ -564,9 +578,16 @@ build_host_python ()
                 echo "ac_osx_32bit=no"                 >> $CFG_SITE
             fi
             echo "ac_cv_have_sendfile=no"              >> $CFG_SITE
+            # I could change AC_MSG_CHECKING(LDSHARED) in configure.ac
+            # to check $host instead of $ac_sys_system/$ac_sys_release
+            # but it handles loads of platforms
+            # and I can only test on three, so instead...
+            export LDSHARED="$CC -bundle -undefined dynamic_lookup"
         elif [ $1 = windows-x86 -o $1 = windows-x86_64 ]; then
             echo "ac_cv_file__dev_ptmx=no"              > $CFG_SITE
             echo "ac_cv_file__dev_ptc=no"              >> $CFG_SITE
+            CFLAGS=$CFLAGS" -D__USE_MINGW_ANSI_STDIO=1"
+            CXXFLAGS=$CXXFLAGS" -D__USE_MINGW_ANSI_STDIO=1"
         elif [ $1 = linux-x86 -o $1 = linux-x86_64 ]; then
             echo "ac_cv_file__dev_ptmx=yes"             > $CFG_SITE
             echo "ac_cv_file__dev_ptc=no"              >> $CFG_SITE
@@ -627,7 +648,6 @@ build_host_python ()
     touch $SRCDIR/Include/graminit.h
     touch $SRCDIR/Python/graminit.c
     echo "" > $SRCDIR/Parser/pgen.stamp
-
     touch $SRCDIR/Parser/Python.asdl
     touch $SRCDIR/Parser/asdl.py
     touch $SRCDIR/Parser/asdl_c.py
@@ -637,11 +657,14 @@ build_host_python ()
     dump "$TEXT Building"
     export CONFIG_SITE=$CFG_SITE &&
     run2 "$SRCDIR"/configure $ARGS &&
-# sharedmods is a phony target, but it's a dependency of both "make all" and also
-# "make install", this causes it to fail on Windows as it tries to rename pydoc3
-# to pydoc3.3 twice, and the second time aroud the file exists. So instead, we
-# just do make install.
-
+	#
+	# Note 1:
+	# sharedmods is a phony target, but it's a dependency of both "make all" and also
+	# "make install", this causes it to fail on Windows as it tries to rename pydoc3
+	# to pydoc3.3 twice, and the second time aroud the file exists. So instead, we
+	# just do make install.
+	#
+	# Note 2:
     # Can't run make install with -j as from the Makefile:
     # install:	 altinstall bininstall maninstall 
     #  meaning altinstall and bininstall are kicked off at the same time
@@ -651,10 +674,8 @@ build_host_python ()
     #  and bininstall: doing
     #  (cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)-config python2-config)
     #  Though the real fix is to simply make bininstall depend on libainstall.
-
-    # For Python 3.3.0, without 0080-MINGW-hack-around-double-copy-scripts-issue.patch
-    # a second run build_scripts fails as the target file exists.
-    run2 make -j$NUM_JOBS
+    run2 make -j$NUM_JOBS &&
+    run2 make -j1 &&
     run2 make install
 }
 
@@ -722,8 +743,10 @@ done
 if [ "$PACKAGE_DIR" ]; then
     for SYSTEM in $BH_HOST_SYSTEMS; do
         bh_setup_build_for_host $SYSTEM
-        for VERSION in $PYTHON_VERSION; do
-            package_host_python $SYSTEM $VERSION
-        done
+        if [ $AUTO_BUILD != "yes" -o $SYSTEM != $BH_BUILD_TAG ]; then
+            for VERSION in $PYTHON_VERSION; do
+                package_host_python $SYSTEM $VERSION
+            done
+        fi
     done
 fi
