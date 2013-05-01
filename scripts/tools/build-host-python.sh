@@ -261,6 +261,12 @@ for VERSION in $(commas_to_spaces $PYTHON_VERSION); do
     if [ ! -d "$PYTHON_SRCDIR" ]; then
         panic "Missing source directory: $PYTHON_SRCDIR"
     fi
+#    # TODO :: Remove this when _ctypes bug is fixed.
+#    if [ "$VERSION" = "2.7.4" ]; then
+#        cp $HOME/setup.py $SRC_DIR/Python-$VERSION/
+#        cp $HOME/Lib/distutils/command/build_ext.py $SRC_DIR/Python-$VERSION/Lib/distutils/command/build_ext.py
+#        cp $HOME/Lib/distutils/ccompiler.py $SRC_DIR/Python-$VERSION/Lib/distutils/ccompiler.py
+#    fi
 done
 
 # Return the build install directory of a given Python version
@@ -345,8 +351,15 @@ make_ncurses ()
     if [[ ! -f $_PREFIX/lib/libncursesw.a ]] ; then
         download_package http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz ${_HOST_SRC_DIR}
         (
+        if [ $_HOST = windows-x86 -o $_HOST = windows-x86_64 ] ; then
+            NCCFLAGS="-D__USE_MINGW_ANSI_STDIO=1"
+            HOST_NCCONF_FLAGS="--enable-term-driver --enable-sp-funcs --enable-widec"
+        else
+            NCCFLAGS="-fPIC"
+        fi
+
         cd ${_HOST_SRC_DIR}/ncurses-5.9
-        ./configure --prefix=$_PREFIX --enable-static --disable-shared --enable-term-driver --enable-sp-funcs --enable-widec CFLAGS="-D__USE_MINGW_ANSI_STDIO=1"
+        ./configure --prefix=$_PREFIX --enable-static --disable-shared $HOST_NCCONF_FLAGS CFLAGS="$NCCFLAGS" > ncurses_config.log 2>&1
         make -j$NUM_JOBS > ncurses_make.log 2>&1
         make install > ncurses_install.log 2>&1
         )
@@ -365,12 +378,19 @@ make_readline ()
     mkdir -p $_PREFIX/lib
     mkdir -p $_HOST_SRC_DIR
 
+    RLCFLAGS="$CFLAGS"
+    if [ ! $_HOST_TAG = windows-x86 -a ! $_HOST_TAG = windows_x86_64 ] ; then
+        # As readline.pyd is a shared library, the static library needs
+        # to be built with -fPIC.
+        RLCFLAGS=$RLCFLAGS" -fPIC"
+    fi
+
     # should this not be readline/readline.h?
     if [[ ! -f $_PREFIX/include/readline.h ]] ; then
         download_package ftp://ftp.cwru.edu/pub/bash/readline-6.2.tar.gz ${_HOST_SRC_DIR}
         (
         cd ${_HOST_SRC_DIR}/readline-6.2
-        ./configure --prefix=$_PREFIX --disable-shared --enable-static $_HOST > rl_config.log 2>&1
+        ./configure --prefix=$_PREFIX --disable-shared --enable-static --with-curses $_HOST CFLAGS="$RLCFLAGS" > rl_config.log 2>&1
         make -j$NUM_JOBS > rl_make.log 2>&1
         make install > rl_install.log 2>&1
         )
@@ -495,6 +515,8 @@ python_dependencies_build ()
 #            make_ncurses $_HOST $_PREFIXSTATIC
             make_pdcurses $_HOST $_PREFIXSTATIC
 #        fi
+    elif [ $_HOST = linux-x86 -o $_HOST = linux-x86_64 ] ; then
+        make_ncurses $_HOST $_PREFIXSTATIC
     fi
 
 # GPL issues with this.
@@ -536,7 +558,7 @@ build_host_python ()
     fi
 
     ARGS=" --prefix=$INSTALLDIR"
-    ARGS=$ARGS" --with-build-sysroot=$TEMPINSTALLDIR"
+    ARGS=$ARGS" --with-build-sysroot=$TEMPINSTALLDIR --with-build-sysroot=$INSTALLDIR"
 
     # Python considers it cross compiling if --host is passed
     #  and that then requires that a CONFIG_SITE file is used.

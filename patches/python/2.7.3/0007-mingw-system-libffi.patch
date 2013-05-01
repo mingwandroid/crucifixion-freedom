@@ -147,7 +147,7 @@ diff -urN a/Modules/_ctypes/libffi/fficonfig.py.in b/Modules/_ctypes/libffi/ffic
  
 +ffi_target = '@TARGET@'
 +if ffi_target not in ['X86_WIN32', 'X86_WIN64']:
-+    ffi_sources += 'src/dlmalloc.c'
++    ffi_sources += ['src/dlmalloc.c']
  ffi_sources += ffi_platforms['@TARGET@']
  
  ffi_cflags = '@CFLAGS@'
