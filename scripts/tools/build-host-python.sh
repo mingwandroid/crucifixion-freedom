@@ -504,6 +504,10 @@ make_tcltk ()
         echo "ac_cv_func_strtod=yes"      > $CFG_SITE
         echo "tcl_cv_strtod_buggy=ok"    >> $CFG_SITE
         echo "tcl_cv_strtod_unbroken=ok" >> $CFG_SITE
+        cd ${HOST_SRC_DIR}/tk${TCLTKVER}/$TCLTKSYS
+        echo "ac_cv_func_strtod=yes"      > $CFG_SITE
+        echo "tcl_cv_strtod_buggy=ok"    >> $CFG_SITE
+        echo "tcl_cv_strtod_unbroken=ok" >> $CFG_SITE
         )
         TCLTKARGS=$TCLTKARGS" --cache-file=$CFG_SITE"
         fi
@@ -608,7 +612,9 @@ build_host_python ()
 
     CFG_SITE=
     # Hmm, it's actually setup.py that handles adding to compiler.library_dirs, see:
-    # ('LDFLAGS', '-L', self.compiler.library_dirs)
+    # ('LDFLAGS', '-R', self.compiler.runtime_library_dirs),
+    # ('LDFLAGS', '-L', self.compiler.library_dirs),
+    # ('CPPFLAGS', '-I', self.compiler.include_dirs)):
     # So I'm not really sure that 0505-add-build-sysroot-config-option.patch is needed
     #  anymore.
     export LDFLAGS="-L${TEMPINSTALLDIR}/lib -L${INSTALLDIR}/lib"
