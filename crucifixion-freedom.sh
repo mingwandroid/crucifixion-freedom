@@ -396,7 +396,6 @@ patch -p1 < $PATCHESDIR/0115-mingw-cross-includes-lower-case.patch
 patch -p1 < $PATCHESDIR/0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
 patch -p1 < $PATCHESDIR/0505-add-build-sysroot-config-option.patch
 patch -p1 < $PATCHESDIR/0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch
-patch -p1 < $PATCHESDIR/0515-add-sys-prefix-to-library-include-dirs-for-tcltk.patch
 popd
 mv Python-${PYVER} a
 cp -rf a b
@@ -478,7 +477,7 @@ PATCHES_274=\
 0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
 0110-mingw-_PyNode_SizeOf-decl-fix.patch 0115-mingw-cross-includes-lower-case.patch \
 0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch 0505-add-build-sysroot-config-option.patch \
-0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch 0515-add-sys-prefix-to-library-include-dirs-for-tcltk.patch"
+0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch"
 tidy_patches "2.7.4" "$PATCHES_274"
 
 PATCHES_330=\
