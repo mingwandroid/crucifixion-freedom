@@ -449,6 +449,7 @@ make_tcltk ()
     local _HOST=$4
     mkdir -p $_PREFIX/include
     mkdir -p $_PREFIX/lib
+    local TCLTKARGS=
 
     if [ $_HOST_TAG = windows-x86 -o $_HOST_TAG = windows-x86_64 ] ; then
         TCLTKSYS=win
@@ -465,12 +466,12 @@ make_tcltk ()
         if [ $_HOST_TAG = windows-x86 -o $_HOST_TAG = windows-x86_64 ] ; then
             # Originally I wanted to build tcltk statically, but a compiled .rc file needs to
             # be linked with the target program or dll (_tkinter.pyd here) for this to work.
-            TCLTKSHAREDSTATIC="--disable-static --enable-shared"
+            TCLTKARGS=$TCLTKARGS" --disable-static --enable-shared"
         elif [ $_HOST_TAG = darwin-x86 -o $_HOST_TAG = darwin-x86_64 ] ; then
-            TCLTKSHAREDSTATIC="--disable-shared --enable-static --disable-framework"
+            TCLTKARGS=$TCLTKARGS" --disable-shared --enable-static --disable-framework"
             TCLTKVER=8.6b2
         else
-            TCLTKSHAREDSTATIC="--enable-shared --disable-static"
+            TCLTKARGS=$TCLTKARGS" --enable-shared --disable-static"
         fi
 
         HOST_SRC_DIR=${SRC_DIR}-${_HOST_TAG}
@@ -478,15 +479,43 @@ make_tcltk ()
         download_package http://prdownloads.sourceforge.net/tcl/tcl${TCLTKVER}-src.tar.gz ${HOST_SRC_DIR}
         download_package http://prdownloads.sourceforge.net/tcl/tk${TCLTKVER}-src.tar.gz ${HOST_SRC_DIR}
 
+        if [ $_HOST_TAG = linux-x86_64 -a $BH_BUILD_TAG = linux-x86 ] ; then
+        # Cross compiling from linux-x86 to linux-x86_64 tcl fails with:
+        # fixstrtod.o: In function `fixstrtod':
+        # fixstrtod.c:(.text+0x0): multiple definition of `fixstrtod'
+        # strtod.o:strtod.c:(.text+0x0): first defined here
+        #
+        # From:
+        #
+        # http://permalink.gmane.org/gmane.linux.lfs.clfs.support/1188
+        #
+        # Fix is to hack it:
+        #
+        # "Also try putting the following in a file named config.cache and add
+        # --cache-file=config.cache to the configure command.
+        #
+        # ac_cv_func_strtod=yes
+        # tcl_cv_strtod_buggy=ok
+        # tcl_cv_strtod_unbroken=ok
+        #
         (
         cd ${HOST_SRC_DIR}/tcl${TCLTKVER}/$TCLTKSYS
-        ./configure --prefix=$_PREFIX --exec-prefix=$_PREFIX $TCLTKSHAREDSTATIC $_BUILD $_HOST > configure.log 2>&1
+        CFG_SITE=config.site
+        echo "ac_cv_func_strtod=yes"      > $CFG_SITE
+        echo "tcl_cv_strtod_buggy=ok"    >> $CFG_SITE
+        echo "tcl_cv_strtod_unbroken=ok" >> $CFG_SITE
+        )
+        TCLTKARGS=$TCLTKARGS" --cache-file=$CFG_SITE"
+        fi
+        (
+        cd ${HOST_SRC_DIR}/tcl${TCLTKVER}/$TCLTKSYS
+        ./configure --prefix=$_PREFIX --exec-prefix=$_PREFIX $TCLTKARGS $_BUILD $_HOST > configure.log 2>&1
         make -j$NUM_JOBS > make.log 2>&1
         make install > install.log 2>&1
         )
         (
         cd ${HOST_SRC_DIR}/tk${TCLTKVER}/$TCLTKSYS
-        ./configure --prefix=$_PREFIX --exec-prefix=$_PREFIX $TCLTKSHAREDSTATIC $_BUILD $_HOST > configure.log 2>&1
+        ./configure --prefix=$_PREFIX --exec-prefix=$_PREFIX $TCLTKARGS $_BUILD $_HOST > configure.log 2>&1
         make -j$NUM_JOBS > make.log 2>&1
         make install > install.log 2>&1
         )
