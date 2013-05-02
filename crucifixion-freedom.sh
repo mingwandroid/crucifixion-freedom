@@ -30,6 +30,18 @@
 
 # rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin && ./crucifixion-freedom.sh --python-version=3.3.0 --systems=windows-x86,windows-x86_64
 
+# For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
+# Due to:
+# ('LDFLAGS', '-R', self.compiler.runtime_library_dirs),
+# ('LDFLAGS', '-L', self.compiler.library_dirs),
+# ('CPPFLAGS', '-I', self.compiler.include_dirs)):
+# in setup.py
+# ...0505-add-build-sysroot-config-option.patch is looking a bit like something I shouldn't bother with (and thus the --with-build-sysroot= stuff.
+# one thing that I must be careful about is making sure that /usr/lib is *never* added to the search paths as finding the wrong arch for a lib
+# is fatal, so if the first found version of e.g. libreadline.a is the wrong arch, it doesn't check the next one, it just fails to build the module.
+# and 0505- contains stuff for this (/usr is used only if no --with-build-sysroot= are specified). Actually, I prefer my method to parsing CFLAGS
+# etc as that stuff is hardwired for GCC-like compilers.
+
 ANDROID_NDK_ROOT=$(cd $PWD && pwd)
 NDK=$PWD
 
