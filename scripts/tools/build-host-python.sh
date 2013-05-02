@@ -81,30 +81,18 @@ fi
 BH_HOST_SYSTEMS=$(commas_to_spaces $BH_HOST_SYSTEMS)
 AUTO_BUILD="no"
 
+# Prefer windows-x86 to windows.
 determine_systems ()
 {
     local IN_SYSTEMS="$1"
     local OUT_SYSTEMS
 
     for SYSTEM in $IN_SYSTEMS; do
-        if [ "$TRY64" = "yes" ]; then
-            case $SYSTEM in
-                darwin-x86|linux-x86|windows-x86)
-                    SYSTEM=${SYSTEM%%x86}x86_64
-                    ;;
-                windows)
-                    SYSTEM=windows-x86_64
-                    ;;
-            esac
-        else
-            # 'windows-x86' causes substitution
-            # failure at the packing stage.
-            case $SYSTEM in
-                windows-x86)
-                    SYSTEM=windows
-                    ;;
-            esac
-        fi
+        case $SYSTEM in
+            windows)
+                SYSTEM=windows-x86
+                ;;
+        esac
         OUT_SYSTEMS="$OUT_SYSTEMS $SYSTEM"
     done
     echo $OUT_SYSTEMS
