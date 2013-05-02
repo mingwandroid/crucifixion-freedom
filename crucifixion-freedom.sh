@@ -28,7 +28,7 @@
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
 # rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,darwin-x86
 
-# rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin && ./crucifixion-freedom.sh --python-version=3.3.0 --systems=windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin && ./crucifixion-freedom.sh --python-version=2.7.4 --systems=windows-x86,windows-x86_64
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
@@ -408,6 +408,7 @@ patch -p1 < $PATCHESDIR/0115-mingw-cross-includes-lower-case.patch
 patch -p1 < $PATCHESDIR/0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
 patch -p1 < $PATCHESDIR/0505-add-build-sysroot-config-option.patch
 patch -p1 < $PATCHESDIR/0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch
+patch -p1 < $PATCHESDIR/0515-mingw-add-GetModuleFileName-path-to-PATH.patch
 popd
 mv Python-${PYVER} a
 cp -rf a b
@@ -489,7 +490,8 @@ PATCHES_274=\
 0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
 0110-mingw-_PyNode_SizeOf-decl-fix.patch 0115-mingw-cross-includes-lower-case.patch \
 0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch 0505-add-build-sysroot-config-option.patch \
-0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch"
+0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch \
+0515-mingw-add-GetModuleFileName-path-to-PATH.patch"
 tidy_patches "2.7.4" "$PATCHES_274"
 
 PATCHES_330=\
