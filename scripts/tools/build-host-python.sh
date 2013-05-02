@@ -508,6 +508,10 @@ make_tcltk ()
         echo "ac_cv_func_strtod=yes"      > $CFG_SITE
         echo "tcl_cv_strtod_buggy=ok"    >> $CFG_SITE
         echo "tcl_cv_strtod_unbroken=ok" >> $CFG_SITE
+        cd ${HOST_SRC_DIR}/tk${TCLTKVER}/$TCLTKSYS
+        echo "ac_cv_func_strtod=yes"      > $CFG_SITE
+        echo "tcl_cv_strtod_buggy=ok"    >> $CFG_SITE
+        echo "tcl_cv_strtod_unbroken=ok" >> $CFG_SITE
         )
         TCLTKARGS=$TCLTKARGS" --cache-file=$CFG_SITE"
         fi
