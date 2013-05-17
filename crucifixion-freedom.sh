@@ -23,12 +23,12 @@
 # platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
 
-# linux32 ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86
+# linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=3.3.0 --systems=linux-x86_64,windows-x86,windows-x86_64
-# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
-# rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,darwin-x86
+# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
+# rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
-# rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin linux32 ./crucifixion-freedom.sh --python-version=2.7.4 --systems=windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=windows-x86,windows-x86_64
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
@@ -68,7 +68,7 @@ NDK_BUILDTOOLS_PATH="$(dirname $0)/scripts/tools"
 . "$NDK_BUILDTOOLS_PATH/common-build-host-funcs.sh"
 
 # PYTHON_VERSION=2.7.3,3.3.0
-PYTHON_VERSION=2.7.4
+PYTHON_VERSION=2.7.5
 
 register_var_option "--python-version=<versions>" PYTHON_VERSION "Select Python version(s)."
 
@@ -330,10 +330,10 @@ exit 0
 # You can ignore everything after this line. It's a scratch area I use for regenerating
 # patches!
 
-PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,windows-x86,windows-x86_64
-PATH=$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,darwin-x86
+PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,windows-x86,windows-x86_64
+PATH=$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
-PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.4 --systems=linux-x86_64,linux-x86,darwin-x86,darwin-x86_64,windows-x86,windows-x86_64
+PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,darwin-x86,darwin-x86_64,windows-x86,windows-x86_64
 
 
 ROOT=$PWD
@@ -375,7 +375,7 @@ diff -urN a b > $PATCHESDIR/9999-re-configure-d.patch
 
 
 ROOT=$PWD
-PYVER=2.7.4
+PYVER=2.7.5
 rm -rf a b Python-${PYVER}
 tar -xjf $HOME/Dropbox/Python/SourceTarballs/${PYVER}/Python-$PYVER.tar.bz2
 PATCHESDIR=$ROOT/patches/python/$PYVER
@@ -407,8 +407,9 @@ patch -p1 < $PATCHESDIR/0110-mingw-_PyNode_SizeOf-decl-fix.patch
 patch -p1 < $PATCHESDIR/0115-mingw-cross-includes-lower-case.patch
 patch -p1 < $PATCHESDIR/0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
 patch -p1 < $PATCHESDIR/0505-add-build-sysroot-config-option.patch
-patch -p1 < $PATCHESDIR/0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch
+patch -p1 < $PATCHESDIR/0510-cross-PYTHON_FOR_BUILD-gteq-275-and-fullpath-it.patch
 patch -p1 < $PATCHESDIR/0515-mingw-add-GetModuleFileName-path-to-PATH.patch
+patch -p1 < $PATCHESDIR/0520-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch
 popd
 mv Python-${PYVER} a
 cp -rf a b
@@ -478,7 +479,7 @@ PATCHES_273=\
 9999-re-configure-d.patch"
 tidy_patches "2.7.3" "$PATCHES_273"
 
-PATCHES_274=\
+PATCHES_275=\
 "0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch 0007-mingw-system-libffi.patch \
 0010-mingw-osdefs-DELIM.patch 0015-mingw-use-posix-getpath.patch 0020-mingw-w64-test-for-REPARSE_DATA_BUFFER.patch \
 0025-mingw-regen-with-stddef-instead.patch 0030-mingw-add-libraries-for-_msi.patch 0035-MSYS-add-MSYSVPATH-AC_ARG.patch \
@@ -490,9 +491,9 @@ PATCHES_274=\
 0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
 0110-mingw-_PyNode_SizeOf-decl-fix.patch 0115-mingw-cross-includes-lower-case.patch \
 0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch 0505-add-build-sysroot-config-option.patch \
-0510-cross-PYTHON_FOR_BUILD-gteq-274-and-fullpath-it.patch \
-0515-mingw-add-GetModuleFileName-path-to-PATH.patch"
-tidy_patches "2.7.4" "$PATCHES_274"
+0510-cross-PYTHON_FOR_BUILD-gteq-275-and-fullpath-it.patch 0515-mingw-add-GetModuleFileName-path-to-PATH.patch \
+0520-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch"
+tidy_patches "2.7.5" "$PATCHES_275"
 
 PATCHES_330=\
 "0000-add-python-config-sh.patch 0005-cross-fixes.patch \
