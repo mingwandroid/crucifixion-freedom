@@ -28,7 +28,7 @@
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
 # rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
-# rm -rf /tmp2/cr-build; export PATH=$PATH:/mingw64/bin linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; export PATH=/mingw64/bin:/mingw/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5 --systems=windows-x86,windows-x86_64
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
@@ -410,6 +410,7 @@ patch -p1 < $PATCHESDIR/0505-add-build-sysroot-config-option.patch
 patch -p1 < $PATCHESDIR/0510-cross-PYTHON_FOR_BUILD-gteq-275-and-fullpath-it.patch
 patch -p1 < $PATCHESDIR/0515-mingw-add-GetModuleFileName-path-to-PATH.patch
 patch -p1 < $PATCHESDIR/0520-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch
+patch -p1 < $PATCHESDIR/0525-msys-monkeypatch-os-system-via-sh-exe.patch
 popd
 mv Python-${PYVER} a
 cp -rf a b
@@ -492,7 +493,8 @@ PATCHES_275=\
 0110-mingw-_PyNode_SizeOf-decl-fix.patch 0115-mingw-cross-includes-lower-case.patch \
 0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch 0505-add-build-sysroot-config-option.patch \
 0510-cross-PYTHON_FOR_BUILD-gteq-275-and-fullpath-it.patch 0515-mingw-add-GetModuleFileName-path-to-PATH.patch \
-0520-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch"
+0520-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch \
+0525-msys-monkeypatch-os-system-via-sh-exe.patch"
 tidy_patches "2.7.5" "$PATCHES_275"
 
 PATCHES_330=\
