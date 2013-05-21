@@ -1,0 +1,173 @@
+0005-MINGW.patch
+MinGW-w64: Initial MinGW(-w64) feature patch.
+(by Roumen Petrov and LRN)
+
+0006-mingw-removal-of-libffi-patch.patch
+MinGW-w64: Removal of the libffi changes
+
+Done this way so that Roumen's and Alexey's
+patches can be updated more easily.
+
+0007-mingw-system-libffi.patch
+MinGW-w64: --with-system-ffi now looks for ffi.h.
+
+Windows 64 fixes for ffi.
+Some ctypes fixes for MinGW(-w64).
+(by Alexey Pavlov)
+
+0010-mingw-osdefs-DELIM.patch
+MinGW-w64: Add autoconf variable DELIM
+
+..Which is the path delimiter to use. Usually a colon
+but on Windows a semi-colon.
+
+0015-mingw-use-posix-getpath.patch
+MinGW-w64: Switch to using the posix getpath code
+
+..in Modules/getpathp.c rather than the Windows version
+in PC/getpath.c. This is because we want the posix
+file layout.
+
+0020-mingw-w64-test-for-REPARSE_DATA_BUFFER.patch
+MinGW-w64: Compile fix for REPARSE_DATA_BUFFER
+
+..which is not declared in the MinGW-w64 headers.
+
+0025-mingw-regen-with-stddef-instead.patch
+MinGW-w64: Use a different header for regen
+
+..because /usr/include/netinet/in.h doesn't exist.
+Instead we use include/stddef.h from the GCC installation,
+located via -print-search-dirs trickery.
+
+0030-mingw-add-libraries-for-_msi.patch
+MinGW-w64: Enable building the _msi module.
+
+note, this isn't enough for msi, but it's a good start
+
+0035-MSYS-add-MSYSVPATH-AC_ARG.patch
+MSYS: Add building on MSYSVPATH configure argument.
+
+When building on MSYS, VPATH ends up containing
+un-translated paths which then fall over in
+distutils. So VPATH also gets translated to
+the Windows version and that version is passed
+to disutils instead.
+
+0040-mingw-cygwinccompiler-use-CC-envvars-and-ld-from-print-prog-name.patch
+Distutils (cygwinccompiler): Use CC and LD env. variables
+
+..also, if gcc is found then override LD with the output
+from 'CC --print-prog-name ld'
+
+0045-cross-darwin.patch
+Darwin: Enable as a target for cross compilation
+
+0050-mingw-sysconfig-like-posix.patch
+MinGW-w64: Adopt unix filesystem layout for MinGW Python.
+
+0055-mingw-pdcurses_ISPAD.patch
+MinGW-w64: Add ISPAD define so that PDCurses can be used.
+
+0060-mingw-static-tcltk.patch
+MinGW-w64: Allow static tcltk (which I don't recommend)
+
+0065-mingw-x86_64-size_t-format-specifier-pid_t.patch
+MinGW-w64: Allow size_t (%z) format specifier.
+
+..also, remove error:
+Python doesn't support sizeof(pid_t) > sizeof(long)
+because it does on Win64 where long is only 32 bit.
+
+0070-python-disable-dbm.patch
+MinGW-w64: Don't compile dbm module
+
+0075-add-python-config-sh.patch
+Cross: Add python-config.sh
+
+Generate and use python-config.sh, which is a shell script
+replacement for python-config which can therefore be used
+in cross compilation scenarios
+
+0080-mingw-nt-threads-vs-pthreads.patch
+MinGW-w64: Allow either nt-threads and pthreads
+
+I only ever build with nt-threads, and will continue to do so
+until I'm convinced winpthreads is fully finished, but having
+the option is useful.
+
+0085-cross-dont-add-multiarch-paths-if.patch
+Cross: Don't add multi-arch paths if cross compiling
+
+0090-mingw-reorder-bininstall-ln-symlink-creation.patch
+MSYS: Fix ln -s ordering.
+
+..as when ln is really cp, as on MSYS, the source must exist
+before creating any links to it.
+
+0095-mingw-use-backslashes-in-compileall-py.patch
+MinGW-w64: Replace forwardslashes with backslashes
+
+..in compileall.py
+
+0100-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch
+MSYS distutils: Path conversion for --root option
+
+Converts --root=<MSYS/path> to --root=<Windows/path>
+as our Python is Windows native. Also, adds a hack to
+convert_path because
+os.path.join(['C:','folder','subfolder']) returns:
+'C:folder\subfolder'
+..which isn't the same as:
+'C:\folder\subfolder'
+
+0105-mingw-MSYS-no-usr-lib-or-usr-include.patch
+MinGW-w64/MSYS: Do not search build system sysroot folders
+
+/usr/include or /usr/lib must not be added to the search path
+as they are MSYS system paths, not MinGW-w64 system paths.
+
+0110-mingw-_PyNode_SizeOf-decl-fix.patch
+MinGW-w64: Simple compile fix
+
+0115-mingw-cross-includes-lower-case.patch
+MinGW-w64 Cross: MinGW-w64 headers are all lowercase.
+
+When running natively on Windows filesysems this doesn't matter,
+but when cross compiling on a case-sensitive filesystem it does.
+
+0500-mingw-install-LDLIBRARY-to-LIBPL-dir.patch
+MinGW-w64: Installation fix for the shared Python library
+
+0505-add-build-sysroot-config-option.patch
+MinGW-w64: Added --build-sysroot config option
+
+..which I'm not so sure about the value of. CFLAGS and LDSHARED
+are probably the right way to pass custom paths to distutils, but
+it's not harmful to have this option.
+
+0510-cross-PYTHON_FOR_BUILD-gteq-275-and-fullpath-it.patch
+Cross: Use full path for the cross Python interpreter
+
+..and ensure it is version 2.7.5 or greater.
+
+0515-mingw-add-GetModuleFileName-path-to-PATH.patch
+MinGW-w64: Add path of python.exe or python2.7.dll to PATH
+
+..so that other dlls can be placed in the same location and loaded
+correctly. This is used for example, when loading the shared tcltk
+
+0520-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch
+Add the build machine's Python's DESTSHARED path to PYTHONPATH
+
+...before the path contained in pybuilddir.txt so that the shared modules
+ for the host machine don't get loaded incorrectly during make install.
+
+0525-msys-monkeypatch-os-system-via-sh-exe.patch
+MSYS: Apply a monkeypatch to os.system
+
+...so that the commands are run through sh.exe so that shell indirection
+to /dev/null (and other things requiring a posixy shell) works as expected.
+
+9999-re-configure-d.patch
+Python 2.7.5: Regen configure and pyconfig.h.in
