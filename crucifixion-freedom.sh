@@ -28,7 +28,7 @@
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
 # rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
-# rm -rf /tmp2/cr-build; export PATH=/mingw64/bin:/mingw/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5 --systems=windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; export PATH=/c/mingw-builds/mingw64/bin:/c/mingw-builds/mingw32/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5 --systems=windows-x86,windows-x86_64
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
@@ -467,19 +467,6 @@ tidy_patches ()
     return 0
 }
 
-PATCHES_273=\
-"0000-CROSS.patch 0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch \
-0007-mingw-system-libffi.patch 0010-mingw-use-posix-getpath.patch 0015-cross-darwin.patch \
-0020-mingw-sysconfig-like-posix.patch 0025-mingw-pdcurses_ISPAD.patch \
-0030-mingw-static-tcltk.patch 0035-mingw-x86_64-size_t-format-specifier-pid_t.patch \
-0040-python-disable-dbm.patch 0045-disable-grammar-dependency-on-pgen-executable.patch \
-0050-add-python-config-sh.patch 0055-mingw-nt-threads-vs-pthreads.patch \
-0060-cross-dont-add-multiarch-paths-if.patch 0065-mingw-reorder-bininstall-ln-symlink-creation.patch \
-0070-mingw-use-backslashes-in-compileall-py.patch 0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch \
-0100-upgrade-internal-libffi-to-3.0.11.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
-9999-re-configure-d.patch"
-tidy_patches "2.7.3" "$PATCHES_273"
-
 PATCHES_275=\
 "0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch 0007-mingw-system-libffi.patch \
 0010-mingw-osdefs-DELIM.patch 0015-mingw-use-posix-getpath.patch 0020-mingw-w64-test-for-REPARSE_DATA_BUFFER.patch \
@@ -496,6 +483,19 @@ PATCHES_275=\
 0520-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch \
 0525-msys-monkeypatch-os-system-via-sh-exe.patch"
 tidy_patches "2.7.5" "$PATCHES_275"
+
+PATCHES_273=\
+"0000-CROSS.patch 0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch \
+0007-mingw-system-libffi.patch 0010-mingw-use-posix-getpath.patch 0015-cross-darwin.patch \
+0020-mingw-sysconfig-like-posix.patch 0025-mingw-pdcurses_ISPAD.patch \
+0030-mingw-static-tcltk.patch 0035-mingw-x86_64-size_t-format-specifier-pid_t.patch \
+0040-python-disable-dbm.patch 0045-disable-grammar-dependency-on-pgen-executable.patch \
+0050-add-python-config-sh.patch 0055-mingw-nt-threads-vs-pthreads.patch \
+0060-cross-dont-add-multiarch-paths-if.patch 0065-mingw-reorder-bininstall-ln-symlink-creation.patch \
+0070-mingw-use-backslashes-in-compileall-py.patch 0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch \
+0100-upgrade-internal-libffi-to-3.0.11.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
+9999-re-configure-d.patch"
+tidy_patches "2.7.3" "$PATCHES_273"
 
 PATCHES_330=\
 "0000-add-python-config-sh.patch 0005-cross-fixes.patch \
