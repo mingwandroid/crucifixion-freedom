@@ -459,7 +459,7 @@ tidy_patches ()
     rm -rf a
     cp -rf b a
     pushd b
-    /usr/local/bin/autoconf; autoheader;
+    autoconf; autoheader;
     rm pyconfig.h.in~
     rm -rf autom4te.cache
     popd
