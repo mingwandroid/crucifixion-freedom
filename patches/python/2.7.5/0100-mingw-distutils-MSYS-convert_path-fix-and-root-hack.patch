@@ -55,18 +55,18 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
 -        if path[0] == os.sep:
 -            path = path[1:]
 -        return os.path.join(new_root, path)
-+	if path[0] == os.sep:
-+	    path = path[1:]
-+	(drive_r, path_r) = os.path.splitdrive(new_root)
-+	drive_used = ''
-+	if len(drive) == 2 and len(drive_r) == 2 and drive != drive_r:
-+	    raise DistutilsChangeRootError, \
-+		  "root and pathname not on same drive (%s, %s)" % (drive,drive_r)
-+	elif len(drive_r) == 2:
-+	    drive_used = drive_r+os.sep
-+	else:
-+	    drive_used = drive+os.sep
-+	return os.path.join(drive_used+path_r, path)
++        if path[0] == os.sep:
++            path = path[1:]
++        (drive_r, path_r) = os.path.splitdrive(new_root)
++        drive_used = ''
++        if len(drive) == 2 and len(drive_r) == 2 and drive != drive_r:
++            raise DistutilsChangeRootError, \
++                  "root and pathname not on same drive (%s, %s)" % (drive,drive_r)
++        elif len(drive_r) == 2:
++            drive_used = drive_r+os.sep
++        else:
++            drive_used = drive+os.sep
++        return os.path.join(drive_used+path_r, path)
  
      else:
          raise DistutilsPlatformError, \
