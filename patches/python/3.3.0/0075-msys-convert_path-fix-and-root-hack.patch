@@ -13,7 +13,7 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
  
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
 --- a/Lib/distutils/util.py	2013-06-27 23:29:39.225654843 +0100
-+++ b/Lib/distutils/util.py	2013-06-27 23:29:40.365654861 +0100
++++ b/Lib/distutils/util.py	2013-06-28 01:07:32.000000000 +0100
 @@ -131,6 +131,13 @@
          paths.remove('.')
      if not paths:
@@ -58,8 +58,8 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
 +        (drive_r, path_r) = os.path.splitdrive(new_root)
 +        drive_used = ''
 +        if len(drive) == 2 and len(drive_r) == 2 and drive != drive_r:
-+            raise DistutilsChangeRootError, \
-+                  "root and pathname not on same drive (%s, %s)" % (drive,drive_r)
++            raise DistutilsChangeRootError("root and pathname not on same drive (%s, %s)"
++                   % (drive_r,drive))
 +        elif len(drive_r) == 2:
 +            drive_used = drive_r+os.sep
 +        else:
