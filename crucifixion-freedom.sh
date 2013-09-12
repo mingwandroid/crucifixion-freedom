@@ -425,8 +425,16 @@ diff -urN a b > $PATCHESDIR/9999-re-configure-d.patch
 tidy_patches ()
 {
     PYVER=$1; shift
+    FINAL=$1; shift
     PATCHES="$1"; shift
     ROOT=$PWD
+    if [ "$FINAL" != "yes" -a "$FINAL" != "no" ]; then
+        echo "tidy_patches arg2 (FINAL) should be yes or no"
+        echo "depending on whether you are correcting a mid"
+        echo "patch-set patch or re-generating them all and"
+        echo "thus require a new 9999-re-configure-d.patch."
+        return 1
+    fi
     PATCHESDIR=$ROOT/patches/python/$PYVER
     PATCHESDIRNEW=$ROOT/patches/python/$PYVER.new
     # For when not feeling confident about this!
@@ -439,6 +447,7 @@ tidy_patches ()
         rm -rf a
     fi
     mv Python-$PYVER a
+    LAST=${PATCHES##* }
     for PATCH in $PATCHES; do
         if [ -d b ]; then
             rm -rf b
@@ -453,6 +462,19 @@ tidy_patches ()
         fi
         find . -name "*.orig" -exec rm {} \;
         popd
+        # If regenerating a mid-patch and this is
+        # that last patch, then bail out at this
+        # point so the user can make changes. Give
+        # them some instructions about this.
+        if [ "$FINAL" = "no" -a "$PATCH" = "$LAST" ]; then
+            echo ""
+            echo "Please make your fixes in b/ and when"
+            echo "done, execute:"
+            echo "cd $PWD; diff -urN a b > ${PATCHESDIRNEW}/$PATCH"
+            echo "to regenerate this patch"
+            echo ""
+            return 0
+        fi
         diff -urN a b > ${PATCHESDIRNEW}/$PATCH
         rm -rf a
         cp -rf b a
@@ -483,7 +505,7 @@ PATCHES_275=\
 0510-cross-PYTHON_FOR_BUILD-gteq-275-and-fullpath-it.patch 0515-mingw-add-GetModuleFileName-path-to-PATH.patch \
 0520-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch \
 0525-msys-monkeypatch-os-system-via-sh-exe.patch"
-tidy_patches "2.7.5" "$PATCHES_275"
+tidy_patches "2.7.5" yes "$PATCHES_275"
 
 PATCHES_273=\
 "0000-CROSS.patch 0005-MINGW.patch 0006-mingw-removal-of-libffi-patch.patch \
@@ -496,7 +518,7 @@ PATCHES_273=\
 0070-mingw-use-backslashes-in-compileall-py.patch 0075-mingw-distutils-MSYS-convert_path-fix-and-root-hack.patch \
 0100-upgrade-internal-libffi-to-3.0.11.patch 0105-mingw-MSYS-no-usr-lib-or-usr-include.patch \
 9999-re-configure-d.patch"
-tidy_patches "2.7.3" "$PATCHES_273"
+tidy_patches "2.7.3" yes "$PATCHES_273"
 
 PATCHES_330=\
 "0000-add-python-config-sh.patch 0005-cross-fixes.patch \
@@ -511,7 +533,7 @@ PATCHES_330=\
 0090-CROSS-avoid-ncursesw-include-path-hack.patch 0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch \
 0092-mingw-pdcurses_ISPAD.patch 0095-no-xxmodule-for-PYDEBUG.patch 0100-grammar-fixes.patch \
 0105-builddir-fixes.patch 0110-msys-monkeypatch-os-system-via-sh-exe.patch 0115-msys-replace-slashes-used-in-io-redirection.patch"
-tidy_patches "3.3.0" "$PATCHES_330"
+tidy_patches "3.3.0" yes "$PATCHES_330"
 
 ROOT=$PWD
 PYVER=3.3.0
