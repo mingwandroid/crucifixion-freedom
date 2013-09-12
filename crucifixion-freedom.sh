@@ -48,6 +48,24 @@ NDK=$PWD
 
 ROOT=$PWD
 
+download ()
+{
+set -x
+    local _DEST="$1"; shift
+    local _SRC="$1"; shift
+
+    if [ ! -d "$_DEST" ]; then
+        mkdir -p "$_DEST"
+    fi
+
+    if [ -f "$_SRC" ]; then
+        cp "$_SRC" "$_DEST"
+    else
+        (cd $_DEST; curl -S -L -O $_SRC)
+    fi
+}
+
+
 # We need a newer MSYS expr.exe and we need it early.
 #  I compiled one from coreutils-8.17.
 # If you used scripts/windows/BootstrapMinGW64.vbs to create your mingw-w64
@@ -200,6 +218,7 @@ uncompress ()
     esac
 }
 
+
 # Makes a directory symlink on Windows.
 # $1 is the link name (created), in MSYS land.
 # $2 is the target name (existing), in MSYS land.
@@ -241,6 +260,8 @@ elif [ $BH_BUILD_OS = darwin ]; then
     DEFAULT_SYSTEMS=darwin-x86,darwin-x86_64
 elif [ $BH_BUILD_OS = linux ]; then
     DARWIN_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz
+# .. testing for crosstool-ng based toolchain builds.
+#    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86.tar.xz
     MINGW_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/i686-w64-mingw32-linux-i686-glibc2.7.tar.bz2
     # The next two are git repositories.
     LINUX32_CROSS_TOOLCHAIN=https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.6
@@ -277,20 +298,25 @@ fi
 
 if [ ! $(bh_list_contains "windows-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "windows-x86_64" $SYSTEMSLIST) = no ] ; then
     if [ ! -d $TOOLCHAINS/mingw64 ]; then
-        if [ ! -f $ROOT/toolchain-tarballs/$(basename $MINGW_CROSS_FILENAME) ]; then
-            (cd $ROOT/toolchain-tarballs; curl -S -L -O $MINGW_CROSS_FILENAME)
-        fi
+        download $ROOT/toolchain-tarballs $MINGW_CROSS_FILENAME
         (mkdir -p $TOOLCHAINS/mingw64; cd $TOOLCHAINS/mingw64; $(uncompress $ROOT/toolchain-tarballs/$(basename $MINGW_CROSS_FILENAME)))
     fi
     export PATH=$TOOLCHAINS/mingw64/i686-w64-mingw32/bin:$PATH
 fi
 
 if [ ! $(bh_list_contains "darwin-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "darwin-x86_64" $SYSTEMSLIST) = no ] ; then
-    if [ ! -d $TOOLCHAINS/darwin-cross/apple-osx ]; then
-        if [ ! -f $ROOT/toolchain-tarballs/$(basename $DARWIN_CROSS_FILENAME) ]; then
-            (cd $ROOT/toolchain-tarballs; curl -S -L -O $DARWIN_CROSS_FILENAME)
-        fi
-        (mkdir -p $TOOLCHAINS/darwin-cross; cd $TOOLCHAINS/darwin-cross; $(uncompress $ROOT/toolchain-tarballs/$(basename $DARWIN_CROSS_FILENAME)))
+    if [ ! -d $TOOLCHAINS/darwin-cross/apple-osx/bin ]; then
+        download $ROOT/toolchain-tarballs $DARWIN_CROSS_FILENAME
+        (
+         if [ -f $DARWIN_CROSS_FILENAME ]; then
+             EXTRACTROOT=$TOOLCHAINS/darwin-cross/apple-osx
+         else
+             EXTRACTROOT=$TOOLCHAINS/darwin-cross
+         fi
+         mkdir -p $EXTRACTROOT
+         cd $EXTRACTROOT
+         uncompress $ROOT/toolchain-tarballs/$(basename $DARWIN_CROSS_FILENAME)
+        )
     fi
     export PATH=$TOOLCHAINS/darwin-cross/apple-osx/bin:$PATH
     export DARWIN_TOOLCHAIN="i686-apple-darwin11"
