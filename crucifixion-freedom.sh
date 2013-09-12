@@ -73,7 +73,7 @@ PYTHON_VERSION=2.7.5
 
 register_var_option "--python-version=<versions>" PYTHON_VERSION "Select Python version(s)."
 
-DARWIN_SYSROOT="$HOME/darwin-cross/MacOSX10.7.sdk"
+DARWIN_SYSROOT="$HOME/MacOSX10.7.sdk"
 register_var_option "--darwin-sdk=<path>" DARWIN_SYSROOT "Select Darwin SDK path."
 
 PYTHON_BUILD_DIR=/tmp2/cr-build
