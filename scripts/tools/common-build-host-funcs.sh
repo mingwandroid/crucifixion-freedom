@@ -66,6 +66,9 @@ BH_BUILD_OS=$HOST_OS
 BH_BUILD_ARCH=$HOST_ARCH
 BH_BUILD_TAG=$HOST_TAG
 
+BH_BUILD_CC_VENDOR=gcc
+BH_HOST_CC_VENDOR=clang
+
 # Map an NDK system tag to an OS name
 # $1: system tag (e.g. linux-x86)
 # Out: system name (e.g. linux)
@@ -158,6 +161,34 @@ bh_set_target_tag ()
   BH_TARGET_BITS=$(bh_tag_to_bits $1)
   BH_TARGET_TAG=$BH_TARGET_OS-$BH_TARGET_ARCH
   BH_TARGET_CONFIG=$(bh_tag_to_config_triplet $1)
+}
+
+# Pass $1 as gcc or clang here.
+bh_set_host_compiler_vendor ()
+{
+  BH_HOST_CC_VENDOR=$1
+}
+
+bh_set_build_compiler_vendor ()
+{
+  BH_BUILD_CC_VENDOR=$1
+}
+
+
+bh_vendor_to_cxx ()
+{
+  case $1 in
+    gcc)
+      echo "g++"
+      return 0
+      ;;
+    clang)
+      echo "clang++"
+      return 0
+      ;;
+  esac
+  echo "unknown"
+  return 1
 }
 
 # Return the executable suffix corresponding to host executables
@@ -358,50 +389,55 @@ EOF
     else
         log "no"
     fi
+
     return $RET
 }
 
 
 # $1: toolchain install dir
 # $2: toolchain prefix, no trailing dash (e.g. arm-linux-androideabi)
-# $3: optional -m32 or -m64.
+# $3: toolchain vendor (must be either gcc or clang)
+# $4: optional -m32 or -m64.
 _bh_try_host_fullprefix ()
 {
-    local PREFIX="$1/bin/$2"
-    shift; shift;
+set -x
+echo "_bh_try_host_fullprefix :: All args is $@"
+    local PREFIX="$1/bin/$2"; shift; shift;
+    local CC_VENDOR="$1"; shift
     if [ -z "$HOST_FULLPREFIX" ]; then
-        local GCC="$PREFIX-gcc"
+        local GCC="$PREFIX-${CC_VENDOR}"
         if [ -f "$GCC" ]; then
             if bh_check_compiler "$GCC" "$@"; then
                 # MSYS's $(which blah)" returns
                 # blah.exe not blah (msysgit doesn't!)
                 GCC="${GCC%%.exe}"
-                HOST_FULLPREFIX="${GCC%%gcc}"
-                dump "$(bh_host_text) Using host gcc: $GCC $@"
+                HOST_FULLPREFIX="${GCC%%${CC_VENDOR}}"
+                dump "$(bh_host_text) Using host compiler: $GCC $@"
             else
-                dump "$(bh_host_text) Ignoring broken host gcc: $GCC $@"
+                dump "$(bh_host_text) Ignoring broken host compiler: $GCC $@"
             fi
         fi
     fi
 }
 
 # $1: host prefix, no trailing slash (e.g. i686-linux-android)
-# $2: optional compiler args (should be empty, -m32 or -m64)
+# $2: cc vendor (must be gcc or clang)
+# $3: optional compiler args (should be empty, -m32 or -m64)
 _bh_try_host_prefix ()
 {
-    local PREFIX="$1"
-    shift
+    local PREFIX="$1"; shift
+    local CC_VENDOR="$1"; shift
     if [ -z "$HOST_FULLPREFIX" ]; then
-        local GCC="$(which $PREFIX-gcc 2>/dev/null)"
+        local GCC="$(which $PREFIX-$CC_VENDOR 2>/dev/null)"
         if [ "$GCC" -a -e "$GCC" ]; then
             if bh_check_compiler "$GCC" "$@"; then
                 # MSYS's $(which blah)" returns
                 # blah.exe not blah (msysgit doesn't!)
                 GCC="${GCC%%.exe}"
-                HOST_FULLPREFIX=${GCC%%gcc}
-                dump "$(bh_host_text) Using host gcc: ${HOST_FULLPREFIX}gcc $@"
+                HOST_FULLPREFIX=${GCC%%${CC_VENDOR}}
+                dump "$(bh_host_text) Using host gcc: ${HOST_FULLPREFIX}${CC_VENDOR} $@"
             else
-                dump "$(bh_host_text) Ignoring broken host gcc: $GCC $@"
+                dump "$(bh_host_text) Ignoring broken host compiler: $GCC $@"
             fi
         fi
     fi
@@ -493,6 +529,7 @@ _bh_select_toolchain_for_host ()
 {
     local HOST_CFLAGS HOST_CXXFLAGS HOST_LDFLAGS HOST_FULLPREFIX DARWIN_ARCH
     local DARWIN_ARCH DARWIN_SDK_SUBDIR
+    local CC_VENDOR=$BH_HOST_CC_VENDOR
 
     # We do all the complex auto-detection magic in the setup phase,
     # then save the result in host-specific global variables.
@@ -558,6 +595,7 @@ _bh_select_toolchain_for_host ()
                     fi
                     ;;
                 *)
+                    CC_VENDOR=$BH_HOST_CC_VENDOR
                     if [ -z "$DARWIN_TOOLCHAIN" -o -z "$DARWIN_SYSROOT" ]; then
                         dump "If you want to build Darwin binaries on a non-Darwin machine,"
                         dump "Please define DARWIN_TOOLCHAIN to name it, and DARWIN_SYSROOT to point"
@@ -570,12 +608,12 @@ _bh_select_toolchain_for_host ()
                         exit 1
                     fi
                     _bh_check_darwin_sdk $DARWIN_SYSROOT $DARWIN_MIN_VERSION
-                    _bh_try_host_prefix "$DARWIN_TOOLCHAIN" -m$(bh_tag_to_bits $1) --sysroot "$DARWIN_SYSROOT"
+                    _bh_try_host_prefix "$DARWIN_TOOLCHAIN" $CC_VENDOR -m$(bh_tag_to_bits $1) --sysroot "$DARWIN_SYSROOT"
                     if [ -z "$HOST_FULLPREFIX" ]; then
                         dump "It looks like $DARWIN_TOOLCHAIN-gcc is not in your path, or does not work correctly!"
                         exit 1
                     fi
-                    dump "Using darwin cross-toolchain: ${HOST_FULLPREFIX}gcc"
+                    dump "Using darwin cross-toolchain: ${HOST_FULLPREFIX}${CC_VENDOR}"
                     ;;
             esac
             ;;
@@ -583,6 +621,7 @@ _bh_select_toolchain_for_host ()
         windows|windows-x86)
             case $BH_BUILD_OS in
                 *)
+                    CC_VENDOR=$BH_BUILD_CC_VENDOR
                     # We favor these because they are more recent, and because
                     # we have a script to rebuild them from scratch. See
                     # build-mingw64-toolchain.sh.
@@ -597,7 +636,7 @@ _bh_select_toolchain_for_host ()
                     # Later versions of the distro now provide a new package
                     # named mingw-gcc which provides i686-w64-mingw32 and
                     # x86_64-w64-mingw32 instead.
-                    _bh_try_host_prefix i686-pc-mingw32
+                    _bh_try_host_prefix i686-pc-mingw32 $CC_VENDOR
                     if [ -z "$HOST_FULLPREFIX" ]; then
                         dump "There is no Windows cross-compiler. Ensure that you"
                         dump "have one of these installed and in your path:"
@@ -628,6 +667,7 @@ _bh_select_toolchain_for_host ()
         windows-x86_64)
             case $BH_BUILD_OS in
                 *)
+                    CC_VENDOR=$BH_HOST_CC_VENDOR
                     # See comments above for windows-x86
                     _bh_try_host_fullprefix "/c/mingw-w64/mingw64" x86_64-w64-mingw32
                     _bh_try_host_prefix x86_64-w64-mingw32
@@ -635,7 +675,7 @@ _bh_select_toolchain_for_host ()
                     # Beware that this package is completely broken on many
                     # versions of no vinegar Ubuntu (i.e. it fails at building trivial
                     # programs).
-                    _bh_try_host_prefix amd64-mingw32msvc
+                    _bh_try_host_prefix amd64-mingw32msvc $CC_VENDOR
                     # There is no x86_64-pc-mingw32 toolchain on Fedora.
                     if [ -z "$HOST_FULLPREFIX" ]; then
                         dump "There is no Windows cross-compiler in your path. Ensure you"
@@ -666,14 +706,14 @@ _bh_select_toolchain_for_host ()
 
     # Determine the default bitness of our compiler. It it doesn't match
     # HOST_BITS, tries to see if it supports -m32 or -m64 to change it.
-    if ! _bh_check_compiler_bitness ${HOST_FULLPREFIX}gcc $BH_HOST_BITS; then
+    if ! _bh_check_compiler_bitness ${HOST_FULLPREFIX}${CC_VENDOR} $BH_HOST_BITS; then
         local TRY_CFLAGS
         case $BH_HOST_BITS in
             32) TRY_CFLAGS=-m32;;
             64) TRY_CFLAGS=-m64;;
         esac
-        if ! _bh_check_compiler_bitness ${HOST_FULLPREFIX}gcc $BH_HOST_BITS $TRY_CFLAGS; then
-            panic "Can't find a way to generate $BH_HOST_BITS binaries with this compiler: ${HOST_FULLPREFIX}gcc"
+        if ! _bh_check_compiler_bitness ${HOST_FULLPREFIX}${CC_VENDOR} $BH_HOST_BITS $TRY_CFLAGS; then
+            panic "Can't find a way to generate $BH_HOST_BITS binaries with this compiler: ${HOST_FULLPREFIX}${CC_VENDOR}"
         fi
         HOST_CFLAGS=$HOST_CFLAGS" "$TRY_CFLAGS
         HOST_CXXFLAGS=$HOST_CXXFLAGS" "$TRY_CFLAGS
@@ -702,6 +742,8 @@ _bh_select_toolchain_for_host ()
         --cflags="$HOST_CFLAGS" \
         --cxxflags="$HOST_CXXFLAGS" \
         --ldflags="$HOST_LDFLAGS" \
+        --cc="$CC_VENDOR" \
+        --cxx="$(bh_vendor_to_cxx $CC_VENDOR)" \
         $CCACHE
 }
 
@@ -718,6 +760,7 @@ _bh_select_toolchain_for_host ()
 #
 bh_setup_build_dir ()
 {
+set -x
     BH_BUILD_DIR="$1"
     if [ -z "$BH_BUILD_DIR" ]; then
         BH_BUILD_DIR=/tmp/ndk-$USER/buildhost
@@ -738,7 +781,7 @@ bh_setup_build_dir ()
     fi
 
     # The directory that will contain our toolchain wrappers
-    BH_WRAPPERS_DIR=$BH_BUILD_DIR/toolchain-wrappers
+    BH_WRAPPERS_DIR=$BH_BUILD_DIR/toolchain-wrappers-$BH_HOST_CC_VENDOR
     rm -rf "$BH_WRAPPERS_DIR" && mkdir "$BH_WRAPPERS_DIR"
     fail_panic "Could not create wrappers dir: $BH_WRAPPERS_DIR"
 
@@ -755,6 +798,8 @@ bh_setup_build_dir ()
 #     where the generated GCC binaries will run, not the current machine's
 #     type (this one is in $ORIGINAL_HOST_TAG instead).
 #
+# $2: Compiler vendor (gcc or clang).
+#
 bh_setup_build_for_host ()
 {
     local HOST_VARNAME=$(dashes_to_underscores $1)
@@ -762,6 +807,7 @@ bh_setup_build_for_host ()
 
     # Determine the host configuration triplet in $HOST
     bh_set_host_tag $1
+    bh_set_host_compiler_vendor $2
 
     # Note: since _bh_select_toolchain_for_host can change the value of
     # $BH_HOST_CONFIG, we need to save it in a variable to later get the
@@ -779,7 +825,7 @@ bh_setup_build_for_host ()
 # generate host-specific binaries. You should call it before invoking
 # a configure script or make.
 #
-# It assume sthat bh_setup_build_for_host was called with the right
+# It assumes that bh_setup_build_for_host was called with the right
 # host system tag and wrappers directory.
 #
 bh_setup_host_env ()

@@ -61,6 +61,9 @@ register_var_option "--package-dir=<path>" PACKAGE_DIR "Package prebuilt tarball
 BUILD_DIR=
 register_var_option "--build-dir=<path>" BUILD_DIR "Build Python into directory"
 
+COMPILER_VENDORS=gcc
+register_var_option "--compiler-vendors=<gcc,clang>" COMPILER_VENDORS "Comma separated list of compilers to build with"
+
 WINTHREADS=nt
 # NYI
 # register_var_option "--winthreads=<posix|nt>" WINTHREADS "Select Windows threading API."
@@ -200,16 +203,21 @@ if [ -z "$BUILD_DIR" ] ; then
     BUILD_DIR=/tmp/ndk-$USER/buildhost
 fi
 
-bh_setup_build_dir $BUILD_DIR
-
 if [ "$BH_BUILD_MODE" = "debug" ] ; then
    PYDEBUG="--with-pydebug"
 #   SAVE_TEMPS=" --save-temps "
 fi
 
-# Sanity check that we have the right compilers for all hosts
-for SYSTEM in $BH_HOST_SYSTEMS; do
-    bh_setup_build_for_host $SYSTEM
+CC_VENDORS=$(commas_to_spaces $COMPILER_VENDORS)
+CC_VENDORS=clang
+
+for CC_VENDOR in $CC_VENDORS; do
+    bh_set_host_compiler_vendor $CC_VENDOR
+    bh_setup_build_dir $BUILD_DIR
+    # Sanity check that we have the right compilers for all hosts
+    for SYSTEM in $BH_HOST_SYSTEMS; do
+        bh_setup_build_for_host $SYSTEM $CC_VENDOR
+    done
 done
 
 TEMP_DIR=$BUILD_DIR/tmp
@@ -260,9 +268,10 @@ done
 # Return the build install directory of a given Python version
 # $1: host system tag
 # $2: python version
+# $3: compiler vendor
 python_build_install_dir ()
 {
-    echo "$BH_BUILD_DIR/install/$1/python-$2"
+    echo "$BH_BUILD_DIR/install/$1/python-$2-$3"
 }
 
 # $1: host system tag
@@ -277,7 +286,7 @@ python_ndk_package_name ()
 # directory. Relative to $NDK_DIR.
 python_ndk_install_dir ()
 {
-    echo "prebuilt/$1/python-$2"
+    echo "prebuilt/$1/python-$2-$3"
 }
 
 arch_to_qemu_arch ()
@@ -558,12 +567,14 @@ python_dependencies_build ()
 
 # $1: host system tag
 # $2: python version
+# $3: compiler vendor
 build_host_python ()
 {
     local SRCDIR=$SRC_DIR/Python-$2
-    local BUILDDIR=$BH_BUILD_DIR/build-python-$1-$2
-    local INSTALLDIR=$(python_build_install_dir $1 $2)
+    local BUILDDIR=$BH_BUILD_DIR/build-python-$1-$2 $3
+    local INSTALLDIR=$(python_build_install_dir $1 $2 $3)
     local TEMPINSTALLDIR=${INSTALLDIR}_static_libs
+    local CC_VENDOR=$3
 
     local ARGS TEXT
 
@@ -650,19 +661,19 @@ build_host_python ()
             echo "ac_cv_little_endian_double=yes"      >> $CFG_SITE
         fi
 
-        if [ $BH_HOST_OS = $BH_BUILD_OS ]; then
-            # Only cross compiling from arch perspective.
-            # qemu causes failures as cross-compilation is not detected
-            # if a test executable can be run successfully, so we test
-            # for qemu-${BH_HOST_ARCH} and qemu-${BH_HOST_ARCH}-static
-            # and panic if either are found.
-            QEMU_HOST_ARCH=$(arch_to_qemu_arch $BH_HOST_ARCH)
-            if [ ! -z "$(which qemu-$QEMU_HOST_ARCH 2>/dev/null)" -o \
-                 ! -z "$(which qemu-$QEMU_HOST_ARCH-static 2>/dev/null)" ] ; then
-               panic "Installed qemu(s) ($(which qemu-$QEMU_HOST_ARCH 2>/dev/null) $(which qemu-$QEMU_HOST_ARCH-static 2>/dev/null))" \
-                      "will prevent this build from working."
-            fi
-        fi
+#        if [ $BH_HOST_OS = $BH_BUILD_OS ]; then
+#            # Only cross compiling from arch perspective.
+#            # qemu causes failures as cross-compilation is not detected
+#            # if a test executable can be run successfully, so we test
+#            # for qemu-${BH_HOST_ARCH} and qemu-${BH_HOST_ARCH}-static
+#            # and panic if either are found.
+#            QEMU_HOST_ARCH=$(arch_to_qemu_arch $BH_HOST_ARCH)
+#            if [ ! -z "$(which qemu-$QEMU_HOST_ARCH 2>/dev/null)" -o \
+#                 ! -z "$(which qemu-$QEMU_HOST_ARCH-static 2>/dev/null)" ] ; then
+#               panic "Installed qemu(s) ($(which qemu-$QEMU_HOST_ARCH 2>/dev/null) $(which qemu-$QEMU_HOST_ARCH-static 2>/dev/null))" \
+#                      "will prevent this build from working."
+#            fi
+#        fi
     fi
 
     if [ $BH_BUILD_TAG = windows-x86_64 -o $BH_BUILD_TAG = windows-x86 ] ; then
@@ -696,7 +707,7 @@ build_host_python ()
         export LDSHARED=$LDSHARED" -shared "
     fi
 
-    TEXT="$(bh_host_text) python-$2:"
+    TEXT="$(bh_host_text) python-$2(-$3):"
 
     touch $SRCDIR/Include/graminit.h
     touch $SRCDIR/Python/graminit.c
@@ -734,20 +745,20 @@ build_host_python ()
 
 need_build_host_python ()
 {
-    bh_stamps_do host-python-$1-$2 build_host_python $1 $2
+    bh_stamps_do host-python-$1-$2-$3 build_host_python $1 $2 $3
 }
 
 # Install host Python binaries and support files to the NDK install dir.
 # $1: host tag
 # $2: python version
+# $3: compiler vendor
 install_host_python ()
 {
-    local SRCDIR="$(python_build_install_dir $1 $2)"
-    local DSTDIR="$NDK_DIR/$(python_ndk_install_dir $1 $2)"
+    local SRCDIR="$(python_build_install_dir $1 $2 $3)"
+    local DSTDIR="$NDK_DIR/$(python_ndk_install_dir $1 $2 $3)"
+    need_build_host_python $1 $2 $3
 
-    need_build_host_python $1 $2
-
-    dump "$(bh_host_text) python-$2: Installing"
+    dump "$(bh_host_text) python-$2(-$3): Installing"
     run copy_directory "$SRCDIR/bin"     "$DSTDIR/bin"
     run copy_directory "$SRCDIR/lib"     "$DSTDIR/lib"
     run copy_directory "$SRCDIR/share"   "$DSTDIR/share"
@@ -756,9 +767,9 @@ install_host_python ()
 
 need_install_host_python ()
 {
-    local SRCDIR="$(python_build_install_dir $1 $2)"
+    local SRCDIR="$(python_build_install_dir $1 $2 $3)"
 
-    bh_stamps_do install-host-python-$1-$2 install_host_python $1 $2
+    bh_stamps_do install-host-python-$1-$2-$3 install_host_python $1 $2 $3
 
     # make sharedmods (setup.py) needs to use the build machine's Python
     # for the other hosts to build correctly.
@@ -770,13 +781,14 @@ need_install_host_python ()
 # Package host Python binaries into a tarball
 # $1: host tag
 # $2: python version
+# $3: compiler vendor
 package_host_python ()
 {
-    local SRCDIR="$(python_ndk_install_dir $1 $2)"
-    local PACKAGENAME=$(python_ndk_package_name $1 $2)-$1.tar.bz2
+    local SRCDIR="$(python_ndk_install_dir $1 $2 $3)"
+    local PACKAGENAME=$(python_ndk_package_name $1 $2 $3)-$1.tar.bz2
     local PACKAGE="$PACKAGE_DIR/$PACKAGENAME"
 
-    need_install_host_python $1 $2
+    need_install_host_python $1 $2 $3
 
     dump "$(bh_host_text) $PACKAGENAME: Packaging"
     run pack_archive "$PACKAGE" "$NDK_DIR" "$SRCDIR"
@@ -787,19 +799,23 @@ ARCHS=$(commas_to_spaces $ARCHS)
 
 # Let's build this
 for SYSTEM in $BH_HOST_SYSTEMS; do
-    bh_setup_build_for_host $SYSTEM
-    for VERSION in $PYTHON_VERSION; do
-        need_install_host_python $SYSTEM $VERSION
+    for CC_VENDOR in $CC_VENDORS; do
+        bh_setup_build_for_host $SYSTEM $CC_VENDOR
+        for VERSION in $PYTHON_VERSION; do
+            need_install_host_python $SYSTEM $VERSION $CC_VENDOR
+        done
     done
 done
 
 if [ "$PACKAGE_DIR" ]; then
     for SYSTEM in $BH_HOST_SYSTEMS; do
-        bh_setup_build_for_host $SYSTEM
-        if [ $AUTO_BUILD != "yes" -o $SYSTEM != $BH_BUILD_TAG ]; then
-            for VERSION in $PYTHON_VERSION; do
-                package_host_python $SYSTEM $VERSION
-            done
-        fi
+        for CC_VENDOR in $CC_VENDORS; do
+            bh_setup_build_for_host $SYSTEM $CC_VENDOR
+            if [ $AUTO_BUILD != "yes" -o $SYSTEM != $BH_BUILD_TAG ]; then
+                for VERSION in $PYTHON_VERSION; do
+                    package_host_python $SYSTEM $VERSION $CC_VENDOR
+                done
+            fi
+        done
     done
 fi

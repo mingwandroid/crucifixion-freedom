@@ -110,6 +110,9 @@ register_var_option "--with-pdcurses-rl=<path>" PDCURSES_RL "[Windows] Build PDC
 TCLTK=no
 register_var_option "--with-tcltk=<path>" TCLTK "Build static tcltk (for Idle)"
 
+COMPILER_VENDORS=gcc
+register_var_option "--compiler-vendors=<gcc,clang>" BUILD_DIR "Comma separated list of compilers to build with"
+
 PROGRAM_DESCRIPTION="\
 This program sets up and uses a compilation environment to cross compile Python
 2.7.3 and/or 3.3.0. It calls scripts/tools/build-host-python.sh to do all of
@@ -261,7 +264,9 @@ elif [ $BH_BUILD_OS = darwin ]; then
 elif [ $BH_BUILD_OS = linux ]; then
     DARWIN_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz
 # .. testing for crosstool-ng based toolchain builds.
-#    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86.tar.xz
+#    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86.tar.xz  # broken -mmin-osx-version=10.6 doesn't work.
+#    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86-clang-3.3.tar.xz # broken -isysroot doesn't work.
+    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86-clang-3.3.copy-sdk.tar.xz
     MINGW_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/i686-w64-mingw32-linux-i686-glibc2.7.tar.bz2
     # The next two are git repositories.
     LINUX32_CROSS_TOOLCHAIN=https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.6
@@ -350,7 +355,8 @@ $ROOT/scripts/tools/build-host-python.sh \
     --systems=$BH_HOST_SYSTEMS \
     --build-dir=$PYTHON_BUILD_DIR \
     --package-dir=$PYTHON_RELEASE_DIR \
-    --python-version=$PYTHON_VERSION
+    --python-version=$PYTHON_VERSION \
+    --compiler-vendors=$COMPILER_VENDORS
 
 exit 0
 

@@ -88,6 +88,12 @@ register_var_option "--arflags=<options>" EXTRA_ARFLAGS "Add extra archiver flag
 CCACHE=
 register_var_option "--ccache=<prefix>" CCACHE "Use ccache compiler driver"
 
+CC_OVERRIDE=gcc
+register_var_option "--cc=<prefix>" CC_OVERRIDE "Use as c compiler"
+
+CXX_OVERRIDE=g++
+register_var_option "--cxx=<prefix>" CXX_OVERRIDE "Use as c++ compiler"
+
 PROGRAMS="cc gcc c++ g++ cpp as ld ar ranlib strip strings nm objdump dlltool windres readelf"
 register_var_option "--programs=<list>" PROGRAMS "List of programs to generate wrapper for"
 
@@ -121,9 +127,10 @@ gen_wrapper_program ()
     local DST_FILE="$4/${SRC_PREFIX}$PROG"
     local FLAGS=""
 
+    DST_PROG=$PROG
     case $PROG in
-      cc|gcc) FLAGS=$FLAGS" $EXTRA_CFLAGS";;
-      c++|g++) FLAGS=$FLAGS" $EXTRA_CXXFLAGS";;
+      cc|gcc) FLAGS=$FLAGS" $EXTRA_CFLAGS"; DST_PROG=$CC_OVERRIDE;;
+      c++|g++) FLAGS=$FLAGS" $EXTRA_CXXFLAGS";  DST_PROG=$CXX_OVERRIDE;;
       ar) FLAGS=$FLAGS" $EXTRA_ARFLAGS";;
       as) FLAGS=$FLAGS" $EXTRA_ASFLAGS";;
       ld|ld.bfd|ld.gold) FLAGS=$FLAGS" $EXTRA_LDFLAGS";;
@@ -149,7 +156,7 @@ gen_wrapper_program ()
     cat > "$DST_FILE" << EOF
 #!/bin/sh
 # Auto-generated, do not edit
-${DST_PREFIX}$PROG $FLAGS "\$@"
+${DST_PREFIX}$DST_PROG $FLAGS "\$@"
 EOF
     chmod +x "$DST_FILE"
     log "Generating: ${SRC_PREFIX}$PROG"
