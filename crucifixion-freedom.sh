@@ -31,6 +31,9 @@
 
 # rm -rf /tmp2/cr-build; export PATH=/c/mingw-builds/mingw64/bin:/c/mingw-builds/mingw32/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64
 
+# rm -rf /tmp2/cr-build; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+
+
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
 # ('LDFLAGS', '-R', self.compiler.runtime_library_dirs),
@@ -50,7 +53,6 @@ ROOT=$PWD
 
 download ()
 {
-set -x
     local _DEST="$1"; shift
     local _SRC="$1"; shift
 
@@ -293,7 +295,6 @@ if [ ! $(bh_list_contains "linux-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains
         if [ ! -d prebuilts/gcc/linux-x86/host ]; then
             mkdir -p prebuilts/gcc/linux-x86/host
         fi
-        set -x
         if [ ! -d prebuilts/gcc/linux-x86/host/$(basename $LINUX_CROSS_TOOLCHAIN) ]; then
             ln -s $TOOLCHAINS/google-prebuilt/$(basename $LINUX_CROSS_TOOLCHAIN) prebuilts/gcc/linux-x86/host/$(basename $LINUX_CROSS_TOOLCHAIN)
         fi

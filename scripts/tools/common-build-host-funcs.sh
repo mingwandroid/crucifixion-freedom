@@ -400,8 +400,7 @@ EOF
 # $4: optional -m32 or -m64.
 _bh_try_host_fullprefix ()
 {
-set -x
-echo "_bh_try_host_fullprefix :: All args is $@"
+    echo "_bh_try_host_fullprefix :: All args is $@"
     local PREFIX="$1/bin/$2"; shift; shift;
     local CC_VENDOR="$1"; shift
     if [ -z "$HOST_FULLPREFIX" ]; then
@@ -427,6 +426,7 @@ _bh_try_host_prefix ()
 {
     local PREFIX="$1"; shift
     local CC_VENDOR="$1"; shift
+    echo "_bh_try_host_prefix :: $PREFIX-$CC_VENDOR"
     if [ -z "$HOST_FULLPREFIX" ]; then
         local GCC="$(which $PREFIX-$CC_VENDOR 2>/dev/null)"
         if [ "$GCC" -a -e "$GCC" ]; then
@@ -547,20 +547,20 @@ _bh_select_toolchain_for_host ()
             # If possible, automatically use our custom toolchain to generate
             # 32-bit executables that work on Ubuntu 8.04 and higher.
             _bh_try_host_fullprefix "${HOME}/google-prebuilt/i686-linux-glibc2.7-4.6" i686-linux
-            _bh_try_host_prefix i686-linux-gnu
-            _bh_try_host_prefix i686-linux
-            _bh_try_host_prefix x86_64-linux-gnu -m32
-            _bh_try_host_prefix x86_64-linux -m32
+            _bh_try_host_prefix i686-linux-gnu $CC_VENDOR 
+            _bh_try_host_prefix i686-linux $CC_VENDOR 
+            _bh_try_host_prefix x86_64-linux-gnu  $CC_VENDOR -m32
+            _bh_try_host_prefix x86_64-linux  $CC_VENDOR -m32
             ;;
 
         linux-x86_64)
             # If possible, automatically use our custom toolchain to generate
             # 64-bit executables that work on Ubuntu 8.04 and higher.
             _bh_try_host_fullprefix "${HOME}/google-prebuilt/x86_64-linux-glibc2.7-4.6" x86_64-linux
-            _bh_try_host_prefix x86_64-linux-gnu
-            _bh_try_host_prefix x84_64-linux
-            _bh_try_host_prefix i686-linux-gnu -m64
-            _bh_try_host_prefix i686-linux -m64
+            _bh_try_host_prefix x86_64-linux-gnu $CC_VENDOR
+            _bh_try_host_prefix x84_64-linux $CC_VENDOR
+            _bh_try_host_prefix i686-linux-gnu $CC_VENDOR -m64
+            _bh_try_host_prefix i686-linux $CC_VENDOR -m64
             ;;
 
         darwin-*)
@@ -625,11 +625,11 @@ _bh_select_toolchain_for_host ()
                     # We favor these because they are more recent, and because
                     # we have a script to rebuild them from scratch. See
                     # build-mingw64-toolchain.sh.
-                    _bh_try_host_prefix x86_64-w64-mingw32 -m32
-                    _bh_try_host_prefix i686-w64-mingw32
+                    _bh_try_host_prefix x86_64-w64-mingw32 $CC_VENDOR -m32
+                    _bh_try_host_prefix i686-w64-mingw32 $CC_VENDOR
                     # Typically provided by the 'mingw32' package on Debian
                     # and Ubuntu systems.
-                    _bh_try_host_prefix i586-mingw32msvc
+                    _bh_try_host_prefix i586-mingw32msvc $CC_VENDOR
                     # Special note for Fedora: this distribution used
                     # to have a mingw32-gcc package that provided a 32-bit
                     # only cross-toolchain named i686-pc-mingw32.
@@ -670,8 +670,8 @@ _bh_select_toolchain_for_host ()
                     CC_VENDOR=$BH_HOST_CC_VENDOR
                     # See comments above for windows-x86
                     _bh_try_host_fullprefix "/c/mingw-w64/mingw64" x86_64-w64-mingw32
-                    _bh_try_host_prefix x86_64-w64-mingw32
-                    _bh_try_host_prefix i686-w64-mingw32 -m64
+                    _bh_try_host_prefix x86_64-w64-mingw32 $CC_VENDOR
+                    _bh_try_host_prefix i686-w64-mingw32 $CC_VENDOR -m64
                     # Beware that this package is completely broken on many
                     # versions of no vinegar Ubuntu (i.e. it fails at building trivial
                     # programs).
@@ -760,7 +760,6 @@ _bh_select_toolchain_for_host ()
 #
 bh_setup_build_dir ()
 {
-set -x
     BH_BUILD_DIR="$1"
     if [ -z "$BH_BUILD_DIR" ]; then
         BH_BUILD_DIR=/tmp/ndk-$USER/buildhost

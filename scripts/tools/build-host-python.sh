@@ -209,7 +209,6 @@ if [ "$BH_BUILD_MODE" = "debug" ] ; then
 fi
 
 CC_VENDORS=$(commas_to_spaces $COMPILER_VENDORS)
-CC_VENDORS=clang
 
 for CC_VENDOR in $CC_VENDORS; do
     bh_set_host_compiler_vendor $CC_VENDOR
@@ -348,7 +347,7 @@ make_ncurses ()
     if [[ ! -f $_PREFIX/lib/libncursesw.a ]] ; then
         download_package http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz ${_HOST_SRC_DIR}
         (
-        if [ $_HOST = windows-x86 -o $_HOST = windows-x86_64 ] ; then
+        if [ $_HOST_TAG = windows-x86 -o $_HOST_TAG = windows-x86_64 ] ; then
             NCCFLAGS="-D__USE_MINGW_ANSI_STDIO=1"
             HOST_NCCONF_FLAGS="--enable-term-driver --enable-sp-funcs --enable-widec"
         else
@@ -546,8 +545,11 @@ python_dependencies_build ()
     if [ $_HOST = windows-x86 -o $_HOST = windows-x86_64 ] ; then
 #        if [ "$PDCURSES_RL" = "yes" ] ; then
 # ncurses cross compile fails, see status.txt for (some) details.
-#            make_ncurses $_HOST $_PREFIXSTATIC
-            make_pdcurses $_HOST $_PREFIXSTATIC
+#            if [ $BH_BUILD_TAG = windows-x86_64 -o $BH_BUILD_TAG = windows-x86 ] ; then
+                 make_ncurses $_HOST $_PREFIXSTATIC
+#           else
+#                make_pdcurses $_HOST $_PREFIXSTATIC
+#           fi
 #        fi
     elif [ $_HOST = linux-x86 -o $_HOST = linux-x86_64 ] ; then
         make_ncurses $_HOST $_PREFIXSTATIC
@@ -796,7 +798,6 @@ package_host_python ()
 
 PYTHON_VERSION=$(commas_to_spaces $PYTHON_VERSION)
 ARCHS=$(commas_to_spaces $ARCHS)
-
 # Let's build this
 for SYSTEM in $BH_HOST_SYSTEMS; do
     for CC_VENDOR in $CC_VENDORS; do
