@@ -740,6 +740,12 @@ build_host_python ()
     #  and bininstall: doing
     #  (cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)-config python2-config)
     #  Though the real fix is to simply make bininstall depend on libainstall.
+    # Note 3:
+    # export PATH=$INSTALLDIR/bin:$PATH is done so that during the build of
+    #  _tkinter.pyd, tcl??.dll and tk??.dll are found so that the module import
+    #  succeeds when the test import happens. Without this, _tkinter.pyd gets
+    #  renamed to _tkinter_failed.pyd
+    export PATH=$INSTALLDIR/bin:$PATH &&
     run2 make -j$NUM_JOBS &&
     run2 make -j1 &&
     run2 make install
