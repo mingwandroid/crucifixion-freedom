@@ -29,10 +29,7 @@
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
 # rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
-# rm -rf /tmp2/cr-build; export PATH=/c/mingw-builds/mingw64/bin:/c/mingw-builds/mingw32/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64
-
-# rm -rf /tmp2/cr-build; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
-
+# rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
@@ -664,3 +661,16 @@ popd
 mv Python-$PYVER a-${PYVER}
 cp -rf a-${PYVER} b-${PYVER}
 pushd b-${PYVER}
+
+
+# Alexey's having a segmentation fault with tcl/tk support in mingw-builds:
+# Get msys64 user version (i.e. not developer version)
+git clone https://github.com/Alexpux/mingw-builds.git --branch develop
+cd mingw-builds
+nano library/subtargets.sh [uncomment tcl tk]
+./build --mode=python-2.7.5 --jobs=3 --buildroot=/tmp --arch=x86_64
+# It'll fail ..
+
+# To reproduce it:
+pushd /tmp/python-x86_64/build/Python-2.7.5
+DISTUTILS_DEBUG=1 PATH=~/mingw-builds/toolchains/mingw64/bin:/tmp/python-x86_64/libs/bin:$PATH CC='x86_64-w64-mingw32-gcc' LDSHARED='x86_64-w64-mingw32-gcc -shared -Wl,--enable-auto-image-base -pipe -L/tmp/python-x86_64/libs/lib -L/tmp/prerequisites/x86_64-zlib/lib -L/tmp/prerequisites/x86_64-w64-mingw32-static/lib -L/tmp/python-x86_64/python-2.7.5-x86_64/opt/lib -L/x86_64-zlib/lib -LC:/msys64/tmp/python-x86_64/python-2.7.5-x86_64/opt/lib -LC:/msys64/tmp/python-x86_64/libs/lib' OPT='-DNDEBUG ' ./python.exe -E ../../../src/Python-2.7.5/setup.py --verbose build
