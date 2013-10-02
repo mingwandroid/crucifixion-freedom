@@ -75,7 +75,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  		;; \
  	esac
  
-+ifeq ($OSTYPE,msys)
++ifeq ($(shell uname -o),Msys)
 +DESTDIRFINAL=$(DESTDIR)
 +else
 +DESTDIRFINAL=$(DESTDIR)/
