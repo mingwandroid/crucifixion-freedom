@@ -30,6 +30,7 @@
 # rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
 # rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+# rm -rf /tmp2/cr-build; git clean -dxf; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=linux-x86,darwin-x86,darwin-x86_64 --compiler-vendors=clang
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
@@ -110,7 +111,7 @@ TCLTK=no
 register_var_option "--with-tcltk=<path>" TCLTK "Build static tcltk (for Idle)"
 
 COMPILER_VENDORS=gcc
-register_var_option "--compiler-vendors=<gcc,clang>" BUILD_DIR "Comma separated list of compilers to build with"
+register_var_option "--compiler-vendors=<gcc,clang>" COMPILER_VENDORS "Comma separated list of compilers to build with"
 
 PROGRAM_DESCRIPTION="\
 This program sets up and uses a compilation environment to cross compile Python
@@ -265,7 +266,7 @@ elif [ $BH_BUILD_OS = linux ]; then
 # .. testing for crosstool-ng based toolchain builds.
 #    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86.tar.xz  # broken -mmin-osx-version=10.6 doesn't work.
 #    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86-clang-3.3.tar.xz # broken -isysroot doesn't work.
-    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86-clang-3.3.copy-sdk.tar.xz
+    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86.tar.xz
     MINGW_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/i686-w64-mingw32-linux-i686-glibc2.7.tar.bz2
     # The next two are git repositories.
     LINUX32_CROSS_TOOLCHAIN=https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.6
@@ -597,7 +598,7 @@ patch -p1 < $PATCHESDIR/0100-grammar-fixes.patch
 patch -p1 < $PATCHESDIR/0105-builddir-fixes.patch
 patch -p1 < $PATCHESDIR/0110-msys-monkeypatch-os-system-via-sh-exe.patch
 patch -p1 < $PATCHESDIR/0115-msys-replace-slashes-used-in-io-redirection.patch
-# I didn't apply the following patches (they're in 3.3.0.alex and 
+# I didn't apply the following patches (they're in 3.3.0.alex and
 # would need renumbering and regenerating...):
 # patch -p1 < $PATCHESDIR/0013-CROSS-fix-typo-in-thread-AC_CACHE_VAL.patch
 # patch -p1 < $PATCHESDIR/0014-CROSS-restore-importlib-header-to-source-directory-a.patch
