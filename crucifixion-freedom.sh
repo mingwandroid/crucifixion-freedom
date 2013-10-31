@@ -264,8 +264,6 @@ elif [ $BH_BUILD_OS = darwin ]; then
 elif [ $BH_BUILD_OS = linux ]; then
     DARWIN_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz
 # .. testing for crosstool-ng based toolchain builds.
-#    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86.tar.xz  # broken -mmin-osx-version=10.6 doesn't work.
-#    DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86-clang-3.3.tar.xz # broken -isysroot doesn't work.
     DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86.tar.xz
     MINGW_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/i686-w64-mingw32-linux-i686-glibc2.7.tar.bz2
     # The next two are git repositories.
@@ -308,6 +306,8 @@ if [ ! $(bh_list_contains "windows-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contai
     export PATH=$TOOLCHAINS/mingw64/i686-w64-mingw32/bin:$PATH
 fi
 
+echo $TOOLCHAINS/darwin-cross/apple-osx
+
 if [ ! $(bh_list_contains "darwin-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "darwin-x86_64" $SYSTEMSLIST) = no ] ; then
     if [ ! -d $TOOLCHAINS/darwin-cross/apple-osx/bin ]; then
         download $ROOT/toolchain-tarballs $DARWIN_CROSS_FILENAME
@@ -323,7 +323,12 @@ if [ ! $(bh_list_contains "darwin-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contain
         )
     fi
     export PATH=$TOOLCHAINS/darwin-cross/apple-osx/bin:$PATH
-    export DARWIN_TOOLCHAIN="i686-apple-darwin11"
+    if [ -f $TOOLCHAINS/darwin-cross/apple-osx/bin/i686-apple-darwin11-clang -o -f $TOOLCHAINS/darwin-cross/apple-osx/bin/i686-apple-darwin11-gcc ]; then
+        export DARWIN_TOOLCHAIN="i686-apple-darwin11"
+    elif [ -f $TOOLCHAINS/darwin-cross/apple-osx/bin/x86_64-apple-darwin10-clang -o -f $TOOLCHAINS/darwin-cross/apple-osx/bin/x86_64-apple-darwin10-gcc ]; then
+        export DARWIN_TOOLCHAIN="x86_64-apple-darwin10"
+    fi
+    echo DARWIN_TOOLCHAIN = $DARWIN_TOOLCHAIN
 fi
 
 if [ ! $(bh_list_contains "darwin-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "darwin-x86_64" $SYSTEMSLIST) = no -o $BH_BUILD_OS = darwin ] ; then
