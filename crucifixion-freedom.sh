@@ -30,6 +30,7 @@
 # rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
 # rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+# rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0,3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
 # rm -rf /tmp2/cr-build; git clean -dxf; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=linux-x86,darwin-x86,darwin-x86_64 --compiler-vendors=clang
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
@@ -160,7 +161,7 @@ fi
 # fi
 # export PATH=$HOME/autoconf-2.67/bin:$PATH
 
-# For Python-3.3.0
+# For Python-3.3.x
 if [ ! -d $HOME/autoconf-2.69 ]; then
     (cd $ROOT/toolchain-tarballs; curl -S -L -O http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz)
     (cd /tmp; tar -xvf $ROOT/toolchain-tarballs/autoconf-2.69.tar.gz; cd autoconf-2.69; M4=$(which m4) ./configure --prefix=$HOME/autoconf-2.69; make; make install)
@@ -254,8 +255,15 @@ win_mklink ()
 
 if [ $BH_BUILD_OS = windows ]; then
     DARWIN_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Windows-120614.7z
-    MINGW_CROSS_FILENAME=http://heanet.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/rubenvb/release/i686-w64-mingw32-gcc-4.7.0-release-win32_rubenvb.7z
-    MINGW_CROSS_FILENAME_64=http://kent.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Automated%20Builds/mingw-w64-bin_i686-mingw_20111220.zip
+    MINGW_GCC_EXC_VAR64=sjlj
+    MINGW_GCC_EXC_THREADS=win32
+    MINGW_GCC_SRC_VER=4.8.2
+    MINGW_GCC_EXC_VAR32=dwarf
+    MINGW_SF_URL="http://sourceforge.net/projects/mingw-w64/files"
+      MINGW_GCC_VER32=i686-${MINGW_GCC_SRC_VER}-release-${MINGW_GCC_EXC_THREADS}-${MINGW_GCC_EXC_VAR32}-rt_v3-rev0
+    MINGW_GCC_VER64=x86_64-${MINGW_GCC_SRC_VER}-release-${MINGW_GCC_EXC_THREADS}-${MINGW_GCC_EXC_VAR64}-rt_v3-rev0
+    MINGW_CROSS_FILENAME="${MINGW_SF_URL}/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/${MINGW_GCC_SRC_VER}/threads-${MINGW_GCC_EXC_THREADS}/${MINGW_GCC_EXC_VAR32}/${MINGW_GCC_VER32}.7z"
+    MINGW_CROSS_FILENAME_64="${MINGW_SF_URL}/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/${MINGW_GCC_SRC_VER}/threads-${MINGW_GCC_EXC_THREADS}/${MINGW_GCC_EXC_VAR64}/${MINGW_GCC_VER64}.7z"
     DEFAULT_SYSTEMS=windows-x86,windows-x86_64
 elif [ $BH_BUILD_OS = darwin ]; then
     DARWIN_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Darwin-120615.7z
@@ -298,15 +306,31 @@ if [ ! $(bh_list_contains "linux-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains
     done
 fi
 
-if [ ! $(bh_list_contains "windows-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "windows-x86_64" $SYSTEMSLIST) = no ] ; then
-    if [ ! -d $TOOLCHAINS/mingw64 ]; then
+if [ ! $(bh_list_contains "windows-x86" $SYSTEMSLIST) = no ]; then
+    if [ ! -d $TOOLCHAINS/mingw64-i686 ]; then
         download $ROOT/toolchain-tarballs $MINGW_CROSS_FILENAME
-        (mkdir -p $TOOLCHAINS/mingw64; cd $TOOLCHAINS/mingw64; $(uncompress $ROOT/toolchain-tarballs/$(basename $MINGW_CROSS_FILENAME)))
+        (mkdir -p $TOOLCHAINS/mingw64-i686; cd $TOOLCHAINS/mingw64-i686; $(uncompress $ROOT/toolchain-tarballs/$(basename $MINGW_CROSS_FILENAME)))
     fi
-    export PATH=$TOOLCHAINS/mingw64/i686-w64-mingw32/bin:$PATH
+    if [ $BH_BUILD_OS = windows ]; then
+        export PATH=$TOOLCHAINS/mingw64-i686/mingw32/bin:$PATH
+    else
+        export PATH=$TOOLCHAINS/mingw64-i686/i686-w64-mingw32/bin:$PATH
+    fi
 fi
 
-echo $TOOLCHAINS/darwin-cross/apple-osx
+if [ ! $(bh_list_contains "windows-x86_64" $SYSTEMSLIST) = no ] ; then
+    if [ ! -d $TOOLCHAINS/mingw64-x86_64 ]; then
+        download $ROOT/toolchain-tarballs $MINGW_CROSS_FILENAME_64
+        (mkdir -p $TOOLCHAINS/mingw64-x86_64; cd $TOOLCHAINS/mingw64-x86_64; $(uncompress $ROOT/toolchain-tarballs/$(basename $MINGW_CROSS_FILENAME_64)))
+    fi
+    if [ $BH_BUILD_OS = windows ]; then
+        export PATH=$TOOLCHAINS/mingw64-x86_64/mingw64/bin:$PATH
+    else
+        export PATH=$TOOLCHAINS/mingw64-x86_64/x86_64-w64-mingw32/bin:$PATH
+    fi
+fi
+
+#echo $PATH
 
 if [ ! $(bh_list_contains "darwin-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "darwin-x86_64" $SYSTEMSLIST) = no ] ; then
     if [ ! -d $TOOLCHAINS/darwin-cross/apple-osx/bin ]; then
@@ -485,13 +509,14 @@ tidy_patches ()
     mv Python-$PYVER a
     LAST=${PATCHES##* }
     for PATCH in $PATCHES; do
+        echo "Patching with: $PATCH"
         if [ -d b ]; then
             rm -rf b
         fi
         cp -rf a b
         pushd b
         patch -p1 < ${PATCHESDIR}/$PATCH
-        if [ $(find . -name "*.rej") ]; then
+        if [ -n "$(find . -name "*.rej")" ]; then
             popd
             echo "ERROR: Failed to apply $PATCH"
             return 1
@@ -570,6 +595,23 @@ PATCHES_330=\
 0092-mingw-pdcurses_ISPAD.patch 0095-no-xxmodule-for-PYDEBUG.patch 0100-grammar-fixes.patch \
 0105-builddir-fixes.patch 0110-msys-monkeypatch-os-system-via-sh-exe.patch 0115-msys-replace-slashes-used-in-io-redirection.patch"
 tidy_patches "3.3.0" yes "$PATCHES_330"
+
+PATCHES_333=\
+"0000-add-python-config-sh.patch \
+0010-cross-darwin-feature.patch 0030-py3k-20121004-MINGW.patch \
+0031-py3k-20121004-MINGW-removal-of-pthread-patch.patch 0032-py3k-20121004-MINGW-ntthreads.patch \
+0033-py3k-mingw-ntthreads-vs-pthreads.patch 0034-py3k-20121004-MINGW-removal-of-libffi-patch.patch \
+0035-mingw-system-libffi.patch 0045-mingw-use-posix-getpath.patch \
+0050-mingw-sysconfig-like-posix.patch 0055-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch \
+0060-mingw-x86_64-size_t-format-specifier-pid_t.patch 0065-cross-dont-add-multiarch-paths-if-cross-compiling.patch \
+0070-mingw-use-backslashes-in-compileall-py.patch 0075-msys-convert_path-fix-and-root-hack.patch \
+0080-mingw-hack-around-double-copy-scripts-issue.patch 0085-allow-static-tcltk.patch \
+0090-CROSS-avoid-ncursesw-include-path-hack.patch 0091-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch \
+0092-mingw-pdcurses_ISPAD.patch 0095-no-xxmodule-for-PYDEBUG.patch 0100-grammar-fixes.patch 0105-builddir-fixes.patch \
+0110-msys-monkeypatch-os-system-via-sh-exe.patch 0115-msys-replace-slashes-used-in-io-redirection.patch \
+0120-Use-MACHDEP-for-SHLIB_SUFFIX.patch"
+tidy_patches "3.3.3" yes "$PATCHES_333"
+
 
 ROOT=$PWD
 PYVER=3.3.0
@@ -680,3 +722,7 @@ nano library/subtargets.sh [uncomment tcl tk]
 # To reproduce it:
 pushd /tmp/python-x86_64/build/Python-2.7.5
 DISTUTILS_DEBUG=1 PATH=~/mingw-builds/toolchains/mingw64/bin:/tmp/python-x86_64/libs/bin:$PATH CC='x86_64-w64-mingw32-gcc' LDSHARED='x86_64-w64-mingw32-gcc -shared -Wl,--enable-auto-image-base -pipe -L/tmp/python-x86_64/libs/lib -L/tmp/prerequisites/x86_64-zlib/lib -L/tmp/prerequisites/x86_64-w64-mingw32-static/lib -L/tmp/python-x86_64/python-2.7.5-x86_64/opt/lib -L/x86_64-zlib/lib -LC:/msys64/tmp/python-x86_64/python-2.7.5-x86_64/opt/lib -LC:/msys64/tmp/python-x86_64/libs/lib' OPT='-DNDEBUG ' ./python.exe -E ../../../src/Python-2.7.5/setup.py --verbose build
+
+
+# 3.3.3 doesn't pick up the right MACHDEP.
+export PATH=/tmp2/cr-build/toolchain-wrappers-gcc:/tmp2/cr-build/install/windows-x86_64/python-3.3.0-gcc/bin:"${PATH}"
