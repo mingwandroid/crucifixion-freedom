@@ -33,6 +33,8 @@
 # rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0,3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
 # rm -rf /tmp2/cr-build; git clean -dxf; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=linux-x86,darwin-x86,darwin-x86_64 --compiler-vendors=clang
 
+# PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
+
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
 # ('LDFLAGS', '-R', self.compiler.runtime_library_dirs),
@@ -274,6 +276,7 @@ elif [ $BH_BUILD_OS = linux ]; then
 # .. testing for crosstool-ng based toolchain builds.
     DARWIN_CROSS_FILENAME=$HOME/Dropbox/crosstool-ng-work/i686-apple-darwin11-linux-x86.tar.xz
     MINGW_CROSS_FILENAME=http://mingw-and-ndk.googlecode.com/files/i686-w64-mingw32-linux-i686-glibc2.7.tar.bz2
+    MINGW_CROSS_FILENAME_64=http://mingw-and-ndk.googlecode.com/files/i686-w64-mingw32-linux-i686-glibc2.7.tar.bz2
     # The next two are git repositories.
     LINUX32_CROSS_TOOLCHAIN=https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/i686-linux-glibc2.7-4.6
     LINUX64_CROSS_TOOLCHAIN=https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
@@ -326,11 +329,9 @@ if [ ! $(bh_list_contains "windows-x86_64" $SYSTEMSLIST) = no ] ; then
     if [ $BH_BUILD_OS = windows ]; then
         export PATH=$TOOLCHAINS/mingw64-x86_64/mingw64/bin:$PATH
     else
-        export PATH=$TOOLCHAINS/mingw64-x86_64/x86_64-w64-mingw32/bin:$PATH
+        export PATH=$TOOLCHAINS/mingw64-x86_64/i686-w64-mingw32/bin:$PATH
     fi
 fi
-
-#echo $PATH
 
 if [ ! $(bh_list_contains "darwin-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains "darwin-x86_64" $SYSTEMSLIST) = no ] ; then
     if [ ! -d $TOOLCHAINS/darwin-cross/apple-osx/bin ]; then
