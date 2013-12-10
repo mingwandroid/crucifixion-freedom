@@ -1,7 +1,7 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-09 17:32:54.836758400 +0000
-+++ b/configure.ac	2013-12-09 17:33:06.130758400 +0000
-@@ -2109,14 +2109,14 @@
+--- a/configure.ac	2013-12-10 19:38:07.866320600 +0000
++++ b/configure.ac	2013-12-10 19:38:16.885320600 +0000
+@@ -2136,14 +2136,14 @@
  # -- usually .so, .sl on HP-UX, .dll on Cygwin
  AC_MSG_CHECKING(the extension of shared libraries)
  if test -z "$SHLIB_SUFFIX"; then

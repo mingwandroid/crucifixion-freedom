@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	2013-12-09 17:30:10.611258400 +0000
-+++ b/Lib/distutils/command/install.py	2013-12-09 17:30:21.172258400 +0000
+--- a/Lib/distutils/command/install.py	2013-12-10 19:35:58.065820600 +0000
++++ b/Lib/distutils/command/install.py	2013-12-10 19:36:06.359820600 +0000
 @@ -370,7 +370,8 @@
  
          # Convert directories from Unix /-separated syntax to the local
@@ -12,8 +12,8 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
                             'userbase', 'usersite')
  
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
---- a/Lib/distutils/util.py	2013-12-09 17:30:11.081758400 +0000
-+++ b/Lib/distutils/util.py	2013-12-09 17:30:21.175258400 +0000
+--- a/Lib/distutils/util.py	2013-12-10 19:35:58.185320600 +0000
++++ b/Lib/distutils/util.py	2013-12-10 19:36:06.363320600 +0000
 @@ -131,6 +131,13 @@
          paths.remove('.')
      if not paths:
@@ -69,9 +69,9 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
      else:
          raise DistutilsPlatformError("nothing known about platform '%s'" % os.name)
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-09 17:30:12.812758400 +0000
-+++ b/Makefile.pre.in	2013-12-09 17:30:21.178758400 +0000
-@@ -1252,6 +1252,12 @@
+--- a/Makefile.pre.in	2013-12-10 19:35:59.715820600 +0000
++++ b/Makefile.pre.in	2013-12-10 19:36:06.366820600 +0000
+@@ -1254,6 +1254,12 @@
  	else true; \
  	fi
  
@@ -84,7 +84,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
-@@ -1259,9 +1265,9 @@
+@@ -1261,9 +1267,9 @@
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
@@ -97,7 +97,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  
  # Here are a couple of targets for MacOSX again, to install a full
  # framework-based Python. frameworkinstall installs everything, the
-@@ -1335,7 +1341,7 @@
+@@ -1337,7 +1343,7 @@
  	$(PYTHON_FOR_BUILD) $(srcdir)/Tools/scripts/setup.py install \
  	--prefix=$(prefix) \
  	--install-scripts=$(BINDIR) \

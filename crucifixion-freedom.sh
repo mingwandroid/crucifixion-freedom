@@ -36,6 +36,7 @@
 # PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
 
 # rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=3.3.0,3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+# rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:

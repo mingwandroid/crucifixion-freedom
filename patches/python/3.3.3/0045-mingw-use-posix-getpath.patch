@@ -1,7 +1,7 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-09 17:28:38.904258400 +0000
-+++ b/configure.ac	2013-12-09 17:28:50.766758400 +0000
-@@ -596,6 +596,27 @@
+--- a/configure.ac	2013-12-10 19:34:46.295820600 +0000
++++ b/configure.ac	2013-12-10 19:34:55.076820600 +0000
+@@ -596,6 +596,54 @@
  fi
  AC_MSG_RESULT($MACHDEP)
  
@@ -15,21 +15,48 @@ diff -urN a/configure.ac b/configure.ac
 +AC_MSG_RESULT([$DELIM])
 +AC_SUBST(DELIM)
 +
-+# MSYS make uses a 'virtual' VPATH, but getpath.c uses
-+# GetModuleFileNameW (replacing \ with /). This allows the user to
-+# define the 'actual 'real' value. Note, it should contain / not \,
-+# which is what is returned by "pwd -W".
-+AC_ARG_VAR(MSYSVPATH, 
-+           For MSYS, allows specifying the real VPATH. Use / not \)
-+if test -z "$MSYSVPATH"; then
-+    MSYSVPATH=$srcdir
++# On 'semi-native' build systems - MSYS*/Cygwin targeting MinGW-w64
++# or more generally in cross compilation, _sysconfigdata.py will
++# contain paths that only work in the build enviornment. This means
++# that external modules can't be built without setting up the same
++# env.
++# Also, getpath.c uses GetModuleFileNameW (replacing \ with /) and
++# compares that with the passed-in-via-command-line VPATH define
++# to determine whether it's the build or the installed Python.
++# To work around issues caused by these differences, a set of _b2h
++# variables are used, VPATH_b2h, abs_srcdir_b2h and abs_builddir_b2h
++# where b2h stands for build-to-host.
++
++AC_DEFUN([ABS_PATH_HOST],
++[AC_ARG_VAR([$1])
++if test -z "$$1"; then
++  $1=$$2
++  case $build_os in
++    mingw*)
++      case $host_os in
++        mingw*) $1=$(cd $$2 && pwd -W) ;;
++        *) ;;
++      esac
++      ;;
++    cygwin*)
++      case $host_os in
++        mingw*) $1=$(cygpath -w -m $$2) ;;
++        *) ;;
++      esac
++      ;;
++  esac
 +fi
-+AC_SUBST(MSYSVPATH)
++AC_SUBST([$1])
++])
++
++ABS_PATH_HOST([VPATH_b2h],[VPATH])
++ABS_PATH_HOST([abs_srcdir_b2h],[abs_srcdir])
++ABS_PATH_HOST([abs_builddir_b2h],[abs_builddir])
 +
  AC_MSG_CHECKING([for init system calls])
  AC_SUBST(INITSYS)
  case $host in
-@@ -4342,6 +4363,28 @@
+@@ -4342,6 +4390,28 @@
  # check for endianness
  AC_C_BIGENDIAN
  
@@ -58,7 +85,7 @@ diff -urN a/configure.ac b/configure.ac
  # ABI version string for Python extension modules.  This appears between the
  # periods in shared library file names, e.g. foo.<SOABI>.so.  It is calculated
  # from the following attributes which affect the ABI of this Python build (in
-@@ -5005,7 +5048,8 @@
+@@ -5005,7 +5075,8 @@
      # FIXME: why windows builds don't use PC/frozen_dllmain.o ?
      PYTHON_OBJS_FROZENMAIN=""
      # default sys.path calculations for windows platforms
@@ -69,8 +96,8 @@ diff -urN a/configure.ac b/configure.ac
  esac
  
 diff -urN a/Include/fileutils.h b/Include/fileutils.h
---- a/Include/fileutils.h	2013-12-09 17:28:39.575258400 +0000
-+++ b/Include/fileutils.h	2013-12-09 17:28:50.769758400 +0000
+--- a/Include/fileutils.h	2013-12-10 19:34:46.822320600 +0000
++++ b/Include/fileutils.h	2013-12-10 19:34:55.079320600 +0000
 @@ -15,7 +15,7 @@
      const wchar_t *text,
      size_t *error_pos);
@@ -81,8 +108,8 @@ diff -urN a/Include/fileutils.h b/Include/fileutils.h
      const wchar_t* path,
      struct stat *buf);
 diff -urN a/Include/osdefs.h b/Include/osdefs.h
---- a/Include/osdefs.h	2013-12-09 17:28:39.600258400 +0000
-+++ b/Include/osdefs.h	2013-12-09 17:28:50.772758400 +0000
+--- a/Include/osdefs.h	2013-12-10 19:34:46.841820600 +0000
++++ b/Include/osdefs.h	2013-12-10 19:34:55.081320600 +0000
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -109,8 +136,8 @@ diff -urN a/Include/osdefs.h b/Include/osdefs.h
  
  #ifdef __cplusplus
 diff -urN a/Lib/plat-generic/regen b/Lib/plat-generic/regen
---- a/Lib/plat-generic/regen	2013-12-09 17:28:40.670258400 +0000
-+++ b/Lib/plat-generic/regen	2013-12-09 17:28:50.777258400 +0000
+--- a/Lib/plat-generic/regen	2013-12-10 19:34:47.518820600 +0000
++++ b/Lib/plat-generic/regen	2013-12-10 19:34:55.083820600 +0000
 @@ -1,3 +1,9 @@
  #! /bin/sh
  set -v
@@ -123,17 +150,19 @@ diff -urN a/Lib/plat-generic/regen b/Lib/plat-generic/regen
 +fi
 +eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-09 17:28:42.544258400 +0000
-+++ b/Makefile.pre.in	2013-12-09 17:28:50.780258400 +0000
-@@ -27,6 +27,7 @@
- VERSION=	@VERSION@
- srcdir=		@srcdir@
+--- a/Makefile.pre.in	2013-12-10 19:34:48.843320600 +0000
++++ b/Makefile.pre.in	2013-12-10 19:34:55.086820600 +0000
+@@ -29,6 +29,9 @@
  VPATH=		@srcdir@
-+MSYSVPATH=	@MSYSVPATH@
  abs_srcdir=	@abs_srcdir@
  abs_builddir=	@abs_builddir@
++VPATH_b2h=	@VPATH_b2h@
++abs_srcdir_b2h=	@abs_srcdir_b2h@
++abs_builddir_b2h=	@abs_builddir_b2h@
  
-@@ -93,7 +94,8 @@
+ 
+ CC=		@CC@
+@@ -93,7 +96,8 @@
  # C flags used for building the interpreter object files
  PY_CORE_CFLAGS=	$(PY_CFLAGS) $(PY_CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
  
@@ -143,16 +172,16 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  # Machine-dependent subdirectories
  MACHDEP=	@MACHDEP@
  
-@@ -642,7 +644,7 @@
+@@ -642,7 +646,7 @@
  		-DPREFIX='"$(prefix)"' \
  		-DEXEC_PREFIX='"$(exec_prefix)"' \
  		-DVERSION='"$(VERSION)"' \
 -		-DVPATH='"$(VPATH)"' \
-+		-DVPATH='"$(MSYSVPATH)"' \
++		-DVPATH='"$(VPATH_b2h)"' \
  		-o $@ $(srcdir)/Modules/getpath.c
  
  # default sys.path calculations for windows platforms
-@@ -962,6 +964,7 @@
+@@ -962,6 +966,7 @@
  	if test -f $(LDLIBRARY); then \
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
@@ -160,7 +189,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  		else \
  			$(INSTALL_SHARED) $(LDLIBRARY) $(DESTDIR)$(LIBDIR)/$(INSTSONAME); \
  			if test $(LDLIBRARY) != $(INSTSONAME); then \
-@@ -1165,7 +1168,7 @@
+@@ -1165,7 +1170,7 @@
  	else \
  	  PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)"; \
  	fi; \
@@ -170,8 +199,8 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
 diff -urN a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	2013-12-09 17:28:42.648758400 +0000
-+++ b/Modules/getpath.c	2013-12-09 17:28:50.784258400 +0000
+--- a/Modules/getpath.c	2013-12-10 19:34:48.939820600 +0000
++++ b/Modules/getpath.c	2013-12-10 19:34:55.090820600 +0000
 @@ -10,6 +10,10 @@
  #include <mach-o/dyld.h>
  #endif
@@ -360,8 +389,8 @@ diff -urN a/Modules/getpath.c b/Modules/getpath.c
 +}
 +#endif
 diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
---- a/Modules/posixmodule.c	2013-12-09 17:28:42.663758400 +0000
-+++ b/Modules/posixmodule.c	2013-12-09 17:28:50.790758400 +0000
+--- a/Modules/posixmodule.c	2013-12-10 19:34:48.954320600 +0000
++++ b/Modules/posixmodule.c	2013-12-10 19:34:55.097320600 +0000
 @@ -932,7 +932,7 @@
  }
  
@@ -390,8 +419,8 @@ diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
              list = win32_error("FindNextFile", namebuf);
              goto exit;
 diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
---- a/Modules/Setup.config.in	2013-12-09 17:28:42.672758400 +0000
-+++ b/Modules/Setup.config.in	2013-12-09 17:28:50.795258400 +0000
+--- a/Modules/Setup.config.in	2013-12-10 19:34:48.963320600 +0000
++++ b/Modules/Setup.config.in	2013-12-10 19:34:55.100820600 +0000
 @@ -15,6 +15,8 @@
  # On win32 host(mingw build in MSYS environment) show that site.py
  # fail to load if some modules are not build-in:
@@ -402,8 +431,8 @@ diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
  
  # The rest of the modules previously listed in this file are built
 diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
---- a/Modules/Setup.dist	2013-12-09 17:28:42.673758400 +0000
-+++ b/Modules/Setup.dist	2013-12-09 17:28:50.800258400 +0000
+--- a/Modules/Setup.dist	2013-12-10 19:34:48.964320600 +0000
++++ b/Modules/Setup.dist	2013-12-10 19:34:55.103820600 +0000
 @@ -84,14 +84,14 @@
  # Empty since this is now just the runtime prefix.
  DESTPATH=
@@ -422,8 +451,8 @@ diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
  
  COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)
 diff -urN a/Python/fileutils.c b/Python/fileutils.c
---- a/Python/fileutils.c	2013-12-09 17:28:43.799758400 +0000
-+++ b/Python/fileutils.c	2013-12-09 17:28:50.803758400 +0000
+--- a/Python/fileutils.c	2013-12-10 19:34:49.939820600 +0000
++++ b/Python/fileutils.c	2013-12-10 19:34:55.106320600 +0000
 @@ -491,7 +491,7 @@
     Not sure whether the MS_WINDOWS guards are necessary:
     perhaps for cygwin/mingw builds?
@@ -434,8 +463,8 @@ diff -urN a/Python/fileutils.c b/Python/fileutils.c
  /* Get file status. Encode the path to the locale encoding. */
  
 diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
---- a/Python/pythonrun.c	2013-12-09 17:28:43.829258400 +0000
-+++ b/Python/pythonrun.c	2013-12-09 17:28:50.808258400 +0000
+--- a/Python/pythonrun.c	2013-12-10 19:34:49.968320600 +0000
++++ b/Python/pythonrun.c	2013-12-10 19:34:55.110320600 +0000
 @@ -791,6 +791,13 @@
  void
  Py_SetProgramName(wchar_t *pn)

@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-09 17:26:54.926258400 +0000
-+++ b/configure.ac	2013-12-09 17:27:06.605758400 +0000
+--- a/configure.ac	2013-12-10 19:33:21.319320600 +0000
++++ b/configure.ac	2013-12-10 19:33:31.747820600 +0000
 @@ -354,6 +354,7 @@
  then
      # avoid using uname for cross builds

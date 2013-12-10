@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-09 17:27:25.198258400 +0000
-+++ b/configure.ac	2013-12-09 17:27:36.664258400 +0000
+--- a/configure.ac	2013-12-10 19:33:46.974320600 +0000
++++ b/configure.ac	2013-12-10 19:33:55.755320600 +0000
 @@ -1611,19 +1611,6 @@
  AC_MSG_RESULT($ac_cv_pthread)
  fi
@@ -145,8 +145,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_OUTPUT
  
 diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessing/multiprocessing.c
---- a/Modules/_multiprocessing/multiprocessing.c	2013-12-09 17:27:29.131258400 +0000
-+++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-09 17:27:36.667258400 +0000
+--- a/Modules/_multiprocessing/multiprocessing.c	2013-12-10 19:33:50.322820600 +0000
++++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-10 19:33:55.758320600 +0000
 @@ -200,12 +200,6 @@
          Py_DECREF(temp); Py_DECREF(value); return NULL; }         \
      Py_DECREF(value)
@@ -172,8 +172,8 @@ diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessin
      if (PyModule_AddObject(module, "flags", temp) < 0)
          return NULL;
 diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
---- a/Modules/signalmodule.c	2013-12-09 17:27:28.431758400 +0000
-+++ b/Modules/signalmodule.c	2013-12-09 17:27:36.670258400 +0000
+--- a/Modules/signalmodule.c	2013-12-10 19:33:49.464320600 +0000
++++ b/Modules/signalmodule.c	2013-12-10 19:33:55.760820600 +0000
 @@ -8,17 +8,6 @@
  #include "posixmodule.h"
  #endif
@@ -193,8 +193,8 @@ diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
  /* Type siginfo_t is different on cygwin. For instance si_band is not
   * a member of structure, so until fill_siginfo(siginfo_t *si) is
 diff -urN a/pyconfig.h.in b/pyconfig.h.in
---- a/pyconfig.h.in	2013-12-09 17:27:29.915258400 +0000
-+++ b/pyconfig.h.in	2013-12-09 17:27:36.673258400 +0000
+--- a/pyconfig.h.in	2013-12-10 19:33:50.763320600 +0000
++++ b/pyconfig.h.in	2013-12-10 19:33:55.763820600 +0000
 @@ -1157,9 +1157,6 @@
  /* Define if mvwdelch in curses.h is an expression. */
  #undef MVWDELCH_IS_EXPRESSION
@@ -206,8 +206,8 @@ diff -urN a/pyconfig.h.in b/pyconfig.h.in
  #undef PACKAGE_BUGREPORT
  
 diff -urN a/Python/ceval.c b/Python/ceval.c
---- a/Python/ceval.c	2013-12-09 17:27:29.921258400 +0000
-+++ b/Python/ceval.c	2013-12-09 17:27:36.677758400 +0000
+--- a/Python/ceval.c	2013-12-10 19:33:50.767320600 +0000
++++ b/Python/ceval.c	2013-12-10 19:33:55.768320600 +0000
 @@ -11,17 +11,6 @@
  
  #include "Python.h"
@@ -227,8 +227,8 @@ diff -urN a/Python/ceval.c b/Python/ceval.c
  #include "frameobject.h"
  #include "opcode.h"
 diff -urN a/Python/thread.c b/Python/thread.c
---- a/Python/thread.c	2013-12-09 17:27:29.983758400 +0000
-+++ b/Python/thread.c	2013-12-09 17:27:36.680758400 +0000
+--- a/Python/thread.c	2013-12-10 19:33:50.816820600 +0000
++++ b/Python/thread.c	2013-12-10 19:33:55.771320600 +0000
 @@ -7,17 +7,6 @@
  
  #include "Python.h"
