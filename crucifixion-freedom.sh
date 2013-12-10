@@ -35,6 +35,8 @@
 
 # PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
 
+# rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=3.3.0,3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
 # ('LDFLAGS', '-R', self.compiler.runtime_library_dirs),
@@ -727,3 +729,30 @@ DISTUTILS_DEBUG=1 PATH=~/mingw-builds/toolchains/mingw64/bin:/tmp/python-x86_64/
 
 # 3.3.3 doesn't pick up the right MACHDEP.
 export PATH=/tmp2/cr-build/toolchain-wrappers-gcc:/tmp2/cr-build/install/windows-x86_64/python-3.3.0-gcc/bin:"${PATH}"
+
+# Linux cross:
+/tmp2/cr-build/toolchain-wrappers-gcc/x86_64-w64-mingw32-gcc \
+-DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes \
+-I/tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc_static_libs/include -I/tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc_static_libs/include/ncursesw \
+-D__USE_MINGW_ANSI_STDIO=1 \   ### This is extra/redundant on Linux
+-I/tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc/include \
+-D__USE_MINGW_ANSI_STDIO=1 \
+-I. \
+-I/tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc/include \
+-I/tmp2/cr-build/tmp/src/Python-3.3.3/PC \
+-I/tmp2/cr-build/tmp/src/Python-3.3.3/Python \
+-I/tmp2/cr-build/tmp/src/Python-3.3.3/Include \
+-I/tmp2/cr-build/build-python-windows-x86_64-3.3.3 \
+-c /tmp2/cr-build/tmp/src/Python-3.3.3/Modules/_struct.c -o build/temp.mingw-3.3/tmp2/cr-build/tmp/src/Python-3.3.3/Modules/_struct.o
+
+# Windows native:
+C:/msys64/bin/sh.exe /tmp2/cr-build/toolchain-wrappers-gcc/x86_64-w64-mingw32-gcc \
+-DNDEBUG -g         -O3 -Wall -Wstrict-prototypes \
+-I/tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc_static_libs/include \
+-I/tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc_static_libs/include/ncursesw \
+-I/tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc/include \
+-D__USE_MINGW_ANSI_STDIO=1 \
+-I. \
+-IC:\tmp2\cr-build\tmp\src\Python-3.3.3\Include \
+-IC:\msys64\tmp2\cr-build\build-python-windows-x86_64-3.3.3 \
+-c _struct.c -o build\temp.win32-3.3\_struct.o
