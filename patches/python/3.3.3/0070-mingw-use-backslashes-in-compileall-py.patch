@@ -1,6 +1,6 @@
 diff -urN a/Lib/compileall.py b/Lib/compileall.py
---- a/Lib/compileall.py	2013-12-11 14:57:38.634843516 +0000
-+++ b/Lib/compileall.py	2013-12-11 14:57:38.894847580 +0000
+--- a/Lib/compileall.py	2013-12-11 16:31:08.558266140 +0000
++++ b/Lib/compileall.py	2013-12-11 16:31:08.821603562 +0000
 @@ -47,6 +47,8 @@
          if name == '__pycache__':
              continue

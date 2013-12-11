@@ -1,6 +1,6 @@
 diff -urN a/Include/osdefs.h b/Include/osdefs.h
---- a/Include/osdefs.h	2013-12-11 14:57:35.801466408 +0000
-+++ b/Include/osdefs.h	2013-12-11 14:57:36.031469953 +0000
+--- a/Include/osdefs.h	2013-12-11 16:31:05.728222395 +0000
++++ b/Include/osdefs.h	2013-12-11 16:31:05.951559177 +0000
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -11,8 +11,8 @@ diff -urN a/Include/osdefs.h b/Include/osdefs.h
  #define SEP L'/'
  #define ALTSEP L'\\'
 diff -urN a/Lib/ntpath.py b/Lib/ntpath.py
---- a/Lib/ntpath.py	2013-12-11 14:57:35.751465632 +0000
-+++ b/Lib/ntpath.py	2013-12-11 14:57:36.031469953 +0000
+--- a/Lib/ntpath.py	2013-12-11 16:31:05.681554992 +0000
++++ b/Lib/ntpath.py	2013-12-11 16:31:05.951559177 +0000
 @@ -24,9 +24,13 @@
  curdir = '.'
  pardir = '..'
@@ -58,12 +58,29 @@ diff -urN a/Lib/ntpath.py b/Lib/ntpath.py
  def _get_dot(path):
      if isinstance(path, bytes):
 diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
---- a/Python/pythonrun.c	2013-12-11 14:57:35.801466408 +0000
-+++ b/Python/pythonrun.c	2013-12-11 14:57:36.031469953 +0000
-@@ -791,6 +791,16 @@
+--- a/Python/pythonrun.c	2013-12-11 16:31:05.731555746 +0000
++++ b/Python/pythonrun.c	2013-12-11 16:31:05.951559177 +0000
+@@ -782,17 +782,29 @@
+     PyInterpreterState_Delete(interp);
+ }
+ 
+-#ifdef MS_WINDOWS
+-static wchar_t *progname = L"python";
++
++#if defined(MS_WINDOWS) && !defined(__MINGW32__)
++static wchar_t progname[PATH_MAX+1] = L"python";
+ #else
+-static wchar_t *progname = L"python3";
++static wchar_t progname[PATH_MAX+1] = L"python3";
+ #endif
+ 
  void
  Py_SetProgramName(wchar_t *pn)
  {
+     if (pn && *pn)
+-        progname = pn;
++        wcsncpy(progname, pn, PATH_MAX);
++    pn = &progname[0];
 +#ifdef __MINGW32__
 +    char* msystem = Py_GETENV("MSYSTEM");
 +    wchar_t altsep = msystem ? L'\\' : L'/';
@@ -74,6 +91,6 @@ diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
 +        seps = wcschr(seps, altsep);
 +    }
 +#endif
-     if (pn && *pn)
-         progname = pn;
  }
+ 
+ wchar_t *

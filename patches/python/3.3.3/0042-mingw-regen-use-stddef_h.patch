@@ -1,6 +1,6 @@
 diff -urN a/Lib/plat-generic/regen b/Lib/plat-generic/regen
---- a/Lib/plat-generic/regen	2013-12-11 14:57:33.444763268 +0000
-+++ b/Lib/plat-generic/regen	2013-12-11 14:57:33.678100219 +0000
+--- a/Lib/plat-generic/regen	2013-12-11 16:31:03.341518812 +0000
++++ b/Lib/plat-generic/regen	2013-12-11 16:31:03.581522528 +0000
 @@ -1,3 +1,9 @@
  #! /bin/sh
  set -v
@@ -13,8 +13,8 @@ diff -urN a/Lib/plat-generic/regen b/Lib/plat-generic/regen
 +fi
 +eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-11 14:57:33.501430816 +0000
-+++ b/Makefile.pre.in	2013-12-11 14:57:33.678100219 +0000
+--- a/Makefile.pre.in	2013-12-11 16:31:03.401519741 +0000
++++ b/Makefile.pre.in	2013-12-11 16:31:03.581522528 +0000
 @@ -1166,7 +1166,7 @@
  	else \
  	  PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)"; \

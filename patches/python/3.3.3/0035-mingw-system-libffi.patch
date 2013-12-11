@@ -1,6 +1,6 @@
 diff -urN a/Lib/ctypes/test/test_as_parameter.py b/Lib/ctypes/test/test_as_parameter.py
---- a/Lib/ctypes/test/test_as_parameter.py	2013-12-11 14:57:32.514748874 +0000
-+++ b/Lib/ctypes/test/test_as_parameter.py	2013-12-11 14:57:32.744752473 +0000
+--- a/Lib/ctypes/test/test_as_parameter.py	2013-12-11 16:31:02.381503951 +0000
++++ b/Lib/ctypes/test/test_as_parameter.py	2013-12-11 16:31:02.621507669 +0000
 @@ -1,6 +1,7 @@
  import unittest
  from ctypes import *
@@ -21,8 +21,8 @@ diff -urN a/Lib/ctypes/test/test_as_parameter.py b/Lib/ctypes/test/test_as_param
          class S8I(Structure):
              _fields_ = [("a", c_int),
 diff -urN a/Lib/ctypes/test/test_functions.py b/Lib/ctypes/test/test_functions.py
---- a/Lib/ctypes/test/test_functions.py	2013-12-11 14:57:32.514748874 +0000
-+++ b/Lib/ctypes/test/test_functions.py	2013-12-11 14:57:32.748085834 +0000
+--- a/Lib/ctypes/test/test_functions.py	2013-12-11 16:31:02.381503951 +0000
++++ b/Lib/ctypes/test/test_functions.py	2013-12-11 16:31:02.621507669 +0000
 @@ -359,6 +359,10 @@
              s2h = windll.s_ret_2h_func(S2H(99, 88))
              self.assertEqual((s2h.x, s2h.y), (99*2, 88*3))
@@ -35,8 +35,8 @@ diff -urN a/Lib/ctypes/test/test_functions.py b/Lib/ctypes/test/test_functions.p
          class S8I(Structure):
              _fields_ = [("a", c_int),
 diff -urN a/Modules/_ctypes/callproc.c b/Modules/_ctypes/callproc.c
---- a/Modules/_ctypes/callproc.c	2013-12-11 14:57:32.528082435 +0000
-+++ b/Modules/_ctypes/callproc.c	2013-12-11 14:57:32.748085834 +0000
+--- a/Modules/_ctypes/callproc.c	2013-12-11 16:31:02.398170898 +0000
++++ b/Modules/_ctypes/callproc.c	2013-12-11 16:31:02.621507669 +0000
 @@ -804,8 +804,10 @@
  #ifndef DONT_USE_SEH
      __try {
@@ -65,8 +65,8 @@ diff -urN a/Modules/_ctypes/callproc.c b/Modules/_ctypes/callproc.c
          return -1;
      return 0;
 diff -urN a/Modules/_ctypes/libffi/fficonfig.py.in b/Modules/_ctypes/libffi/fficonfig.py.in
---- a/Modules/_ctypes/libffi/fficonfig.py.in	2013-12-11 14:57:32.531415821 +0000
-+++ b/Modules/_ctypes/libffi/fficonfig.py.in	2013-12-11 14:57:32.748085834 +0000
+--- a/Modules/_ctypes/libffi/fficonfig.py.in	2013-12-11 16:31:02.398170898 +0000
++++ b/Modules/_ctypes/libffi/fficonfig.py.in	2013-12-11 16:31:02.621507669 +0000
 @@ -22,6 +22,7 @@
      'FRV': ['src/frv/eabi.S', 'src/frv/ffi.c'],
      'S390': ['src/s390/sysv.S', 'src/s390/ffi.c'],
@@ -86,8 +86,8 @@ diff -urN a/Modules/_ctypes/libffi/fficonfig.py.in b/Modules/_ctypes/libffi/ffic
  
  ffi_cflags = '@CFLAGS@'
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:57:32.571416442 +0000
-+++ b/configure.ac	2013-12-11 14:57:32.744752473 +0000
+--- a/configure.ac	2013-12-11 16:31:02.444838262 +0000
++++ b/configure.ac	2013-12-11 16:31:02.624841069 +0000
 @@ -2460,14 +2460,32 @@
              [],
              [with_system_ffi="no"])
@@ -125,8 +125,8 @@ diff -urN a/configure.ac b/configure.ac
  # Check for use of the system libmpdec library
  AC_MSG_CHECKING(for --with-system-libmpdec)
 diff -urN a/pyconfig.h.in b/pyconfig.h.in
---- a/pyconfig.h.in	2013-12-11 14:57:32.548082734 +0000
-+++ b/pyconfig.h.in	2013-12-11 14:57:32.748085834 +0000
+--- a/pyconfig.h.in	2013-12-11 16:31:02.421504588 +0000
++++ b/pyconfig.h.in	2013-12-11 16:31:02.624841069 +0000
 @@ -1157,6 +1157,9 @@
  /* Define if mvwdelch in curses.h is an expression. */
  #undef MVWDELCH_IS_EXPRESSION
@@ -148,8 +148,8 @@ diff -urN a/pyconfig.h.in b/pyconfig.h.in
  #undef WITH_THREAD
  
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-12-11 14:57:32.461414773 +0000
-+++ b/setup.py	2013-12-11 14:57:32.748085834 +0000
+--- a/setup.py	2013-12-11 16:31:02.324836410 +0000
++++ b/setup.py	2013-12-11 16:31:02.624841069 +0000
 @@ -1943,6 +1943,11 @@
          return True
  

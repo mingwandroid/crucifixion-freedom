@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:57:44.371598917 +0000
-+++ b/configure.ac	2013-12-11 14:57:44.544934938 +0000
+--- a/configure.ac	2013-12-11 16:31:14.335022161 +0000
++++ b/configure.ac	2013-12-11 16:31:14.511691535 +0000
 @@ -2157,14 +2157,14 @@
  # -- usually .so, .sl on HP-UX, .dll on Cygwin
  AC_MSG_CHECKING(the extension of shared libraries)

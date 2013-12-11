@@ -1,6 +1,6 @@
 diff -urN a/Modules/parsermodule.c b/Modules/parsermodule.c
---- a/Modules/parsermodule.c	2013-12-11 14:57:42.474902919 +0000
-+++ b/Modules/parsermodule.c	2013-12-11 14:57:42.671572627 +0000
+--- a/Modules/parsermodule.c	2013-12-11 16:31:12.421659225 +0000
++++ b/Modules/parsermodule.c	2013-12-11 16:31:12.621662304 +0000
 @@ -37,7 +37,7 @@
  #undef Yield
  #include "ast.h"
@@ -11,8 +11,8 @@ diff -urN a/Modules/parsermodule.c b/Modules/parsermodule.c
  #ifdef lint
  #include <note.h>
 diff -urN a/Parser/metagrammar.c b/Parser/metagrammar.c
---- a/Parser/metagrammar.c	2013-12-11 14:57:42.384901551 +0000
-+++ b/Parser/metagrammar.c	2013-12-11 14:57:42.671572627 +0000
+--- a/Parser/metagrammar.c	2013-12-11 16:31:12.328324444 +0000
++++ b/Parser/metagrammar.c	2013-12-11 16:31:12.624995692 +0000
 @@ -139,7 +139,7 @@
      {7, 0},
      {8, 0},

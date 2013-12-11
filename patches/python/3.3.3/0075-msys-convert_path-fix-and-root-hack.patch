@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
---- a/Lib/distutils/command/install.py	2013-12-11 14:57:39.088183871 +0000
-+++ b/Lib/distutils/command/install.py	2013-12-11 14:57:39.371521581 +0000
+--- a/Lib/distutils/command/install.py	2013-12-11 16:31:09.018273276 +0000
++++ b/Lib/distutils/command/install.py	2013-12-11 16:31:09.294944199 +0000
 @@ -370,7 +370,8 @@
  
          # Convert directories from Unix /-separated syntax to the local
@@ -12,8 +12,8 @@ diff -urN a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
                             'userbase', 'usersite')
  
 diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
---- a/Lib/distutils/util.py	2013-12-11 14:57:39.088183871 +0000
-+++ b/Lib/distutils/util.py	2013-12-11 14:57:39.371521581 +0000
+--- a/Lib/distutils/util.py	2013-12-11 16:31:09.018273276 +0000
++++ b/Lib/distutils/util.py	2013-12-11 16:31:09.298277574 +0000
 @@ -131,6 +131,13 @@
          paths.remove('.')
      if not paths:
@@ -69,8 +69,8 @@ diff -urN a/Lib/distutils/util.py b/Lib/distutils/util.py
      else:
          raise DistutilsPlatformError("nothing known about platform '%s'" % os.name)
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-11 14:57:39.198185556 +0000
-+++ b/Makefile.pre.in	2013-12-11 14:57:39.371521581 +0000
+--- a/Makefile.pre.in	2013-12-11 16:31:09.121608190 +0000
++++ b/Makefile.pre.in	2013-12-11 16:31:09.298277574 +0000
 @@ -1258,6 +1258,12 @@
  	else true; \
  	fi

@@ -1,6 +1,6 @@
 diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessing/multiprocessing.c
---- a/Modules/_multiprocessing/multiprocessing.c	2013-12-11 14:57:30.688053980 +0000
-+++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-11 14:57:30.884723684 +0000
+--- a/Modules/_multiprocessing/multiprocessing.c	2013-12-11 16:31:00.511475035 +0000
++++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-11 16:31:00.711478127 +0000
 @@ -200,12 +200,6 @@
          Py_DECREF(temp); Py_DECREF(value); return NULL; }         \
      Py_DECREF(value)
@@ -26,8 +26,8 @@ diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessin
      if (PyModule_AddObject(module, "flags", temp) < 0)
          return NULL;
 diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
---- a/Modules/signalmodule.c	2013-12-11 14:57:30.684720594 +0000
-+++ b/Modules/signalmodule.c	2013-12-11 14:57:30.884723684 +0000
+--- a/Modules/signalmodule.c	2013-12-11 16:31:00.508141650 +0000
++++ b/Modules/signalmodule.c	2013-12-11 16:31:00.711478127 +0000
 @@ -8,17 +8,6 @@
  #include "posixmodule.h"
  #endif
@@ -47,8 +47,8 @@ diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
  /* Type siginfo_t is different on cygwin. For instance si_band is not
   * a member of structure, so until fill_siginfo(siginfo_t *si) is
 diff -urN a/Python/ceval.c b/Python/ceval.c
---- a/Python/ceval.c	2013-12-11 14:57:30.668053669 +0000
-+++ b/Python/ceval.c	2013-12-11 14:57:30.884723684 +0000
+--- a/Python/ceval.c	2013-12-11 16:31:00.488141344 +0000
++++ b/Python/ceval.c	2013-12-11 16:31:00.711478127 +0000
 @@ -11,17 +11,6 @@
  
  #include "Python.h"
@@ -68,8 +68,8 @@ diff -urN a/Python/ceval.c b/Python/ceval.c
  #include "frameobject.h"
  #include "opcode.h"
 diff -urN a/Python/thread.c b/Python/thread.c
---- a/Python/thread.c	2013-12-11 14:57:30.668053669 +0000
-+++ b/Python/thread.c	2013-12-11 14:57:30.884723684 +0000
+--- a/Python/thread.c	2013-12-11 16:31:00.488141344 +0000
++++ b/Python/thread.c	2013-12-11 16:31:00.711478127 +0000
 @@ -7,17 +7,6 @@
  
  #include "Python.h"
@@ -89,8 +89,8 @@ diff -urN a/Python/thread.c b/Python/thread.c
  /* This means pthreads are not implemented in libc headers, hence the macro
     not present in unistd.h. But they still can be implemented as an external
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:57:30.711387664 +0000
-+++ b/configure.ac	2013-12-11 14:57:30.884723684 +0000
+--- a/configure.ac	2013-12-11 16:31:00.534808745 +0000
++++ b/configure.ac	2013-12-11 16:31:00.711478127 +0000
 @@ -1611,19 +1611,6 @@
  AC_MSG_RESULT($ac_cv_pthread)
  fi
@@ -235,8 +235,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_OUTPUT
  
 diff -urN a/pyconfig.h.in b/pyconfig.h.in
---- a/pyconfig.h.in	2013-12-11 14:57:30.688053980 +0000
-+++ b/pyconfig.h.in	2013-12-11 14:57:30.884723684 +0000
+--- a/pyconfig.h.in	2013-12-11 16:31:00.511475035 +0000
++++ b/pyconfig.h.in	2013-12-11 16:31:00.711478127 +0000
 @@ -1157,9 +1157,6 @@
  /* Define if mvwdelch in curses.h is an expression. */
  #undef MVWDELCH_IS_EXPRESSION
