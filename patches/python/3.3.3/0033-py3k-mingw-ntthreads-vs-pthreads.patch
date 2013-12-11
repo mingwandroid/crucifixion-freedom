@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-10 19:34:10.312320600 +0000
-+++ b/configure.ac	2013-12-10 19:34:19.603320600 +0000
+--- a/configure.ac	2013-12-11 00:06:02.442003400 +0000
++++ b/configure.ac	2013-12-11 00:06:07.689303500 +0000
 @@ -1493,6 +1493,16 @@
    CFLAGS=$save_CFLAGS
  fi
@@ -76,8 +76,8 @@ diff -urN a/configure.ac b/configure.ac
    ;;
  esac
 diff -urN a/Python/condvar.h b/Python/condvar.h
---- a/Python/condvar.h	2013-12-10 19:34:14.399320600 +0000
-+++ b/Python/condvar.h	2013-12-10 19:34:19.606320600 +0000
+--- a/Python/condvar.h	2013-12-11 00:06:04.524122500 +0000
++++ b/Python/condvar.h	2013-12-11 00:06:07.691303600 +0000
 @@ -42,6 +42,12 @@
  
  #include "Python.h"
@@ -92,8 +92,8 @@ diff -urN a/Python/condvar.h b/Python/condvar.h
  /* This means pthreads are not implemented in libc headers, hence the macro
     not present in unistd.h. But they still can be implemented as an external
 diff -urN a/Python/thread.c b/Python/thread.c
---- a/Python/thread.c	2013-12-10 19:34:14.452320600 +0000
-+++ b/Python/thread.c	2013-12-10 19:34:19.609320600 +0000
+--- a/Python/thread.c	2013-12-11 00:06:04.551124000 +0000
++++ b/Python/thread.c	2013-12-11 00:06:07.692303700 +0000
 @@ -15,7 +15,9 @@
    __MINGW32__ to prevent case when in GCC 3.4.5 build
    envirionment is installed posix thread package.

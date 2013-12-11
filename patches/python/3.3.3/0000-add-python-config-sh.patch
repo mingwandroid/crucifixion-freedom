@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
 --- a/configure.ac	2013-11-17 07:23:09.000000000 +0000
-+++ b/configure.ac	2013-12-10 19:33:18.234320600 +0000
++++ b/configure.ac	2013-12-11 00:05:30.349167800 +0000
 @@ -917,6 +917,7 @@
  
  # Other platforms follow
@@ -38,7 +38,7 @@ diff -urN a/configure.ac b/configure.ac
  
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
 --- a/Makefile.pre.in	2013-11-17 07:22:55.000000000 +0000
-+++ b/Makefile.pre.in	2013-12-10 19:33:18.237320600 +0000
++++ b/Makefile.pre.in	2013-12-11 00:05:30.352167900 +0000
 @@ -1162,6 +1162,8 @@
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
@@ -58,7 +58,7 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
 diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 --- a/Misc/python-config.sh.in	1970-01-01 01:00:00.000000000 +0100
-+++ b/Misc/python-config.sh.in	2013-12-10 19:33:18.239820600 +0000
++++ b/Misc/python-config.sh.in	2013-12-11 00:05:30.354168100 +0000
 @@ -0,0 +1,110 @@
 +#!/bin/sh
 +
