@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:09:22.012248000 +0000
-+++ b/configure.ac	2013-12-11 14:09:31.630324000 +0000
+--- a/configure.ac	2013-12-11 14:57:34.908119251 +0000
++++ b/configure.ac	2013-12-11 14:57:35.081455254 +0000
 @@ -4352,6 +4352,28 @@
  # check for endianness
  AC_C_BIGENDIAN

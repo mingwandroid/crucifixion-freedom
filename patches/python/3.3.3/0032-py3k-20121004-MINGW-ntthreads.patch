@@ -1,6 +1,96 @@
+diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessing/multiprocessing.c
+--- a/Modules/_multiprocessing/multiprocessing.c	2013-12-11 14:57:31.151394442 +0000
++++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-11 14:57:31.348064173 +0000
+@@ -200,6 +200,12 @@
+         Py_DECREF(temp); Py_DECREF(value); return NULL; }         \
+     Py_DECREF(value)
+ 
++#ifndef MS_WINDOWS
++/* GCC(mingw) 4.4+ require and use posix threads(pthreads-w32)
++ * Also system may contain installed pthreads-w32.
++ * As multiprocessing is based on windows methods we must
++ * comment all those flags
++ */
+ #if defined(HAVE_SEM_OPEN) && !defined(POSIX_SEMAPHORES_NOT_ENABLED)
+     ADD_FLAG(HAVE_SEM_OPEN);
+ #endif
+@@ -210,8 +216,10 @@
+     ADD_FLAG(HAVE_BROKEN_SEM_GETVALUE);
+ #endif
+ #ifdef HAVE_BROKEN_SEM_UNLINK
++/* FIXME: why use this? Note before was for cygwin and darwin ? */
+     ADD_FLAG(HAVE_BROKEN_SEM_UNLINK);
+ #endif
++#endif /*ndef MS_WINDOWS*/
+ 
+     if (PyModule_AddObject(module, "flags", temp) < 0)
+         return NULL;
+diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
+--- a/Modules/signalmodule.c	2013-12-11 14:57:31.148061083 +0000
++++ b/Modules/signalmodule.c	2013-12-11 14:57:31.348064173 +0000
+@@ -8,6 +8,17 @@
+ #include "posixmodule.h"
+ #endif
+ 
++#ifdef __MINGW32__
++/* GCC 4.4+ (mingw) support posix threads!
++  Note: macro __MINGW_GCC is defined for GCC 4.4+ but
++  not for GCC 3.4.5 (last stable from 3.x )
++  Instead to use __MINGW_GCC we will use more common
++  __MINGW32__ to prevent case when in GCC 3.4.5 build
++  envirionment is installed posix thread package.
++ */
++# undef HAVE_PTHREAD_KILL
++#endif
++
+ #if defined(__CYGWIN__)
+ /* Type siginfo_t is different on cygwin. For instance si_band is not
+  * a member of structure, so until fill_siginfo(siginfo_t *si) is
+diff -urN a/Python/ceval.c b/Python/ceval.c
+--- a/Python/ceval.c	2013-12-11 14:57:31.131394156 +0000
++++ b/Python/ceval.c	2013-12-11 14:57:31.348064173 +0000
+@@ -11,6 +11,17 @@
+ 
+ #include "Python.h"
+ 
++#ifdef __MINGW32__
++/* GCC 4.4+ (mingw) support posix threads!
++  Note: macro __MINGW_GCC is defined for GCC 4.4+ but
++  not for GCC 3.4.5 (last stable from 3.x )
++  Instead to use __MINGW_GCC we will use more common
++  __MINGW32__ to prevent case when in GCC 3.4.5 build
++  envirionment is installed posix thread package.
++ */
++# undef HAVE_PTHREAD_H
++#endif
++
+ #include "code.h"
+ #include "frameobject.h"
+ #include "opcode.h"
+diff -urN a/Python/thread.c b/Python/thread.c
+--- a/Python/thread.c	2013-12-11 14:57:31.131394156 +0000
++++ b/Python/thread.c	2013-12-11 14:57:31.348064173 +0000
+@@ -7,6 +7,17 @@
+ 
+ #include "Python.h"
+ 
++#ifdef __MINGW32__
++/* GCC 4.4+ (mingw) support posix threads!
++  Note: macro __MINGW_GCC is defined for GCC 4.4+ but
++  not for GCC 3.4.5 (last stable from 3.x )
++  Instead to use __MINGW_GCC we will use more common
++  __MINGW32__ to prevent case when in GCC 3.4.5 build
++  envirionment is installed posix thread package.
++ */
++# undef HAVE_PTHREAD_H
++#endif
++
+ #ifndef _POSIX_THREADS
+ /* This means pthreads are not implemented in libc headers, hence the macro
+    not present in unistd.h. But they still can be implemented as an external
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:07:42.060742300 +0000
-+++ b/configure.ac	2013-12-11 14:07:51.863781300 +0000
+--- a/configure.ac	2013-12-11 14:57:31.174728194 +0000
++++ b/configure.ac	2013-12-11 14:57:31.348064173 +0000
 @@ -1611,6 +1611,19 @@
  AC_MSG_RESULT($ac_cv_pthread)
  fi
@@ -135,93 +225,3 @@ diff -urN a/configure.ac b/configure.ac
  AC_CACHE_VAL(ac_cv_broken_sem_getvalue,
  AC_RUN_IFELSE([AC_LANG_SOURCE([[
  #include <unistd.h>
-diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessing/multiprocessing.c
---- a/Modules/_multiprocessing/multiprocessing.c	2013-12-11 14:07:45.755003300 +0000
-+++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-11 14:07:51.866780700 +0000
-@@ -200,6 +200,12 @@
-         Py_DECREF(temp); Py_DECREF(value); return NULL; }         \
-     Py_DECREF(value)
- 
-+#ifndef MS_WINDOWS
-+/* GCC(mingw) 4.4+ require and use posix threads(pthreads-w32)
-+ * Also system may contain installed pthreads-w32.
-+ * As multiprocessing is based on windows methods we must
-+ * comment all those flags
-+ */
- #if defined(HAVE_SEM_OPEN) && !defined(POSIX_SEMAPHORES_NOT_ENABLED)
-     ADD_FLAG(HAVE_SEM_OPEN);
- #endif
-@@ -210,8 +216,10 @@
-     ADD_FLAG(HAVE_BROKEN_SEM_GETVALUE);
- #endif
- #ifdef HAVE_BROKEN_SEM_UNLINK
-+/* FIXME: why use this? Note before was for cygwin and darwin ? */
-     ADD_FLAG(HAVE_BROKEN_SEM_UNLINK);
- #endif
-+#endif /*ndef MS_WINDOWS*/
- 
-     if (PyModule_AddObject(module, "flags", temp) < 0)
-         return NULL;
-diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
---- a/Modules/signalmodule.c	2013-12-11 14:07:45.181118100 +0000
-+++ b/Modules/signalmodule.c	2013-12-11 14:07:51.869780100 +0000
-@@ -8,6 +8,17 @@
- #include "posixmodule.h"
- #endif
- 
-+#ifdef __MINGW32__
-+/* GCC 4.4+ (mingw) support posix threads!
-+  Note: macro __MINGW_GCC is defined for GCC 4.4+ but
-+  not for GCC 3.4.5 (last stable from 3.x )
-+  Instead to use __MINGW_GCC we will use more common
-+  __MINGW32__ to prevent case when in GCC 3.4.5 build
-+  envirionment is installed posix thread package.
-+ */
-+# undef HAVE_PTHREAD_KILL
-+#endif
-+
- #if defined(__CYGWIN__)
- /* Type siginfo_t is different on cygwin. For instance si_band is not
-  * a member of structure, so until fill_siginfo(siginfo_t *si) is
-diff -urN a/Python/ceval.c b/Python/ceval.c
---- a/Python/ceval.c	2013-12-11 14:07:46.201414000 +0000
-+++ b/Python/ceval.c	2013-12-11 14:07:51.873279400 +0000
-@@ -11,6 +11,17 @@
- 
- #include "Python.h"
- 
-+#ifdef __MINGW32__
-+/* GCC 4.4+ (mingw) support posix threads!
-+  Note: macro __MINGW_GCC is defined for GCC 4.4+ but
-+  not for GCC 3.4.5 (last stable from 3.x )
-+  Instead to use __MINGW_GCC we will use more common
-+  __MINGW32__ to prevent case when in GCC 3.4.5 build
-+  envirionment is installed posix thread package.
-+ */
-+# undef HAVE_PTHREAD_H
-+#endif
-+
- #include "code.h"
- #include "frameobject.h"
- #include "opcode.h"
-diff -urN a/Python/thread.c b/Python/thread.c
---- a/Python/thread.c	2013-12-11 14:07:46.250404200 +0000
-+++ b/Python/thread.c	2013-12-11 14:07:51.875778900 +0000
-@@ -7,6 +7,17 @@
- 
- #include "Python.h"
- 
-+#ifdef __MINGW32__
-+/* GCC 4.4+ (mingw) support posix threads!
-+  Note: macro __MINGW_GCC is defined for GCC 4.4+ but
-+  not for GCC 3.4.5 (last stable from 3.x )
-+  Instead to use __MINGW_GCC we will use more common
-+  __MINGW32__ to prevent case when in GCC 3.4.5 build
-+  envirionment is installed posix thread package.
-+ */
-+# undef HAVE_PTHREAD_H
-+#endif
-+
- #ifndef _POSIX_THREADS
- /* This means pthreads are not implemented in libc headers, hence the macro
-    not present in unistd.h. But they still can be implemented as an external

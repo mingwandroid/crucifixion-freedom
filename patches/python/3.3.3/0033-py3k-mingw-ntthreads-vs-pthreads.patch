@@ -1,6 +1,36 @@
+diff -urN a/Python/condvar.h b/Python/condvar.h
+--- a/Python/condvar.h	2013-12-11 14:57:31.598068048 +0000
++++ b/Python/condvar.h	2013-12-11 14:57:31.818071438 +0000
+@@ -42,6 +42,12 @@
+ 
+ #include "Python.h"
+ 
++#ifdef __MINGW32__
++# if !defined(HAVE_PTHREAD_H) || defined(NT_THREADS)
++#  undef _POSIX_THREADS
++# endif
++#endif
++
+ #ifndef _POSIX_THREADS
+ /* This means pthreads are not implemented in libc headers, hence the macro
+    not present in unistd.h. But they still can be implemented as an external
+diff -urN a/Python/thread.c b/Python/thread.c
+--- a/Python/thread.c	2013-12-11 14:57:31.598068048 +0000
++++ b/Python/thread.c	2013-12-11 14:57:31.818071438 +0000
+@@ -15,7 +15,9 @@
+   __MINGW32__ to prevent case when in GCC 3.4.5 build
+   envirionment is installed posix thread package.
+  */
+-# undef HAVE_PTHREAD_H
++# if !defined(HAVE_PTHREAD_H) || defined(NT_THREADS)
++#  undef _POSIX_THREADS
++# endif
+ #endif
+ 
+ #ifndef _POSIX_THREADS
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:07:54.812191500 +0000
-+++ b/configure.ac	2013-12-11 14:08:04.459261700 +0000
+--- a/configure.ac	2013-12-11 14:57:31.644735438 +0000
++++ b/configure.ac	2013-12-11 14:57:31.818071438 +0000
 @@ -1493,6 +1493,16 @@
    CFLAGS=$save_CFLAGS
  fi
@@ -75,33 +105,3 @@ diff -urN a/configure.ac b/configure.ac
  fi
    ;;
  esac
-diff -urN a/Python/condvar.h b/Python/condvar.h
---- a/Python/condvar.h	2013-12-11 14:07:58.780897600 +0000
-+++ b/Python/condvar.h	2013-12-11 14:08:04.461761200 +0000
-@@ -42,6 +42,12 @@
- 
- #include "Python.h"
- 
-+#ifdef __MINGW32__
-+# if !defined(HAVE_PTHREAD_H) || defined(NT_THREADS)
-+#  undef _POSIX_THREADS
-+# endif
-+#endif
-+
- #ifndef _POSIX_THREADS
- /* This means pthreads are not implemented in libc headers, hence the macro
-    not present in unistd.h. But they still can be implemented as an external
-diff -urN a/Python/thread.c b/Python/thread.c
---- a/Python/thread.c	2013-12-11 14:07:58.832887200 +0000
-+++ b/Python/thread.c	2013-12-11 14:08:04.464260700 +0000
-@@ -15,7 +15,9 @@
-   __MINGW32__ to prevent case when in GCC 3.4.5 build
-   envirionment is installed posix thread package.
-  */
--# undef HAVE_PTHREAD_H
-+# if !defined(HAVE_PTHREAD_H) || defined(NT_THREADS)
-+#  undef _POSIX_THREADS
-+# endif
- #endif
- 
- #ifndef _POSIX_THREADS

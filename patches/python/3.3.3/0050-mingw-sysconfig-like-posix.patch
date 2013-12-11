@@ -1,20 +1,6 @@
-diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:10:12.527760400 +0000
-+++ b/configure.ac	2013-12-11 14:10:22.504260400 +0000
-@@ -109,8 +109,8 @@
- AC_SUBST(VERSION)
- case $host in
-   *-*-mingw*)
--  dnl To be compatible with MSVC build.
--VERSION=`echo PYTHON_VERSION | sed -e 's|\.||g'`
-+  dnl To be *incompatible* with MSVC build!
-+VERSION=PYTHON_VERSION
-   ;;
-   *)
- VERSION=PYTHON_VERSION
 diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
---- a/Lib/distutils/sysconfig.py	2013-12-11 14:10:13.308760400 +0000
-+++ b/Lib/distutils/sysconfig.py	2013-12-11 14:10:22.506760400 +0000
+--- a/Lib/distutils/sysconfig.py	2013-12-11 14:57:36.701480329 +0000
++++ b/Lib/distutils/sysconfig.py	2013-12-11 14:57:36.978151270 +0000
 @@ -144,7 +144,7 @@
          else:
              prefix = plat_specific and EXEC_PREFIX or PREFIX
@@ -25,8 +11,8 @@ diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
                                   "lib", "python" + get_python_version())
          if standard_lib:
 diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	2013-12-11 14:10:14.411760400 +0000
-+++ b/Lib/sysconfig.py	2013-12-11 14:10:22.509760400 +0000
+--- a/Lib/sysconfig.py	2013-12-11 14:57:36.701480329 +0000
++++ b/Lib/sysconfig.py	2013-12-11 14:57:36.978151270 +0000
 @@ -43,13 +43,13 @@
          'data': '{base}',
          },
@@ -76,3 +62,17 @@ diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
      vars['BINDIR'] = os.path.dirname(_safe_realpath(sys.executable))
  
  #
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-12-11 14:57:36.804815236 +0000
++++ b/configure.ac	2013-12-11 14:57:36.974817859 +0000
+@@ -109,8 +109,8 @@
+ AC_SUBST(VERSION)
+ case $host in
+   *-*-mingw*)
+-  dnl To be compatible with MSVC build.
+-VERSION=`echo PYTHON_VERSION | sed -e 's|\.||g'`
++  dnl To be *incompatible* with MSVC build!
++VERSION=PYTHON_VERSION
+   ;;
+   *)
+ VERSION=PYTHON_VERSION

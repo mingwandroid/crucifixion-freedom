@@ -1,6 +1,6 @@
 diff -urN a/Include/pyport.h b/Include/pyport.h
---- a/Include/pyport.h	2013-12-11 14:10:39.338260400 +0000
-+++ b/Include/pyport.h	2013-12-11 14:10:47.277260400 +0000
+--- a/Include/pyport.h	2013-12-11 14:57:37.698162386 +0000
++++ b/Include/pyport.h	2013-12-11 14:57:37.914832400 +0000
 @@ -219,9 +219,11 @@
  /* Smallest negative value of type Py_ssize_t. */
  #define PY_SSIZE_T_MIN (-PY_SSIZE_T_MAX-1)

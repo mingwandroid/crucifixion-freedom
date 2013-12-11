@@ -1,6 +1,6 @@
 diff -urN a/Include/osdefs.h b/Include/osdefs.h
---- a/Include/osdefs.h	2013-12-11 14:09:47.507148000 +0000
-+++ b/Include/osdefs.h	2013-12-11 14:09:56.260397000 +0000
+--- a/Include/osdefs.h	2013-12-11 14:57:35.801466408 +0000
++++ b/Include/osdefs.h	2013-12-11 14:57:36.031469953 +0000
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -11,8 +11,8 @@ diff -urN a/Include/osdefs.h b/Include/osdefs.h
  #define SEP L'/'
  #define ALTSEP L'\\'
 diff -urN a/Lib/ntpath.py b/Lib/ntpath.py
---- a/Lib/ntpath.py	2013-12-11 14:09:48.198009800 +0000
-+++ b/Lib/ntpath.py	2013-12-11 14:09:56.772294600 +0000
+--- a/Lib/ntpath.py	2013-12-11 14:57:35.751465632 +0000
++++ b/Lib/ntpath.py	2013-12-11 14:57:36.031469953 +0000
 @@ -24,9 +24,13 @@
  curdir = '.'
  pardir = '..'
@@ -58,8 +58,8 @@ diff -urN a/Lib/ntpath.py b/Lib/ntpath.py
  def _get_dot(path):
      if isinstance(path, bytes):
 diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
---- a/Python/pythonrun.c	2013-12-11 14:09:51.220905100 +0000
-+++ b/Python/pythonrun.c	2013-12-11 14:09:56.776293800 +0000
+--- a/Python/pythonrun.c	2013-12-11 14:57:35.801466408 +0000
++++ b/Python/pythonrun.c	2013-12-11 14:57:36.031469953 +0000
 @@ -791,6 +791,16 @@
  void
  Py_SetProgramName(wchar_t *pn)

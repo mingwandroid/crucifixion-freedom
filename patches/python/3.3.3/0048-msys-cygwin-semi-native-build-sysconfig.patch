@@ -1,6 +1,50 @@
+diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
+--- a/Lib/sysconfig.py	2013-12-11 14:57:36.221472891 +0000
++++ b/Lib/sysconfig.py	2013-12-11 14:57:36.501477236 +0000
+@@ -350,6 +350,14 @@
+         if isinstance(v, str):
+             done[k] = v.strip()
+ 
++    # any keys that have one with the same name suffixed with _b2h
++    # need to be replaced with the value of the _b2h key.
++    # This converts from MSYS*/Cygwin paths to Windows paths.
++    for k, v in done.items():
++        if isinstance(k, str):
++            if k.endswith("_b2h"):
++                done[k[:-4]]=v
++ 
+     # save the results in the global dictionary
+     vars.update(done)
+     return vars
+diff -urN a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in	2013-12-11 14:57:36.324807797 +0000
++++ b/Makefile.pre.in	2013-12-11 14:57:36.501477236 +0000
+@@ -110,6 +110,13 @@
+ # Install prefix for data files
+ datarootdir=    @datarootdir@
+ 
++# Locations needed for semi-native fixup of sysconfig.
++srcdir_b2h=		@srcdir_b2h@
++VPATH_b2h=		@VPATH_b2h@
++abs_srcdir_b2h=		@abs_srcdir_b2h@
++abs_builddir_b2h=	@abs_builddir_b2h@
++prefix_b2h=		@prefix_b2h@
++
+ # Expanded directories
+ BINDIR=		@bindir@
+ LIBDIR=		@libdir@
+@@ -643,7 +650,7 @@
+ 		-DPREFIX='"$(prefix)"' \
+ 		-DEXEC_PREFIX='"$(exec_prefix)"' \
+ 		-DVERSION='"$(VERSION)"' \
+-		-DVPATH='"$(VPATH)"' \
++		-DVPATH='"$(VPATH_b2h)"' \
+ 		-o $@ $(srcdir)/Modules/getpath.c
+ 
+ # default sys.path calculations for windows platforms
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:09:59.709707000 +0000
-+++ b/configure.ac	2013-12-11 14:10:09.708760400 +0000
+--- a/configure.ac	2013-12-11 14:57:36.324807797 +0000
++++ b/configure.ac	2013-12-11 14:57:36.498143820 +0000
 @@ -606,6 +606,65 @@
  AC_MSG_RESULT([$DELIM])
  AC_SUBST(DELIM)
@@ -67,47 +111,3 @@ diff -urN a/configure.ac b/configure.ac
  AC_MSG_CHECKING([for init system calls])
  AC_SUBST(INITSYS)
  case $host in
-diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	2013-12-11 14:10:01.982752300 +0000
-+++ b/Lib/sysconfig.py	2013-12-11 14:10:09.711760400 +0000
-@@ -350,6 +350,14 @@
-         if isinstance(v, str):
-             done[k] = v.strip()
- 
-+    # any keys that have one with the same name suffixed with _b2h
-+    # need to be replaced with the value of the _b2h key.
-+    # This converts from MSYS*/Cygwin paths to Windows paths.
-+    for k, v in done.items():
-+        if isinstance(k, str):
-+            if k.endswith("_b2h"):
-+                done[k[:-4]]=v
-+ 
-     # save the results in the global dictionary
-     vars.update(done)
-     return vars
-diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-11 14:10:02.966555500 +0000
-+++ b/Makefile.pre.in	2013-12-11 14:10:09.714260400 +0000
-@@ -110,6 +110,13 @@
- # Install prefix for data files
- datarootdir=    @datarootdir@
- 
-+# Locations needed for semi-native fixup of sysconfig.
-+srcdir_b2h=		@srcdir_b2h@
-+VPATH_b2h=		@VPATH_b2h@
-+abs_srcdir_b2h=		@abs_srcdir_b2h@
-+abs_builddir_b2h=	@abs_builddir_b2h@
-+prefix_b2h=		@prefix_b2h@
-+
- # Expanded directories
- BINDIR=		@bindir@
- LIBDIR=		@libdir@
-@@ -643,7 +650,7 @@
- 		-DPREFIX='"$(prefix)"' \
- 		-DEXEC_PREFIX='"$(exec_prefix)"' \
- 		-DVERSION='"$(VERSION)"' \
--		-DVPATH='"$(VPATH)"' \
-+		-DVPATH='"$(VPATH_b2h)"' \
- 		-o $@ $(srcdir)/Modules/getpath.c
- 
- # default sys.path calculations for windows platforms

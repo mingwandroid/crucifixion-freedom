@@ -1,18 +1,6 @@
-diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 14:08:57.066238200 +0000
-+++ b/configure.ac	2013-12-11 14:09:06.627825500 +0000
-@@ -5015,7 +5015,7 @@
-     # FIXME: why windows builds don't use PC/frozen_dllmain.o ?
-     PYTHON_OBJS_FROZENMAIN=""
-     # default sys.path calculations for windows platforms
--    MODULE_GETPATH=PC/getpathp.o
-+    MODULE_GETPATH=Modules/getpath.o
-     ;;
- esac
- 
 diff -urN a/Include/fileutils.h b/Include/fileutils.h
---- a/Include/fileutils.h	2013-12-11 14:08:57.601131200 +0000
-+++ b/Include/fileutils.h	2013-12-11 14:09:06.630824900 +0000
+--- a/Include/fileutils.h	2013-12-11 14:57:33.918103913 +0000
++++ b/Include/fileutils.h	2013-12-11 14:57:34.144774102 +0000
 @@ -15,7 +15,7 @@
      const wchar_t *text,
      size_t *error_pos);
@@ -23,8 +11,8 @@ diff -urN a/Include/fileutils.h b/Include/fileutils.h
      const wchar_t* path,
      struct stat *buf);
 diff -urN a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	2013-12-11 14:08:59.582734800 +0000
-+++ b/Modules/getpath.c	2013-12-11 14:09:06.633824300 +0000
+--- a/Modules/getpath.c	2013-12-11 14:57:33.938104256 +0000
++++ b/Modules/getpath.c	2013-12-11 14:57:34.144774102 +0000
 @@ -10,6 +10,10 @@
  #include <mach-o/dyld.h>
  #endif
@@ -204,8 +192,8 @@ diff -urN a/Modules/getpath.c b/Modules/getpath.c
 +}
 +#endif
 diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
---- a/Modules/posixmodule.c	2013-12-11 14:08:59.597731800 +0000
-+++ b/Modules/posixmodule.c	2013-12-11 14:09:06.641322800 +0000
+--- a/Modules/posixmodule.c	2013-12-11 14:57:33.938104256 +0000
++++ b/Modules/posixmodule.c	2013-12-11 14:57:34.144774102 +0000
 @@ -932,7 +932,7 @@
  }
  
@@ -234,8 +222,8 @@ diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
              list = win32_error("FindNextFile", namebuf);
              goto exit;
 diff -urN a/Python/fileutils.c b/Python/fileutils.c
---- a/Python/fileutils.c	2013-12-11 14:09:01.089433400 +0000
-+++ b/Python/fileutils.c	2013-12-11 14:09:06.644322200 +0000
+--- a/Python/fileutils.c	2013-12-11 14:57:33.921437335 +0000
++++ b/Python/fileutils.c	2013-12-11 14:57:34.144774102 +0000
 @@ -491,7 +491,7 @@
     Not sure whether the MS_WINDOWS guards are necessary:
     perhaps for cygwin/mingw builds?
@@ -244,4 +232,16 @@ diff -urN a/Python/fileutils.c b/Python/fileutils.c
 +#if defined(HAVE_STAT) && (!defined(MS_WINDOWS) || defined(__MINGW32__))
  
  /* Get file status. Encode the path to the locale encoding. */
+ 
+diff -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2013-12-11 14:57:33.968104709 +0000
++++ b/configure.ac	2013-12-11 14:57:34.141440713 +0000
+@@ -5015,7 +5015,7 @@
+     # FIXME: why windows builds don't use PC/frozen_dllmain.o ?
+     PYTHON_OBJS_FROZENMAIN=""
+     # default sys.path calculations for windows platforms
+-    MODULE_GETPATH=PC/getpathp.o
++    MODULE_GETPATH=Modules/getpath.o
+     ;;
+ esac
  
