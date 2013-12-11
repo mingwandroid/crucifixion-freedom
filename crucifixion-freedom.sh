@@ -36,7 +36,7 @@
 # PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
 
 # rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=3.3.0,3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
-# rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+# rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc --no-strip
 
 # rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
 
@@ -844,3 +844,20 @@ C:\Users\ukrdonnell\crucifixion-freedom\patches\python\3.3.3\0045-mingw-use-posi
 0046-mingw-INSTALL_SHARED-LDLIBRARY-LIBPL.patch
 0047-msys-mingw-prefer-unix-sep-if-MSYSTEM.patch
 0048-msys-cygwin-semi-native-build-sysconfig.patch
+
+# Test building C modules.
+pushd ~/Dropbox/Python
+# Simple test with Python in --prefix location:
+/tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc/bin/python3.3.exe test-build-module.py build
+# More complicated test against a moved version of Python.
+cp -rf /tmp2/cr-build/install/windows-x86_64/python-3.3.3-gcc /tmp/py-moved
+/tmp/py-moved/bin/python3.3.exe test-build-module.py build
+popd
+
+# Seems we have python-3.3/config added as a libdir in
+# C:\msys64\tmp2\cr-build\install\windows-x86_64\python-3.3.3-gcc\lib\python3.3\distutils\command\build_ext.py :
+# building third party extensions
+# self.library_dirs.append(os.path.join(sys.prefix, "lib",
+#                                       "python" + get_python_version(),
+#                                       "config"))
+# but not config-3.3 like we need ..
