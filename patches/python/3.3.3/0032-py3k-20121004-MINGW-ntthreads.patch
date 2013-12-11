@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 00:05:55.144586000 +0000
-+++ b/configure.ac	2013-12-11 00:06:00.309881400 +0000
+--- a/configure.ac	2013-12-11 14:07:42.060742300 +0000
++++ b/configure.ac	2013-12-11 14:07:51.863781300 +0000
 @@ -1611,6 +1611,19 @@
  AC_MSG_RESULT($ac_cv_pthread)
  fi
@@ -136,8 +136,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_RUN_IFELSE([AC_LANG_SOURCE([[
  #include <unistd.h>
 diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessing/multiprocessing.c
---- a/Modules/_multiprocessing/multiprocessing.c	2013-12-11 00:05:56.888685700 +0000
-+++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-11 00:06:00.311881500 +0000
+--- a/Modules/_multiprocessing/multiprocessing.c	2013-12-11 14:07:45.755003300 +0000
++++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-11 14:07:51.866780700 +0000
 @@ -200,6 +200,12 @@
          Py_DECREF(temp); Py_DECREF(value); return NULL; }         \
      Py_DECREF(value)
@@ -163,8 +163,8 @@ diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessin
      if (PyModule_AddObject(module, "flags", temp) < 0)
          return NULL;
 diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
---- a/Modules/signalmodule.c	2013-12-11 00:05:56.562667100 +0000
-+++ b/Modules/signalmodule.c	2013-12-11 00:06:00.313881700 +0000
+--- a/Modules/signalmodule.c	2013-12-11 14:07:45.181118100 +0000
++++ b/Modules/signalmodule.c	2013-12-11 14:07:51.869780100 +0000
 @@ -8,6 +8,17 @@
  #include "posixmodule.h"
  #endif
@@ -184,8 +184,8 @@ diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
  /* Type siginfo_t is different on cygwin. For instance si_band is not
   * a member of structure, so until fill_siginfo(siginfo_t *si) is
 diff -urN a/Python/ceval.c b/Python/ceval.c
---- a/Python/ceval.c	2013-12-11 00:05:57.124699200 +0000
-+++ b/Python/ceval.c	2013-12-11 00:06:00.317881900 +0000
+--- a/Python/ceval.c	2013-12-11 14:07:46.201414000 +0000
++++ b/Python/ceval.c	2013-12-11 14:07:51.873279400 +0000
 @@ -11,6 +11,17 @@
  
  #include "Python.h"
@@ -205,8 +205,8 @@ diff -urN a/Python/ceval.c b/Python/ceval.c
  #include "frameobject.h"
  #include "opcode.h"
 diff -urN a/Python/thread.c b/Python/thread.c
---- a/Python/thread.c	2013-12-11 00:05:57.165701600 +0000
-+++ b/Python/thread.c	2013-12-11 00:06:00.320882100 +0000
+--- a/Python/thread.c	2013-12-11 14:07:46.250404200 +0000
++++ b/Python/thread.c	2013-12-11 14:07:51.875778900 +0000
 @@ -7,6 +7,17 @@
  
  #include "Python.h"

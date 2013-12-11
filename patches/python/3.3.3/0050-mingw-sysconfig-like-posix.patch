@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 00:06:31.638673300 +0000
-+++ b/configure.ac	2013-12-11 00:06:36.735964900 +0000
+--- a/configure.ac	2013-12-11 14:10:12.527760400 +0000
++++ b/configure.ac	2013-12-11 14:10:22.504260400 +0000
 @@ -109,8 +109,8 @@
  AC_SUBST(VERSION)
  case $host in
@@ -13,8 +13,8 @@ diff -urN a/configure.ac b/configure.ac
    *)
  VERSION=PYTHON_VERSION
 diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
---- a/Lib/distutils/sysconfig.py	2013-12-11 00:06:32.053697100 +0000
-+++ b/Lib/distutils/sysconfig.py	2013-12-11 00:06:36.737965000 +0000
+--- a/Lib/distutils/sysconfig.py	2013-12-11 14:10:13.308760400 +0000
++++ b/Lib/distutils/sysconfig.py	2013-12-11 14:10:22.506760400 +0000
 @@ -144,7 +144,7 @@
          else:
              prefix = plat_specific and EXEC_PREFIX or PREFIX
@@ -25,8 +25,8 @@ diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
                                   "lib", "python" + get_python_version())
          if standard_lib:
 diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	2013-12-11 00:06:32.389716300 +0000
-+++ b/Lib/sysconfig.py	2013-12-11 00:06:36.740965200 +0000
+--- a/Lib/sysconfig.py	2013-12-11 14:10:14.411760400 +0000
++++ b/Lib/sysconfig.py	2013-12-11 14:10:22.509760400 +0000
 @@ -43,13 +43,13 @@
          'data': '{base}',
          },
@@ -67,7 +67,7 @@ diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
          'data': '{userbase}',
          },
      'posix_user': {
-@@ -443,7 +443,7 @@
+@@ -451,7 +451,7 @@
      vars['SO'] = '.pyd'
      vars['EXT_SUFFIX'] = '.pyd'
      vars['EXE'] = '.exe'

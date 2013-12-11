@@ -1,6 +1,6 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-12-11 00:08:48.713513600 +0000
-+++ b/setup.py	2013-12-11 00:08:52.700741600 +0000
+--- a/setup.py	2013-12-11 14:13:25.867760400 +0000
++++ b/setup.py	2013-12-11 14:13:31.474260400 +0000
 @@ -405,7 +405,7 @@
          # Debian/Ubuntu multiarch support.
          # https://wiki.ubuntu.com/MultiarchSpec
