@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 00:06:24.515265900 +0000
-+++ b/configure.ac	2013-12-11 00:06:29.466549100 +0000
+--- a/configure.ac	2013-12-11 01:53:43.449551900 +0000
++++ b/configure.ac	2013-12-11 01:53:48.591846000 +0000
 @@ -596,6 +596,66 @@
  fi
  AC_MSG_RESULT($MACHDEP)
@@ -108,8 +108,8 @@ diff -urN a/configure.ac b/configure.ac
  esac
  
 diff -urN a/Include/fileutils.h b/Include/fileutils.h
---- a/Include/fileutils.h	2013-12-11 00:06:24.802282300 +0000
-+++ b/Include/fileutils.h	2013-12-11 00:06:29.468549200 +0000
+--- a/Include/fileutils.h	2013-12-11 01:53:43.738568400 +0000
++++ b/Include/fileutils.h	2013-12-11 01:53:48.593846100 +0000
 @@ -15,7 +15,7 @@
      const wchar_t *text,
      size_t *error_pos);
@@ -120,8 +120,8 @@ diff -urN a/Include/fileutils.h b/Include/fileutils.h
      const wchar_t* path,
      struct stat *buf);
 diff -urN a/Include/osdefs.h b/Include/osdefs.h
---- a/Include/osdefs.h	2013-12-11 00:06:24.814283000 +0000
-+++ b/Include/osdefs.h	2013-12-11 00:06:29.469549300 +0000
+--- a/Include/osdefs.h	2013-12-11 01:53:43.750569100 +0000
++++ b/Include/osdefs.h	2013-12-11 01:53:48.595846200 +0000
 @@ -10,7 +10,7 @@
  /* Mod by chrish: QNX has WATCOM, but isn't DOS */
  #if !defined(__QNX__)
@@ -148,8 +148,8 @@ diff -urN a/Include/osdefs.h b/Include/osdefs.h
  
  #ifdef __cplusplus
 diff -urN a/Lib/plat-generic/regen b/Lib/plat-generic/regen
---- a/Lib/plat-generic/regen	2013-12-11 00:06:25.205305400 +0000
-+++ b/Lib/plat-generic/regen	2013-12-11 00:06:29.471549400 +0000
+--- a/Lib/plat-generic/regen	2013-12-11 01:53:44.137591200 +0000
++++ b/Lib/plat-generic/regen	2013-12-11 01:53:48.596846300 +0000
 @@ -1,3 +1,9 @@
  #! /bin/sh
  set -v
@@ -161,9 +161,27 @@ diff -urN a/Lib/plat-generic/regen b/Lib/plat-generic/regen
 +    REGENHEADER=/usr/include/netinet/in.h
 +fi
 +eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
+diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
+--- a/Lib/sysconfig.py	2013-12-11 01:53:44.184593900 +0000
++++ b/Lib/sysconfig.py	2013-12-11 01:54:43.417981900 +0000
+@@ -350,6 +350,14 @@
+         if isinstance(v, str):
+             done[k] = v.strip()
+ 
++    # any keys that have one with the same name suffixed with _b2h
++    # need to be replaced with the value of the _b2h key.
++    # This converts from MSYS*/Cygwin paths to Windows paths.
++    for k, v in done.items():
++        if isinstance(k, str):
++            if k.endswith("_b2h"):
++                done[k[:-4]]=v
++ 
+     # save the results in the global dictionary
+     vars.update(done)
+     return vars
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-11 00:06:25.858342700 +0000
-+++ b/Makefile.pre.in	2013-12-11 00:06:29.473549500 +0000
+--- a/Makefile.pre.in	2013-12-11 01:53:44.836631200 +0000
++++ b/Makefile.pre.in	2013-12-11 01:53:48.598846400 +0000
 @@ -29,6 +29,9 @@
  VPATH=		@srcdir@
  abs_srcdir=	@abs_srcdir@
@@ -211,8 +229,8 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
 diff -urN a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	2013-12-11 00:06:25.914345900 +0000
-+++ b/Modules/getpath.c	2013-12-11 00:06:29.476549700 +0000
+--- a/Modules/getpath.c	2013-12-11 01:53:44.893634500 +0000
++++ b/Modules/getpath.c	2013-12-11 01:53:48.601846600 +0000
 @@ -10,6 +10,10 @@
  #include <mach-o/dyld.h>
  #endif
@@ -401,8 +419,8 @@ diff -urN a/Modules/getpath.c b/Modules/getpath.c
 +}
 +#endif
 diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
---- a/Modules/posixmodule.c	2013-12-11 00:06:25.923346400 +0000
-+++ b/Modules/posixmodule.c	2013-12-11 00:06:29.483550100 +0000
+--- a/Modules/posixmodule.c	2013-12-11 01:53:44.902635000 +0000
++++ b/Modules/posixmodule.c	2013-12-11 01:53:48.607846900 +0000
 @@ -932,7 +932,7 @@
  }
  
@@ -431,8 +449,8 @@ diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
              list = win32_error("FindNextFile", namebuf);
              goto exit;
 diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
---- a/Modules/Setup.config.in	2013-12-11 00:06:25.928346700 +0000
-+++ b/Modules/Setup.config.in	2013-12-11 00:06:29.493550600 +0000
+--- a/Modules/Setup.config.in	2013-12-11 01:53:44.907635300 +0000
++++ b/Modules/Setup.config.in	2013-12-11 01:53:48.609847000 +0000
 @@ -15,6 +15,8 @@
  # On win32 host(mingw build in MSYS environment) show that site.py
  # fail to load if some modules are not build-in:
@@ -443,8 +461,8 @@ diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
  
  # The rest of the modules previously listed in this file are built
 diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
---- a/Modules/Setup.dist	2013-12-11 00:06:25.928346700 +0000
-+++ b/Modules/Setup.dist	2013-12-11 00:06:29.507551400 +0000
+--- a/Modules/Setup.dist	2013-12-11 01:53:44.908635300 +0000
++++ b/Modules/Setup.dist	2013-12-11 01:53:48.611847100 +0000
 @@ -84,14 +84,14 @@
  # Empty since this is now just the runtime prefix.
  DESTPATH=
@@ -463,8 +481,8 @@ diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
  
  COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)
 diff -urN a/Python/fileutils.c b/Python/fileutils.c
---- a/Python/fileutils.c	2013-12-11 00:06:26.504379700 +0000
-+++ b/Python/fileutils.c	2013-12-11 00:06:29.509551500 +0000
+--- a/Python/fileutils.c	2013-12-11 01:53:45.499669100 +0000
++++ b/Python/fileutils.c	2013-12-11 01:53:48.613847200 +0000
 @@ -491,7 +491,7 @@
     Not sure whether the MS_WINDOWS guards are necessary:
     perhaps for cygwin/mingw builds?
@@ -475,8 +493,8 @@ diff -urN a/Python/fileutils.c b/Python/fileutils.c
  /* Get file status. Encode the path to the locale encoding. */
  
 diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
---- a/Python/pythonrun.c	2013-12-11 00:06:26.521380600 +0000
-+++ b/Python/pythonrun.c	2013-12-11 00:06:29.515551900 +0000
+--- a/Python/pythonrun.c	2013-12-11 01:53:45.516670100 +0000
++++ b/Python/pythonrun.c	2013-12-11 01:53:48.616847400 +0000
 @@ -791,6 +791,13 @@
  void
  Py_SetProgramName(wchar_t *pn)

@@ -757,3 +757,54 @@ C:/msys64/bin/sh.exe /tmp2/cr-build/toolchain-wrappers-gcc/x86_64-w64-mingw32-gc
 -IC:\tmp2\cr-build\tmp\src\Python-3.3.3\Include \
 -IC:\msys64\tmp2\cr-build\build-python-windows-x86_64-3.3.3 \
 -c _struct.c -o build\temp.win32-3.3\_struct.o
+
+
+# You can edit:
+C:\msys64\tmp2\cr-build\build-python-windows-x86_64-3.3.3\Makefile (modify e.g. srcdir=		/tmp2/cr-build/tmp/src/Python-3.3.3-what-a-terrible-failure)
+# Then:
+pushd /tmp2/cr-build/build-python-windows-x86_64-3.3.3
+# Then:
+./python.exe -E -S -m sysconfig --generate-posix-vars
+# Then:
+ ./python.exe -c 'import sysconfig ; print(sysconfig.get_config_var("srcdir")); '
+# Outputs:
+C:\tmp2\cr-build\tmp\src\Python-3.3.3-what-a-terrible-failure
+# So what's fixing the paths?
+
+# That'd be C:\msys64\tmp2\cr-build\tmp\src\Python-3.3.3\Lib\sysconfig.py
+def get_config_vars(*args):
+
+..
+        # Always convert srcdir to an absolute path
+        srcdir = _CONFIG_VARS.get('srcdir', _PROJECT_BASE)
+        if posix_build:
+            if _PYTHON_BUILD:
+                # If srcdir is a relative path (typically '.' or '..')
+                # then it should be interpreted relative to the directory
+                # containing Makefile.
+                base = os.path.dirname(get_makefile_filename())
+                srcdir = os.path.join(base, srcdir)
+            else:
+                # srcdir is not meaningful since the installation is
+                # spread about the filesystem.  We choose the
+                # directory containing the Makefile since we know it
+                # exists.
+                srcdir = os.path.dirname(get_makefile_filename())
+        _CONFIG_VARS['srcdir'] = _safe_realpath(srcdir)
+
+.. what on earth is this all about? it does not check if srcdir is relative before appending it onto dir containing Makefile ..
+.. so that when it is used in:
+
+C:\msys64\tmp2\cr-build\tmp\src\Python-3.3.3\setup.py
+
+# Fix up the autodetected modules, prefixing all the source files
+# with Modules/.
+srcdir = sysconfig.get_config_var('srcdir')
+if not srcdir:
+    # Maybe running on Windows but not using posix build?
+    raise ValueError("No source directory; cannot proceed.")
+srcdir = os.path.abspath(srcdir)
+moddirlist = [os.path.join(srcdir, 'Modules')]
+
+.. moddirlist is in the builddir (where Makefile was) and not the srcdir. I do not understand why this would work on Linux either though
+.. unless srcdir in the Makefile was relative all the way along?
