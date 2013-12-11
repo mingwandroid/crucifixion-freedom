@@ -66,8 +66,8 @@ diff -urN a/Python/pythonrun.c b/Python/pythonrun.c
  {
 +#ifdef __MINGW32__
 +    char* msystem = Py_GETENV("MSYSTEM");
-+    wchar altsep = msystem ? L'\\' : L'/';
-+    wchar sep    = msystem ? L'/'  : L'\\';
++    wchar_t altsep = msystem ? L'\\' : L'/';
++    wchar_t sep    = msystem ? L'/'  : L'\\';
 +    wchar_t* seps = wcschr(pn, altsep);
 +    while(seps) {
 +        *seps = sep;
