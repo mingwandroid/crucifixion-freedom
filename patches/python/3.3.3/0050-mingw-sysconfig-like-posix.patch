@@ -1,6 +1,21 @@
+diff -urN a/Lib/distutils/command/build_ext.py b/Lib/distutils/command/build_ext.py
+--- a/Lib/distutils/command/build_ext.py	2013-12-11 17:46:47.618461483 +0000
++++ b/Lib/distutils/command/build_ext.py	2013-12-11 17:53:58.615126898 +0000
+@@ -243,9 +243,10 @@
+             or (sys.platform == 'win32' and sys.version.find('GCC') >= 0)):
+             if sys.executable.startswith(os.path.join(sys.exec_prefix, "bin")):
+                 # building third party extensions
++                config_dir_name = os.path.basename(sysconfig.get_config_var('LIBPL'))
+                 self.library_dirs.append(os.path.join(sys.prefix, "lib",
+                                                       "python" + get_python_version(),
+-                                                      "config"))
++                                                      config_dir_name))
+             else:
+                 # building python standard extensions
+                 self.library_dirs.append('.')
 diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
---- a/Lib/distutils/sysconfig.py	2013-12-11 16:31:06.644903218 +0000
-+++ b/Lib/distutils/sysconfig.py	2013-12-11 16:31:06.921574167 +0000
+--- a/Lib/distutils/sysconfig.py	2013-12-11 17:46:47.618461483 +0000
++++ b/Lib/distutils/sysconfig.py	2013-12-11 17:46:47.898465801 +0000
 @@ -144,7 +144,7 @@
          else:
              prefix = plat_specific and EXEC_PREFIX or PREFIX
@@ -11,8 +26,8 @@ diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
                                   "lib", "python" + get_python_version())
          if standard_lib:
 diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	2013-12-11 16:31:06.644903218 +0000
-+++ b/Lib/sysconfig.py	2013-12-11 16:31:06.924907544 +0000
+--- a/Lib/sysconfig.py	2013-12-11 17:46:47.618461483 +0000
++++ b/Lib/sysconfig.py	2013-12-11 17:46:47.898465801 +0000
 @@ -43,13 +43,13 @@
          'data': '{base}',
          },
@@ -63,8 +78,8 @@ diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
  
  #
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-11 16:31:06.748238150 +0000
-+++ b/configure.ac	2013-12-11 16:31:06.924907544 +0000
+--- a/configure.ac	2013-12-11 17:46:47.721796418 +0000
++++ b/configure.ac	2013-12-11 17:46:47.898465801 +0000
 @@ -109,8 +109,8 @@
  AC_SUBST(VERSION)
  case $host in
