@@ -1,6 +1,6 @@
 diff -urN a/configure b/configure
---- a/configure	2013-12-26 16:17:39.444769400 +0000
-+++ b/configure	2013-12-26 16:17:42.349935600 +0000
+--- a/configure	2013-12-26 17:50:58.207000300 +0000
++++ b/configure	2013-12-26 17:51:03.399297300 +0000
 @@ -624,9 +624,14 @@
  
  ac_subst_vars='LTLIBOBJS
@@ -1711,8 +1711,8 @@ diff -urN a/configure b/configure
  
    *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
 diff -urN a/pyconfig.h.in b/pyconfig.h.in
---- a/pyconfig.h.in	2013-12-26 16:17:40.816847900 +0000
-+++ b/pyconfig.h.in	2013-12-26 16:17:42.945969700 +0000
+--- a/pyconfig.h.in	2013-12-26 17:51:00.267118100 +0000
++++ b/pyconfig.h.in	2013-12-26 17:51:03.403297500 +0000
 @@ -1036,6 +1036,9 @@
  /* Define to 1 if you have the `tgamma' function. */
  #undef HAVE_TGAMMA
