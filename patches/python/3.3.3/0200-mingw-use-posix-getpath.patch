@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-26 15:55:22.107278100 +0000
-+++ b/configure.ac	2013-12-26 15:55:25.834491300 +0000
+--- a/configure.ac	2013-12-26 16:15:30.750408500 +0000
++++ b/configure.ac	2013-12-26 16:15:34.934647800 +0000
 @@ -5015,7 +5015,7 @@
      # FIXME: why windows builds don't use PC/frozen_dllmain.o ?
      PYTHON_OBJS_FROZENMAIN=""
@@ -11,8 +11,8 @@ diff -urN a/configure.ac b/configure.ac
  esac
  
 diff -urN a/Include/fileutils.h b/Include/fileutils.h
---- a/Include/fileutils.h	2013-12-26 15:55:22.308289600 +0000
-+++ b/Include/fileutils.h	2013-12-26 15:55:25.820490500 +0000
+--- a/Include/fileutils.h	2013-12-26 16:15:30.953420100 +0000
++++ b/Include/fileutils.h	2013-12-26 16:15:34.935647900 +0000
 @@ -15,7 +15,7 @@
      const wchar_t *text,
      size_t *error_pos);
@@ -23,8 +23,8 @@ diff -urN a/Include/fileutils.h b/Include/fileutils.h
      const wchar_t* path,
      struct stat *buf);
 diff -urN a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	2013-12-26 15:55:23.075333400 +0000
-+++ b/Modules/getpath.c	2013-12-26 15:55:25.822490600 +0000
+--- a/Modules/getpath.c	2013-12-26 16:15:32.115486600 +0000
++++ b/Modules/getpath.c	2013-12-26 16:15:34.938648100 +0000
 @@ -10,6 +10,10 @@
  #include <mach-o/dyld.h>
  #endif
@@ -204,8 +204,8 @@ diff -urN a/Modules/getpath.c b/Modules/getpath.c
 +}
 +#endif
 diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
---- a/Modules/posixmodule.c	2013-12-26 15:55:23.082333800 +0000
-+++ b/Modules/posixmodule.c	2013-12-26 15:55:25.827490900 +0000
+--- a/Modules/posixmodule.c	2013-12-26 16:15:32.128487300 +0000
++++ b/Modules/posixmodule.c	2013-12-26 16:15:34.945648500 +0000
 @@ -932,7 +932,7 @@
  }
  
@@ -234,8 +234,8 @@ diff -urN a/Modules/posixmodule.c b/Modules/posixmodule.c
              list = win32_error("FindNextFile", namebuf);
              goto exit;
 diff -urN a/Python/fileutils.c b/Python/fileutils.c
---- a/Python/fileutils.c	2013-12-26 15:55:23.470356000 +0000
-+++ b/Python/fileutils.c	2013-12-26 15:55:25.830491000 +0000
+--- a/Python/fileutils.c	2013-12-26 16:15:32.505508900 +0000
++++ b/Python/fileutils.c	2013-12-26 16:15:34.947648600 +0000
 @@ -491,7 +491,7 @@
     Not sure whether the MS_WINDOWS guards are necessary:
     perhaps for cygwin/mingw builds?

@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-26 15:55:53.614080200 +0000
-+++ b/configure.ac	2013-12-26 15:55:57.613308900 +0000
+--- a/configure.ac	2013-12-26 16:16:03.118259800 +0000
++++ b/configure.ac	2013-12-26 16:16:06.783469500 +0000
 @@ -109,8 +109,8 @@
  AC_SUBST(VERSION)
  case $host in
@@ -13,8 +13,8 @@ diff -urN a/configure.ac b/configure.ac
    *)
  VERSION=PYTHON_VERSION
 diff -urN a/Lib/distutils/command/build_ext.py b/Lib/distutils/command/build_ext.py
---- a/Lib/distutils/command/build_ext.py	2013-12-26 15:55:53.921097700 +0000
-+++ b/Lib/distutils/command/build_ext.py	2013-12-26 15:55:57.607308600 +0000
+--- a/Lib/distutils/command/build_ext.py	2013-12-26 16:16:03.388275300 +0000
++++ b/Lib/distutils/command/build_ext.py	2013-12-26 16:16:06.785469600 +0000
 @@ -243,9 +243,10 @@
              or (sys.platform == 'win32' and sys.version.find('GCC') >= 0)):
              if sys.executable.startswith(os.path.join(sys.exec_prefix, "bin")):
@@ -28,8 +28,8 @@ diff -urN a/Lib/distutils/command/build_ext.py b/Lib/distutils/command/build_ext
                  # building python standard extensions
                  self.library_dirs.append('.')
 diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
---- a/Lib/distutils/sysconfig.py	2013-12-26 15:55:53.936098600 +0000
-+++ b/Lib/distutils/sysconfig.py	2013-12-26 15:55:57.608308600 +0000
+--- a/Lib/distutils/sysconfig.py	2013-12-26 16:16:03.402276100 +0000
++++ b/Lib/distutils/sysconfig.py	2013-12-26 16:16:06.787469700 +0000
 @@ -144,7 +144,7 @@
          else:
              prefix = plat_specific and EXEC_PREFIX or PREFIX
@@ -40,8 +40,8 @@ diff -urN a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
                                   "lib", "python" + get_python_version())
          if standard_lib:
 diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	2013-12-26 15:55:54.164111600 +0000
-+++ b/Lib/sysconfig.py	2013-12-26 15:55:57.610308700 +0000
+--- a/Lib/sysconfig.py	2013-12-26 16:16:03.616288300 +0000
++++ b/Lib/sysconfig.py	2013-12-26 16:16:06.788469800 +0000
 @@ -43,13 +43,13 @@
          'data': '{base}',
          },

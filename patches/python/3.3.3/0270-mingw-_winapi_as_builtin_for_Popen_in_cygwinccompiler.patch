@@ -1,6 +1,6 @@
 diff -urN a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
---- a/Lib/distutils/cygwinccompiler.py	2013-12-26 15:55:59.392410700 +0000
-+++ b/Lib/distutils/cygwinccompiler.py	2013-12-26 15:56:03.016618000 +0000
+--- a/Lib/distutils/cygwinccompiler.py	2013-12-26 16:16:08.531569500 +0000
++++ b/Lib/distutils/cygwinccompiler.py	2013-12-26 16:16:11.701750800 +0000
 @@ -58,6 +58,7 @@
  from distutils import log
  from distutils.version import LooseVersion
@@ -37,8 +37,8 @@ diff -urN a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
  
  def is_cygwingcc():
 diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
---- a/Modules/Setup.config.in	2013-12-26 15:56:00.125452600 +0000
-+++ b/Modules/Setup.config.in	2013-12-26 15:56:03.017618000 +0000
+--- a/Modules/Setup.config.in	2013-12-26 16:16:09.228609300 +0000
++++ b/Modules/Setup.config.in	2013-12-26 16:16:11.702750900 +0000
 @@ -17,6 +17,7 @@
  @BUILDIN_WIN32_MODULE@winreg ../PC/winreg.c
  @BUILDIN_WIN32_MODULE@time timemodule.c
@@ -48,8 +48,8 @@ diff -urN a/Modules/Setup.config.in b/Modules/Setup.config.in
  
  # The rest of the modules previously listed in this file are built
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-12-26 15:56:00.535476000 +0000
-+++ b/setup.py	2013-12-26 15:56:03.019618100 +0000
+--- a/setup.py	2013-12-26 16:16:09.640632900 +0000
++++ b/setup.py	2013-12-26 16:16:11.704751000 +0000
 @@ -952,7 +952,9 @@
                  for p in ['_msi.c']],
                  libraries=['msi','cabinet','rpcrt4']) )

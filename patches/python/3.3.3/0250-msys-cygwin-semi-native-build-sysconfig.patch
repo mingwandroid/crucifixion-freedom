@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-26 15:55:48.060762500 +0000
-+++ b/configure.ac	2013-12-26 15:55:52.078992400 +0000
+--- a/configure.ac	2013-12-26 16:15:57.763953600 +0000
++++ b/configure.ac	2013-12-26 16:16:01.257153400 +0000
 @@ -606,6 +606,65 @@
  AC_MSG_RESULT([$DELIM])
  AC_SUBST(DELIM)
@@ -68,8 +68,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_SUBST(INITSYS)
  case $host in
 diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
---- a/Lib/sysconfig.py	2013-12-26 15:55:48.585792600 +0000
-+++ b/Lib/sysconfig.py	2013-12-26 15:55:52.073992100 +0000
+--- a/Lib/sysconfig.py	2013-12-26 16:15:58.284983400 +0000
++++ b/Lib/sysconfig.py	2013-12-26 16:16:01.259153500 +0000
 @@ -350,6 +350,14 @@
          if isinstance(v, str):
              done[k] = v.strip()
@@ -86,8 +86,8 @@ diff -urN a/Lib/sysconfig.py b/Lib/sysconfig.py
      vars.update(done)
      return vars
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-26 15:55:49.111822700 +0000
-+++ b/Makefile.pre.in	2013-12-26 15:55:52.074992100 +0000
+--- a/Makefile.pre.in	2013-12-26 16:15:58.704007400 +0000
++++ b/Makefile.pre.in	2013-12-26 16:16:01.261153600 +0000
 @@ -110,6 +110,13 @@
  # Install prefix for data files
  datarootdir=    @datarootdir@

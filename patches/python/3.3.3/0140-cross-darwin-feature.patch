@@ -1,7 +1,7 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-26 15:54:32.628448100 +0000
-+++ b/configure.ac	2013-12-26 15:54:36.360661500 +0000
-@@ -354,6 +354,7 @@
+--- a/configure.ac	2013-12-26 16:14:59.002592600 +0000
++++ b/configure.ac	2013-12-26 16:15:02.805810200 +0000
+@@ -382,6 +382,7 @@
  then
      # avoid using uname for cross builds
      if test "$cross_compiling" = yes; then
@@ -9,7 +9,7 @@ diff -urN a/configure.ac b/configure.ac
         # ac_sys_system and ac_sys_release are used for setting
         # a lot of different things including 'define_xopen_source'
         # in the case statement below.
-@@ -364,12 +365,32 @@
+@@ -392,12 +393,32 @@
  	*-*-cygwin*)
  		ac_sys_system=Cygwin
  		;;
@@ -43,8 +43,8 @@ diff -urN a/configure.ac b/configure.ac
      else
  	ac_sys_system=`uname -s`
  	if test "$ac_sys_system" = "AIX" \
-@@ -409,6 +430,9 @@
- 	*-*-cygwin*)
+@@ -440,6 +461,9 @@
+ 	*-*-mingw*)
  		_host_cpu=
  		;;
 +	*-*-darwin*)
@@ -53,7 +53,7 @@ diff -urN a/configure.ac b/configure.ac
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"
-@@ -1123,6 +1147,26 @@
+@@ -1211,6 +1235,26 @@
  
  AC_SUBST(BASECFLAGS)
  
@@ -80,7 +80,7 @@ diff -urN a/configure.ac b/configure.ac
  # The -arch flags for universal builds on OSX
  UNIVERSAL_ARCH_FLAGS=
  AC_SUBST(UNIVERSAL_ARCH_FLAGS)
-@@ -1286,7 +1330,7 @@
+@@ -1379,7 +1423,7 @@
  				    cur_target='10.5'
  			    fi
  		    else
@@ -89,7 +89,7 @@ diff -urN a/configure.ac b/configure.ac
  				    # On Intel macs default to a deployment
  				    # target of 10.4, that's the first OSX
  				    # release with Intel support.
-@@ -1811,7 +1855,7 @@
+@@ -1934,7 +1978,7 @@
      if test "${enable_universalsdk}"; then
  	    :
      else
@@ -98,7 +98,7 @@ diff -urN a/configure.ac b/configure.ac
      fi
      LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -install_name $(PYTHONFRAMEWORKINSTALLDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK)'
      LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -compatibility_version $(VERSION) -current_version $(VERSION)';;
-@@ -1836,7 +1880,7 @@
+@@ -1959,7 +2003,7 @@
      ]])],[ac_osx_32bit=yes],[ac_osx_32bit=no],[ac_osx_32bit=yes])
      
      if test "${ac_osx_32bit}" = "yes"; then
@@ -107,7 +107,7 @@ diff -urN a/configure.ac b/configure.ac
      	i386) 
      		MACOSX_DEFAULT_ARCH="i386" 
      		;;
-@@ -1848,7 +1892,7 @@
+@@ -1971,7 +2015,7 @@
      		;;
      	esac
      else

@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-26 15:55:11.487670700 +0000
-+++ b/configure.ac	2013-12-26 15:55:15.276887400 +0000
+--- a/configure.ac	2013-12-26 16:15:20.186804300 +0000
++++ b/configure.ac	2013-12-26 16:15:24.220035000 +0000
 @@ -596,6 +596,16 @@
  fi
  AC_MSG_RESULT($MACHDEP)
@@ -19,8 +19,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_SUBST(INITSYS)
  case $host in
 diff -urN a/Include/osdefs.h b/Include/osdefs.h
---- a/Include/osdefs.h	2013-12-26 15:55:11.700682900 +0000
-+++ b/Include/osdefs.h	2013-12-26 15:55:15.268886900 +0000
+--- a/Include/osdefs.h	2013-12-26 16:15:20.398816400 +0000
++++ b/Include/osdefs.h	2013-12-26 16:15:24.221035100 +0000
 @@ -22,6 +22,7 @@
  #endif
  #endif
@@ -38,8 +38,8 @@ diff -urN a/Include/osdefs.h b/Include/osdefs.h
  
  #ifdef __cplusplus
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-26 15:55:12.429724600 +0000
-+++ b/Makefile.pre.in	2013-12-26 15:55:15.270887100 +0000
+--- a/Makefile.pre.in	2013-12-26 16:15:21.117857600 +0000
++++ b/Makefile.pre.in	2013-12-26 16:15:24.223035200 +0000
 @@ -93,7 +93,8 @@
  # C flags used for building the interpreter object files
  PY_CORE_CFLAGS=	$(PY_CFLAGS) $(PY_CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
@@ -51,8 +51,8 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  MACHDEP=	@MACHDEP@
  
 diff -urN a/Modules/getpath.c b/Modules/getpath.c
---- a/Modules/getpath.c	2013-12-26 15:55:12.471727000 +0000
-+++ b/Modules/getpath.c	2013-12-26 15:55:15.273887200 +0000
+--- a/Modules/getpath.c	2013-12-26 16:15:21.157859900 +0000
++++ b/Modules/getpath.c	2013-12-26 16:15:24.224035200 +0000
 @@ -122,7 +122,7 @@
  #endif
  
@@ -63,8 +63,8 @@ diff -urN a/Modules/getpath.c b/Modules/getpath.c
  #endif
  
 diff -urN a/Modules/Setup.dist b/Modules/Setup.dist
---- a/Modules/Setup.dist	2013-12-26 15:55:12.482727600 +0000
-+++ b/Modules/Setup.dist	2013-12-26 15:55:15.271887100 +0000
+--- a/Modules/Setup.dist	2013-12-26 16:15:21.167860400 +0000
++++ b/Modules/Setup.dist	2013-12-26 16:15:24.226035300 +0000
 @@ -84,14 +84,14 @@
  # Empty since this is now just the runtime prefix.
  DESTPATH=

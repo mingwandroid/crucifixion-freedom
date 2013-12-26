@@ -1,6 +1,6 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-12-26 15:56:53.637513300 +0000
-+++ b/setup.py	2013-12-26 15:56:55.742633700 +0000
+--- a/setup.py	2013-12-26 16:17:02.103633600 +0000
++++ b/setup.py	2013-12-26 16:17:04.380763900 +0000
 @@ -1664,7 +1664,7 @@
  ##         ext = Extension('xx', ['xxmodule.c'])
  ##         self.extensions.append(ext)

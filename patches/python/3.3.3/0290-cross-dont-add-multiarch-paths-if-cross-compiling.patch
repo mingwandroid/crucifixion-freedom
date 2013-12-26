@@ -1,6 +1,6 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-12-26 15:56:11.347094400 +0000
-+++ b/setup.py	2013-12-26 15:56:13.582222300 +0000
+--- a/setup.py	2013-12-26 16:16:20.162234700 +0000
++++ b/setup.py	2013-12-26 16:16:22.304357200 +0000
 @@ -478,10 +478,10 @@
          if not cross_compiling:
              add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')

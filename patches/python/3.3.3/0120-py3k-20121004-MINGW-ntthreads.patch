@@ -1,7 +1,7 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-26 15:54:48.645364200 +0000
-+++ b/configure.ac	2013-12-26 15:54:52.694595800 +0000
-@@ -1611,6 +1611,19 @@
+--- a/configure.ac	2013-12-26 16:14:48.231976600 +0000
++++ b/configure.ac	2013-12-26 16:14:52.205203900 +0000
+@@ -1562,6 +1562,19 @@
  AC_MSG_RESULT($ac_cv_pthread)
  fi
  
@@ -21,7 +21,7 @@ diff -urN a/configure.ac b/configure.ac
  # If we have set a CC compiler flag for thread support then
  # check if it works for CXX, too.
  ac_cv_cxx_thread=no
-@@ -1631,6 +1644,9 @@
+@@ -1582,6 +1595,9 @@
  then 
    CXX="$CXX -pthread"
    ac_cv_cxx_thread=yes
@@ -31,7 +31,7 @@ diff -urN a/configure.ac b/configure.ac
  fi
  
  if test $ac_cv_cxx_thread = yes
-@@ -1661,6 +1677,13 @@
+@@ -1612,6 +1628,13 @@
  
  # checks for header files
  AC_HEADER_STDC
@@ -45,7 +45,7 @@ diff -urN a/configure.ac b/configure.ac
  ac_save_cppflags="$CPPFLAGS"
  CPPFLAGS="$CPPFLAGS -I/usr/include/ncursesw"
  AC_CHECK_HEADERS(asm/types.h conio.h curses.h direct.h dlfcn.h errno.h \
-@@ -2350,11 +2373,20 @@
+@@ -2301,11 +2324,20 @@
  AC_CHECK_LIB(dld, shl_load)	# Dynamic linking for HP-UX
  
  # only check for sem_init if thread support is requested
@@ -66,7 +66,7 @@ diff -urN a/configure.ac b/configure.ac
  
  # check if we need libintl for locale functions
  case $host in
-@@ -2579,6 +2611,13 @@
+@@ -2530,6 +2562,13 @@
      AC_DEFINE(WITH_THREAD)
      posix_threads=yes
      THREADOBJ="Python/thread.o"
@@ -80,7 +80,7 @@ diff -urN a/configure.ac b/configure.ac
  else
      if test ! -z "$with_threads" -a -d "$with_threads"
      then LDFLAGS="$LDFLAGS -L$with_threads"
-@@ -3024,6 +3063,13 @@
+@@ -2975,6 +3014,13 @@
  fi
  
  # checks for library functions
@@ -94,7 +94,7 @@ diff -urN a/configure.ac b/configure.ac
  AC_CHECK_FUNCS(alarm accept4 setitimer getitimer bind_textdomain_codeset chown \
   clock confstr ctermid execv faccessat fchmod fchmodat fchown fchownat \
   fexecve fdopendir fork fpathconf fstatat ftime ftruncate futimesat \
-@@ -4096,6 +4142,13 @@
+@@ -4047,6 +4093,13 @@
  # the kernel module that provides POSIX semaphores
  # isn't loaded by default, so an attempt to call
  # sem_open results in a 'Signal 12' error.
@@ -108,7 +108,7 @@ diff -urN a/configure.ac b/configure.ac
  AC_MSG_CHECKING(whether POSIX semaphores are enabled)
  AC_CACHE_VAL(ac_cv_posix_semaphores_enabled,
  AC_RUN_IFELSE([AC_LANG_SOURCE([[
-@@ -4121,6 +4174,9 @@
+@@ -4072,6 +4125,9 @@
  [ac_cv_posix_semaphores_enabled=yes])
  )
  AC_MSG_RESULT($ac_cv_posix_semaphores_enabled)
@@ -118,7 +118,7 @@ diff -urN a/configure.ac b/configure.ac
  if test $ac_cv_posix_semaphores_enabled = no
  then
    AC_DEFINE(POSIX_SEMAPHORES_NOT_ENABLED, 1,
-@@ -4129,6 +4185,16 @@
+@@ -4080,6 +4136,16 @@
  
  # Multiprocessing check for broken sem_getvalue
  AC_MSG_CHECKING(for broken sem_getvalue)
@@ -136,8 +136,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_RUN_IFELSE([AC_LANG_SOURCE([[
  #include <unistd.h>
 diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessing/multiprocessing.c
---- a/Modules/_multiprocessing/multiprocessing.c	2013-12-26 15:54:50.224454500 +0000
-+++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-26 15:54:52.685595300 +0000
+--- a/Modules/_multiprocessing/multiprocessing.c	2013-12-26 16:14:49.501049200 +0000
++++ b/Modules/_multiprocessing/multiprocessing.c	2013-12-26 16:14:52.207204000 +0000
 @@ -200,6 +200,12 @@
          Py_DECREF(temp); Py_DECREF(value); return NULL; }         \
      Py_DECREF(value)
@@ -163,8 +163,8 @@ diff -urN a/Modules/_multiprocessing/multiprocessing.c b/Modules/_multiprocessin
      if (PyModule_AddObject(module, "flags", temp) < 0)
          return NULL;
 diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
---- a/Modules/signalmodule.c	2013-12-26 15:54:49.617419800 +0000
-+++ b/Modules/signalmodule.c	2013-12-26 15:54:52.686595300 +0000
+--- a/Modules/signalmodule.c	2013-12-26 16:14:49.283036700 +0000
++++ b/Modules/signalmodule.c	2013-12-26 16:14:52.208204000 +0000
 @@ -8,6 +8,17 @@
  #include "posixmodule.h"
  #endif
@@ -184,8 +184,8 @@ diff -urN a/Modules/signalmodule.c b/Modules/signalmodule.c
  /* Type siginfo_t is different on cygwin. For instance si_band is not
   * a member of structure, so until fill_siginfo(siginfo_t *si) is
 diff -urN a/Python/ceval.c b/Python/ceval.c
---- a/Python/ceval.c	2013-12-26 15:54:50.385463700 +0000
-+++ b/Python/ceval.c	2013-12-26 15:54:52.689595500 +0000
+--- a/Python/ceval.c	2013-12-26 16:14:49.672059000 +0000
++++ b/Python/ceval.c	2013-12-26 16:14:52.211204200 +0000
 @@ -11,6 +11,17 @@
  
  #include "Python.h"
@@ -205,8 +205,8 @@ diff -urN a/Python/ceval.c b/Python/ceval.c
  #include "frameobject.h"
  #include "opcode.h"
 diff -urN a/Python/thread.c b/Python/thread.c
---- a/Python/thread.c	2013-12-26 15:54:50.405464800 +0000
-+++ b/Python/thread.c	2013-12-26 15:54:52.691595600 +0000
+--- a/Python/thread.c	2013-12-26 16:14:49.695060300 +0000
++++ b/Python/thread.c	2013-12-26 16:14:52.213204300 +0000
 @@ -7,6 +7,17 @@
  
  #include "Python.h"

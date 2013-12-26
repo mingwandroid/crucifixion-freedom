@@ -1,6 +1,6 @@
 diff -urN a/setup.py b/setup.py
---- a/setup.py	2013-12-26 15:56:27.034991700 +0000
-+++ b/setup.py	2013-12-26 15:56:29.539135000 +0000
+--- a/setup.py	2013-12-26 16:16:36.020141700 +0000
++++ b/setup.py	2013-12-26 16:16:38.170264700 +0000
 @@ -2285,8 +2285,9 @@
                  newfilename = filename + fullversion
              else:
