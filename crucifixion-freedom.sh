@@ -24,21 +24,21 @@
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.7-4.6
 
 # linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86
-# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=3.3.0 --systems=linux-x86_64,windows-x86,windows-x86_64
-# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.3,3.3.0 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64
-# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
-# rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:$PATH linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
+# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:"${PATH}" linux32 ./crucifixion-freedom.sh --python-version=3.3.0 --systems=linux-x86_64,windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:"${PATH}" linux32 ./crucifixion-freedom.sh --python-version=2.7.3,3.3.0 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64
+# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:"${PATH}" linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,windows-x86,windows-x86_64,darwin-x86,darwin-x86_64
+# rm -rf /tmp2/cr-build; PATH=$HOME/darwin-cross/apple-osx/bin:"${PATH}" linux32 ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
-# rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
-# rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0,3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+# rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:"${PATH}"; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+# rm -rf /tmp2/cr-build; git clean -dxf; export PATH=/c/msys32/mingw32/bin:/c/msys64/mingw64/bin:"${PATH}"; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0,3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
 # rm -rf /tmp2/cr-build; git clean -dxf; ./crucifixion-freedom.sh --python-version=2.7.5,3.3.0 --systems=linux-x86,darwin-x86,darwin-x86_64 --compiler-vendors=clang
 
-# PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
+# PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:"${PATH}" ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
 
-# rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=3.3.0,3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
-# rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:$PATH; ./crucifixion-freedom.sh --python-version=3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc --no-strip
+# rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:"${PATH}"; ./crucifixion-freedom.sh --python-version=3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc
+# rm -rf /tmp2/cr-build; git clean -dxf;  export PATH=$HOME/mingw64-i686/mingw32/bin:$HOME/mingw64-x86_64/mingw64/bin:"${PATH}"; ./crucifixion-freedom.sh --python-version=3.3.3 --systems=windows-x86,windows-x86_64 --compiler-vendors=gcc --no-strip
 
-# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
+# rm -rf /tmp2/cr-build; PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:"${PATH}" ./crucifixion-freedom.sh --python-version=3.3.3 --systems=linux-x86_64,windows-x86_64
 
 # For some reason, the install prefix without '/lib' appended makes it into the compiler.library_dirs. I think this happens at the configure stage.
 # Due to:
@@ -86,7 +86,7 @@ if [ "$OSTYPE" = "msys" ] ; then
         if [ ! -f $PWD/expr.exe ] ; then
             curl -S -L -O http://mingw-and-ndk.googlecode.com/files/expr.exe
         fi
-        export PATH="$(pwd -W)":$PATH
+        export PATH="$(pwd -W)":"${PATH}"
     fi
 fi
 
@@ -166,14 +166,14 @@ fi
 #     (cd $ROOT/toolchain-tarballs; curl -S -L -O http://ftp.gnu.org/gnu/autoconf/autoconf-2.67.tar.bz2)
 #     (cd /tmp; tar -xjf $ROOT/toolchain-tarballs/autoconf-2.67.tar.bz2; cd autoconf-2.67; M4=$(which m4) ./configure --prefix=$HOME/autoconf-2.67; make; make install)
 # fi
-# export PATH=$HOME/autoconf-2.67/bin:$PATH
+# export PATH=$HOME/autoconf-2.67/bin:"${PATH}"
 
 # For Python-3.3.x
 if [ ! -d $HOME/autoconf-2.69 ]; then
     (cd $ROOT/toolchain-tarballs; curl -S -L -O http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz)
     (cd /tmp; tar -xvf $ROOT/toolchain-tarballs/autoconf-2.69.tar.gz; cd autoconf-2.69; M4=$(which m4) ./configure --prefix=$HOME/autoconf-2.69; make; make install)
 fi
-# export PATH=$HOME/autoconf-2.69/bin:$PATH
+# export PATH=$HOME/autoconf-2.69/bin:"${PATH}"
 
 if [ ! -z "$PYTHONHOME" ]; then
     echo "ERROR: PYTHONHOME variable set to $PYTHONHOME, refusing to build."
@@ -310,7 +310,7 @@ if [ ! $(bh_list_contains "linux-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contains
         if [ ! -d prebuilts/gcc/linux-x86/host/$(basename $LINUX_CROSS_TOOLCHAIN) ]; then
             ln -s $TOOLCHAINS/google-prebuilt/$(basename $LINUX_CROSS_TOOLCHAIN) prebuilts/gcc/linux-x86/host/$(basename $LINUX_CROSS_TOOLCHAIN)
         fi
-        export PATH=$TOOLCHAINS/google-prebuilt/$(basename $LINUX_CROSS_TOOLCHAIN)/bin:$PATH
+        export PATH=$TOOLCHAINS/google-prebuilt/$(basename $LINUX_CROSS_TOOLCHAIN)/bin:"${PATH}"
     done
 fi
 
@@ -320,9 +320,9 @@ if [ ! $(bh_list_contains "windows-x86" $SYSTEMSLIST) = no ]; then
         (mkdir -p $TOOLCHAINS/mingw64-i686; cd $TOOLCHAINS/mingw64-i686; $(uncompress $ROOT/toolchain-tarballs/$(basename $MINGW_CROSS_FILENAME)))
     fi
     if [ $BH_BUILD_OS = windows ]; then
-        export PATH=$TOOLCHAINS/mingw64-i686/mingw32/bin:$PATH
+        export PATH=$TOOLCHAINS/mingw64-i686/mingw32/bin:"${PATH}"
     else
-        export PATH=$TOOLCHAINS/mingw64-i686/i686-w64-mingw32/bin:$PATH
+        export PATH=$TOOLCHAINS/mingw64-i686/i686-w64-mingw32/bin:"${PATH}"
     fi
 fi
 
@@ -332,9 +332,9 @@ if [ ! $(bh_list_contains "windows-x86_64" $SYSTEMSLIST) = no ] ; then
         (mkdir -p $TOOLCHAINS/mingw64-x86_64; cd $TOOLCHAINS/mingw64-x86_64; $(uncompress $ROOT/toolchain-tarballs/$(basename $MINGW_CROSS_FILENAME_64)))
     fi
     if [ $BH_BUILD_OS = windows ]; then
-        export PATH=$TOOLCHAINS/mingw64-x86_64/mingw64/bin:$PATH
+        export PATH=$TOOLCHAINS/mingw64-x86_64/mingw64/bin:"${PATH}"
     else
-        export PATH=$TOOLCHAINS/mingw64-x86_64/i686-w64-mingw32/bin:$PATH
+        export PATH=$TOOLCHAINS/mingw64-x86_64/i686-w64-mingw32/bin:"${PATH}"
     fi
 fi
 
@@ -352,7 +352,7 @@ if [ ! $(bh_list_contains "darwin-x86" $SYSTEMSLIST) = no -o ! $(bh_list_contain
          uncompress $ROOT/toolchain-tarballs/$(basename $DARWIN_CROSS_FILENAME)
         )
     fi
-    export PATH=$TOOLCHAINS/darwin-cross/apple-osx/bin:$PATH
+    export PATH=$TOOLCHAINS/darwin-cross/apple-osx/bin:"${PATH}"
     if [ -f $TOOLCHAINS/darwin-cross/apple-osx/bin/i686-apple-darwin11-clang -o -f $TOOLCHAINS/darwin-cross/apple-osx/bin/i686-apple-darwin11-gcc ]; then
         export DARWIN_TOOLCHAIN="i686-apple-darwin11"
     elif [ -f $TOOLCHAINS/darwin-cross/apple-osx/bin/x86_64-apple-darwin10-clang -o -f $TOOLCHAINS/darwin-cross/apple-osx/bin/x86_64-apple-darwin10-gcc ]; then
@@ -397,10 +397,10 @@ exit 0
 # You can ignore everything after this line. It's a scratch area I use for regenerating
 # patches!
 
-PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,windows-x86,windows-x86_64
-PATH=$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
+PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:"${PATH}" ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,windows-x86,windows-x86_64
+PATH=$HOME/darwin-cross/apple-osx/bin:"${PATH}" ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,darwin-x86
 
-PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:$PATH ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,darwin-x86,darwin-x86_64,windows-x86,windows-x86_64
+PATH=$HOME/mingw64/x86_64-w64-mingw32/bin:$HOME/darwin-cross/apple-osx/bin:"${PATH}" ./crucifixion-freedom.sh --python-version=2.7.5 --systems=linux-x86_64,linux-x86,darwin-x86,darwin-x86_64,windows-x86,windows-x86_64
 
 
 ROOT=$PWD
@@ -747,7 +747,7 @@ nano library/subtargets.sh [uncomment tcl tk]
 
 # To reproduce it:
 pushd /tmp/python-x86_64/build/Python-2.7.5
-DISTUTILS_DEBUG=1 PATH=~/mingw-builds/toolchains/mingw64/bin:/tmp/python-x86_64/libs/bin:$PATH CC='x86_64-w64-mingw32-gcc' LDSHARED='x86_64-w64-mingw32-gcc -shared -Wl,--enable-auto-image-base -pipe -L/tmp/python-x86_64/libs/lib -L/tmp/prerequisites/x86_64-zlib/lib -L/tmp/prerequisites/x86_64-w64-mingw32-static/lib -L/tmp/python-x86_64/python-2.7.5-x86_64/opt/lib -L/x86_64-zlib/lib -LC:/msys64/tmp/python-x86_64/python-2.7.5-x86_64/opt/lib -LC:/msys64/tmp/python-x86_64/libs/lib' OPT='-DNDEBUG ' ./python.exe -E ../../../src/Python-2.7.5/setup.py --verbose build
+DISTUTILS_DEBUG=1 PATH=~/mingw-builds/toolchains/mingw64/bin:/tmp/python-x86_64/libs/bin:"${PATH}" CC='x86_64-w64-mingw32-gcc' LDSHARED='x86_64-w64-mingw32-gcc -shared -Wl,--enable-auto-image-base -pipe -L/tmp/python-x86_64/libs/lib -L/tmp/prerequisites/x86_64-zlib/lib -L/tmp/prerequisites/x86_64-w64-mingw32-static/lib -L/tmp/python-x86_64/python-2.7.5-x86_64/opt/lib -L/x86_64-zlib/lib -LC:/msys64/tmp/python-x86_64/python-2.7.5-x86_64/opt/lib -LC:/msys64/tmp/python-x86_64/libs/lib' OPT='-DNDEBUG ' ./python.exe -E ../../../src/Python-2.7.5/setup.py --verbose build
 
 
 # 3.3.3 doesn't pick up the right MACHDEP.

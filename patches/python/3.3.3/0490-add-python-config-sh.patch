@@ -98,7 +98,7 @@ diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 +SYSLIBS="$LIBM $LIBC"
 +ABIFLAGS="@ABIFLAGS@"
 +# Protect against lack of substitution.
-+if [ "$ABIFLAGS" = "@ABIFLAGS@" ] ; then
++if [ "$ABIFLAGS" = "@""ABIFLAGS""@" ] ; then
 +    ABIFLAGS=
 +fi
 +LIBS="@LIBS@ $SYSLIBS -lpython${VERSION}${ABIFLAGS}"
