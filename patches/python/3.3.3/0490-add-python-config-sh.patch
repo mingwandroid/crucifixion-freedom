@@ -1,6 +1,6 @@
 diff -urN a/configure.ac b/configure.ac
---- a/configure.ac	2013-12-26 17:47:57.970691400 +0000
-+++ b/configure.ac	2013-12-26 17:48:03.214991300 +0000
+--- a/configure.ac	2013-12-27 18:46:13.885370200 +0000
++++ b/configure.ac	2013-12-27 18:46:17.515577900 +0000
 @@ -969,6 +969,7 @@
  
  # Other platforms follow
@@ -37,8 +37,8 @@ diff -urN a/configure.ac b/configure.ac
  AC_OUTPUT
  
 diff -urN a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2013-12-26 17:47:59.212762400 +0000
-+++ b/Makefile.pre.in	2013-12-26 17:48:03.219991600 +0000
+--- a/Makefile.pre.in	2013-12-27 18:46:14.862426100 +0000
++++ b/Makefile.pre.in	2013-12-27 18:46:17.518578000 +0000
 @@ -1171,6 +1171,8 @@
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
@@ -58,8 +58,8 @@ diff -urN a/Makefile.pre.in b/Makefile.pre.in
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
 diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 --- a/Misc/python-config.sh.in	1970-01-01 01:00:00.000000000 +0100
-+++ b/Misc/python-config.sh.in	2013-12-26 17:48:03.221991700 +0000
-@@ -0,0 +1,110 @@
++++ b/Misc/python-config.sh.in	2013-12-27 18:48:17.929465100 +0000
+@@ -0,0 +1,120 @@
 +#!/bin/sh
 +
 +exit_with_usage ()
@@ -67,6 +67,16 @@ diff -urN a/Misc/python-config.sh.in b/Misc/python-config.sh.in
 +    echo "Usage: $0 --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--extension-suffix|--help|--abiflags|--configdir"
 +    exit 1
 +}
++
++# Really, python-config.py (and thus .sh) should be called directly, but
++# sometimes software (e.g. GDB) calls python-config.sh as if it were the
++# Python executable, passing python-config.py as the first argument.
++# Work around that oddness by ignoring any .py passed as first arg.
++case "$1" in
++    *.py)
++        shift
++    ;;
++esac
 +
 +if [ "$1" = "" ] ; then
 +    exit_with_usage
